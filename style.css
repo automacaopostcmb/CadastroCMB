@@ -171,7 +171,7 @@ canvas {
   padding:10px 16px; width:260px; display:block; margin:10px auto 0;
 }
 
-/* Overlay de envio (wizard) */
+
 /* ===== Overlay de envio do WIZARD (igual ao #loading do index) ===== */
 #overlay{
   position: fixed;
@@ -181,6 +181,7 @@ canvas {
   max-width: none !important;
 
   display: none;              /* começa escondido */
+  place-items: center;        /* ✅ centraliza sempre */
   z-index: 2147483647;
 
   background: rgba(0,0,0,0.45);
@@ -192,7 +193,6 @@ canvas {
 /* quando estiver ativo */
 #overlay.active{
   display: grid;
-  place-items: center;
 }
 
 /* “bolha” branca no centro */
@@ -217,6 +217,7 @@ canvas {
   font-size: 18px;
   color:#000;
 }
+
 
 /* =========================
    ESTRUTURA DE PÁGINA
@@ -436,6 +437,7 @@ body{
 .acc__body{
   padding: 0 16px 14px;
 }
+
 
 
 
