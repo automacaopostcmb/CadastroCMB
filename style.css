@@ -403,15 +403,15 @@ canvas {
   display: flex;
   flex-direction: column;
 
+  /* centraliza no “miolo” */
   align-items: center;
-  justify-content: flex-start; /* começa do topo */
+  justify-content: center;
 
+  /* garante centralização entre header e footer */
   min-height: calc(100dvh - var(--topbar-h) - var(--footer-h));
 
-  padding-top: 40px;   /* controla o espaço superior */
-  padding-bottom: 24px;
-
   gap: 12px;
+  padding: 24px 0;
 }
 
 /* logo (se usado) */
@@ -718,4 +718,3 @@ body.is-index .page-center{
   line-height: 1.35;
   opacity: .85;
 }
-
