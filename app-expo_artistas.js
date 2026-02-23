@@ -56,6 +56,29 @@ function startOverlayMessages(customSteps = OVERLAY_STEPS) {
   });
 }
 
+function showAuthOverlay(message) {
+  const overlay = document.getElementById('overlay');
+  if (!overlay) return;
+
+  overlay.classList.add('auth');
+  overlay.style.display = 'grid';     // você já usa isso nessa página
+  setOverlayText(message || 'Faça login primeiro.');
+}
+
+function hideAuthOverlay() {
+  const overlay = document.getElementById('overlay');
+  if (!overlay) return;
+
+  overlay.classList.remove('auth');
+  overlay.style.display = 'none';
+  setOverlayText('Enviando...');
+}
+
+function blockAndRedirect(message, url = 'index.html') {
+  showAuthOverlay(message);
+  setTimeout(() => { window.location.href = url; }, 900);
+}
+
 function stopOverlayMessages() {
   overlayTimers.forEach((t) => clearTimeout(t));
   overlayTimers = [];
@@ -405,6 +428,7 @@ async function enviarParaGoogle() {
   if (obs) dados.observacao = obs;
 
    const overlay = document.getElementById('overlay');
+   overlay.classList.remove('auth'); // ✅ garante modo normal (com gif)
 overlay.style.display = 'grid';
 startOverlayMessages(); // ✅ começa a trocar o texto do overlay
 
@@ -450,13 +474,29 @@ try {
    AUTENTICAÇÃO
    =========================== */
 const PAGINA = 'expo_artistas';
+
 async function checkAuth() {
   const chave = (localStorage.getItem('chave') || '').trim();
-  if (!chave) { alert('Faça login primeiro.'); window.location.href = 'index.html'; return; }
-  const url = `${WEBAPP_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}&v=${Date.now()}`;
-  const resp = await fetch(url);
-  const data = await resp.json();
-  if (!data.permitido) { alert('Você não tem permissão para acessar esta página.'); window.location.href = 'index.html'; }
+
+  if (!chave) {
+    blockAndRedirect('Faça login primeiro.', 'index.html');
+    return;
+  }
+
+  try {
+    const url = `${WEBAPP_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}&v=${Date.now()}`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+
+    if (!data.permitido) {
+      blockAndRedirect('Você não tem permissão para acessar esta página.', 'index.html');
+      return;
+    }
+  } catch (e) {
+    blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html');
+  }
+}
+   
 }
 
 /* ===========================
@@ -766,6 +806,7 @@ window.goToMenu = goToMenu;
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
 // window.goToMenu = goToMenu;
+
 
 
 
