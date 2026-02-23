@@ -9,6 +9,13 @@ html { height: 100%; overflow-x: hidden; }
 /* Gutter lateral */
 :root{
   --gutter: clamp(12px, 4vw, 20px);
+  /* ✅ espaçamentos consistentes */
+  --spacing-lg: 18px;
+  --spacing-md: 12px;
+  --spacing-sm: 8px;
+
+  --topbar-h: 56px;
+}
 }
 
 /* Body com gradiente e coluna (rodapé gruda no fim) */
@@ -180,7 +187,13 @@ canvas {
 
 /* Wrapper central */
 .page-center{
-  flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:12px; padding:24px 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  justify-content: flex-start;
+  padding: var(--spacing-lg) 0;
 }
 
 /* Logo */
@@ -349,7 +362,10 @@ body{
   letter-spacing: .3px;
   color: #ffffff;
   text-transform: uppercase;
-  font-size: 20px;
+  font-size: 16px; /* no mobile */
+}
+@media (min-width:768px){
+  .wizard-step-title{ font-size: 15px; } /* se quiser menor no PC */
 }
 
 /* dá um respiro antes do box branco */
@@ -364,9 +380,7 @@ body{
   box-shadow:0 6px 14px rgba(0,0,0,.04);
 }
 
-@media (min-width:768px){
-  .wizard-step-title{ font-size: 15px; }
-}
+
 
 
 
