@@ -362,4 +362,34 @@ body{
   margin: 12px 0 4px;
 }
 
+/* ===== Accordion (dropbox) ===== */
+.acc{
+  margin-top: 12px;
+  border: 1px solid #bfe0ff;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+.acc__sum{
+  list-style: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-weight: 800;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.acc__sum::-webkit-details-marker{ display:none; }
+.acc__sum::after{
+  content: "▾";
+  font-size: 22px;
+  line-height: 1;
+  opacity: .8;
+}
+.acc[open] .acc__sum::after{ content:"▴"; }
+
+.acc__body{
+  padding: 0 16px 14px;
+}
 
