@@ -367,32 +367,20 @@ async function enviarParaGoogle() {
     const msg = document.getElementById('mensagem');
     msg.style.display = 'block';
 
-    if (result.status === 'success') {
-      msg.textContent = '✅ Enviado com sucesso!';
-      msg.style.color = 'green';
+ if (result.status === 'success') {
+  msg.textContent = '✅ Enviado com sucesso!';
+  msg.style.color = 'green';
 
-      // esconde a etapa 8 e mostra o final
-      document.getElementById('step8').style.display = 'none';
+  // esconde a etapa 8 (review) e abre tela final
+  const step8 = document.getElementById('step8');
+  if (step8) step8.style.display = 'none';
 
-      // AJUSTE: NÃO esconder header; trocar textos para "PRONTO!"
-      const countEl = document.getElementById('wizardStepCount');
-      if (countEl) countEl.textContent = 'PRONTO!';
+  showFinalScreen(); // ✅ centraliza tudo: header "PRONTO!", preview pequeno, tela final
 
-      const titleEl = document.getElementById('wizardStepTitle');
-      if (titleEl) titleEl.textContent = 'PRONTO!';
-
-      // mostra final
-      document.getElementById('final-screen').style.display = 'block';
-
-      // AJUSTE: preview pequeno no final
-      const fp = document.getElementById('finalPreview');
-      if (fp && canvas) {
-        fp.src = canvas.toDataURL('image/png');
-        fp.style.display = 'block';
-      }
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
+} else {
+  msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
+  msg.style.color = 'red';
+} else {
       msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
       msg.style.color = 'red';
     }
@@ -735,6 +723,7 @@ window.goToMenu = goToMenu;
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
 // window.goToMenu = goToMenu;
+
 
 
 
