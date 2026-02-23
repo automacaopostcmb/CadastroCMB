@@ -353,6 +353,27 @@ body{
   justify-content: flex-start;
 }
 
+/* Título da etapa abaixo do header (fora do box branco) */
+.wizard-step-title{
+  width: 100%;
+  max-width: 720px;
+  margin: 12px auto 0;
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: .3px;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+/* dá um respiro antes do box branco */
+.step-box{
+  margin-top: 10px;
+}
+
+@media (min-width:768px){
+  .wizard-step-title{ font-size: 15px; }
+}
 
 
 
