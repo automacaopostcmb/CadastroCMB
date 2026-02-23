@@ -201,7 +201,7 @@ canvas {
   background:#fff;
   border:1px solid #d9e7ff;
   border-radius:12px;
-  padding: 10px 18px 18px 18px; /* menos espaço em cima */
+  padding: 6px 18px 18px 18px; /* menos espaço em cima */
   box-shadow:0 6px 14px rgba(0,0,0,.04);
 }
 
@@ -210,6 +210,18 @@ canvas {
   border: none;
   box-shadow: none;
   padding: 0;
+}
+
+/* remove a margem de cima APENAS do PRIMEIRO label dentro do box */
+.step-box > .title-label:first-child{
+  margin-top: 0;     /* era 16px */
+}
+
+/* (opcional) se em alguma etapa o primeiro elemento for um h2/h3 */
+.step-box > h1:first-child,
+.step-box > h2:first-child,
+.step-box > h3:first-child{
+  margin-top: 0;
 }
 
 /* =========================
@@ -718,4 +730,5 @@ body.is-index .page-center{
   line-height: 1.35;
   opacity: .85;
 }
+
 
