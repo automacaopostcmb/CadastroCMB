@@ -30,25 +30,25 @@
     body { margin: 0; }
   </style>
 </head>
-<body>
-
-  <body class="is-index">
+<body class="is-index">
   <div class="page-center" style="--center-offset: -60px;">
     <img src="assets/logo-cmb.png" alt="Comic Market Brasil" class="header-logo">
 
     <h2 id="tituloLogin">Login</h2>
 
-<div id="login-area" class="auth-card">
-  <input type="text" id="chave" class="auth-input" placeholder="Digite sua chave de acesso" />
-  <button id="btnEntrar" class="auth-btn" onclick="login()">Entrar</button>
-</div>
+    <div id="login-area" class="auth-card">
+      <input type="text" id="chave" class="auth-input" placeholder="Digite sua chave de acesso" />
+      <button id="btnEntrar" class="auth-btn" onclick="login()">Entrar</button>
+    </div>
 
-    <!-- Menu (preenchido via JS) -->
-<div id="menu" class="auth-card" style="display:none;">
-  <h3>Páginas disponíveis</h3>
-  <div id="botoes"></div>
-  <p id="linkSair" onclick="logout()" style="cursor:pointer; color:#007bff; text-align:center; font-size:14px; margin-top:16px;">Sair</p>
-</div>
+    <div id="menu" class="auth-card" style="display:none;">
+      <h3>Páginas disponíveis</h3>
+      <div id="botoes"></div>
+      <p id="linkSair" onclick="logout()"
+         style="cursor:pointer; color:#007bff; text-align:center; font-size:14px; margin-top:16px;">
+        Sair
+      </p>
+    </div>
   </div>
 
   <!-- Overlay de loading -->
@@ -206,5 +206,6 @@
   </footer>
 </body>
 </html>
+
 
 
