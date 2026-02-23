@@ -3,44 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Cadastro – Área dos Artistas (CMB)</title>
+  <title>Cadastro – Expositor Market (CMB)</title>
 
   <!-- Fonte usada no canvas -->
   <link href="https://fonts.googleapis.com/css2?family=Comic+Relief&display=swap" rel="stylesheet">
 
-  <!-- CSS compartilhado -->
-  <link rel="stylesheet" href="style.css?v=16">
+  <!-- CSS externo (ideal: o mesmo CSS do artista, com wizard-topbar/step-box/menu-under) -->
+  <link rel="stylesheet" href="style.css?v=15">
 
   <style>
-    .hint { font-size: 12px; color: #666; margin: 4px 0 10px; text-align:center; }
-    .inline-error { color:#d33; display:none; font-size:12px; margin:4px 0 8px; text-align:center; }
-    .title-label { margin-top: 12px; display:block; font-weight:600; text-align:center; }
-    #avisoTexto { margin: 10px 0; color:#c0392b; display:none; text-align:center; }
-    .preview-wrap{ position:relative; display:inline-block; }
-
-    /* opcional – para uso fora do canvas */
-    .plaquinha{
-      display:inline-block;
-      padding:.3em .8em;
-      background:#ffd400;
-      border:6px solid #000;
-      border-radius:6px;
-      color:#111;
-      font:700 clamp(24px, 4vw, 46px)/1.1 "Comic Relief", Arial, sans-serif;
-      box-shadow:-7px 7px 0 #000;
-      white-space: nowrap;
-      text-align: left;
-    }
-
-    /* Final: caixa da legenda */
-    .caption-wrap{
-      max-width:720px; margin:16px auto 0; display:none;
-      background:#fff; border:1px solid #d9e7ff; border-radius:12px;
-      padding:16px; box-shadow:0 6px 14px rgba(0,0,0,.04);
-    }
-    .caption-wrap h3{ margin:0 0 8px; font-size:18px; text-align:center; }
-    .caption-wrap textarea{ width:100%; min-height:140px; font-size:15px; padding:10px; }
-    .btn-copy{ margin-top:10px; width:180px; padding:10px 14px; border:none; border-radius:6px; background:#4dafff; color:#fff; font-weight:600; cursor:pointer; }
+    .categoria-wrap{display:flex;gap:28px;align-items:center;flex-wrap:wrap;margin:8px 0 10px;justify-content:center}
+    .categoria-wrap .radio{display:flex;gap:8px;align-items:center;font-size:16px}
+    .categoria-wrap input[type="radio"]{width:18px;height:18px}
   </style>
 </head>
 
@@ -53,16 +27,15 @@
 </header>
 
 <main class="page-center">
-  <!-- ========== titulo etapa ========== -->
+  <!-- Título da etapa (fora do box) -->
   <div id="wizardStepTitle" class="wizard-step-title">TÍTULO</div>
 
   <!-- ========== ETAPA 1 ========== -->
-  <section class="step active" id="step1" data-title="Vamos criar a sua imagem de divulgação!">
+  <section class="step active" id="step1" data-title="Cadastro de expositor Market">
     <div class="step-box">
-      <h2>Oi artista!</h2>
+      <h2>Cadastro de expositor na área Market do CMB 🎉</h2>
       <p style="line-height:1.5; margin:10px 0; color:#333; font-size:15px; text-align:left;">
-        Agradecemos imensamente a sua presença nessa edição do CMB. Aqui vamos criar a sua divulgação,
-        preencha seus dados e divulgue sua presença!
+        Preencha seus dados para formalizar seu cadastro de expositor.
       </p>
       <p style="line-height:1.5; margin:10px 0; color:#333; font-size:15px; text-align:left;">
         Clique em <strong>Próximo</strong> para começar!
@@ -77,12 +50,18 @@
   </section>
 
   <!-- ========== ETAPA 2 ========== -->
-  <section class="step" id="step2" data-title="Comprovante de Pagamento">
+  <section class="step" id="step2" data-title="Sobre você">
     <div class="step-box">
-      <label class="title-label">Envie a foto do comprovante de pagamento da mesa*</label>
-      <div class="hint">(JPG/PNG ou screenshot nítido)</div>
-      <input type="file" id="comprovante" accept="image/*" />
-      <div id="comprovanteError" class="inline-error"></div>
+      <label class="title-label">Seu nome*</label>
+      <input type="text" id="nome" />
+
+      <label class="title-label">E-mail*</label>
+      <input type="email" id="email" placeholder="seu@email.com" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="email" />
+      <div id="emailError" class="inline-error"></div>
+
+      <label class="title-label">Número de telefone*</label>
+      <input type="tel" id="telefone" placeholder="(00) 00000-0000" inputmode="tel" />
+      <div id="telefoneError" class="inline-error"></div>
     </div>
 
     <div class="button-row">
@@ -94,24 +73,19 @@
   </section>
 
   <!-- ========== ETAPA 3 ========== -->
-  <section class="step" id="step3" data-title="Dados do Artista">
+  <section class="step" id="step3" data-title="Sobre sua empresa">
     <div class="step-box">
-      <label class="title-label">Nome completo*</label>
-      <input type="text" id="nomeCompleto" />
+      <label class="title-label">Nome da sua empresa*</label>
+      <input type="text" id="empresa" />
 
-      <label class="title-label">Nome artístico* (Como você será divulgado)</label>
-      <input type="text" id="nomeArtistico" />
+      <label class="title-label">Site*</label>
+      <div class="hint">(Cole o link do seu site. Caso não tenha, pode ser o link da sua rede social)</div>
+      <input type="text" id="site" />
+      <div id="siteError" class="inline-error"></div>
 
-      <!-- AJUSTE: labels curtas -->
-      <label class="title-label">E-mail*</label>
-      <input type="email" id="emailArtista" placeholder="voce@email.com"
-             autocomplete="email" autocapitalize="off" autocorrect="off"
-             spellcheck="false" inputmode="email" />
-      <div id="emailArtistaError" class="inline-error"></div>
-
-      <label class="title-label">Telefone*</label>
-      <input type="tel" id="telefoneArtista" placeholder="(11) 99999-9999" inputmode="tel" />
-      <div id="telefoneArtistaError" class="inline-error"></div>
+      <label class="title-label">Instagram*</label>
+      <input type="text" id="insta" placeholder="Seu link ou @usuario" />
+      <div id="instaError" class="inline-error"></div>
     </div>
 
     <div class="button-row">
@@ -123,22 +97,15 @@
   </section>
 
   <!-- ========== ETAPA 4 ========== -->
-  <section class="step" id="step4" data-title="Dados do Ajudante (opcional)">
+  <section class="step" id="step4" data-title="Imagens">
     <div class="step-box">
-      <label class="title-label">Nome do ajudante</label>
-      <input type="text" id="nomeAjudante" />
+      <label class="title-label">Envie o seu Logo com fundo transparente*</label>
+      <div class="hint">(Mínimo 500x500px. Use uma imagem sem bordas, mesmo que transparentes.)</div>
+      <input type="file" id="logo" accept="image/*" />
 
-      <label class="title-label">E-mail do ajudante</label>
-      <input type="email" id="emailAjudante" placeholder="ajudante@email.com"
-             autocomplete="email" autocapitalize="off" autocorrect="off"
-             spellcheck="false" inputmode="email" />
-      <div id="emailAjudanteError" class="inline-error"></div>
-
-      <!-- AJUSTE: texto de atenção dentro do box -->
-      <div class="ajudante-alerta">
-        <strong>Atenção!</strong><br>
-        Certifique-se que o seu ajudante se cadastrou no site de compra dos ingressos do CMB usando este mesmo e-mail informado acima. O ajudante precisa apenas realizar o cadastro.
-      </div>
+      <label class="title-label">Envie uma imagem de apoio*</label>
+      <div class="hint">(Mínimo 500x500px. Essa é uma outra imagem que podemos usar para mostrar mais de você.)</div>
+      <input type="file" id="lateral" accept="image/*" />
     </div>
 
     <div class="button-row">
@@ -150,62 +117,103 @@
   </section>
 
   <!-- ========== ETAPA 5 ========== -->
-  <section class="step" id="step5" data-title="Sobre você">
-    <div class="step-box">
-      <label class="title-label">Biografia*</label>
-      <!-- AJUSTE: hint -->
-      <div class="hint">Usaremos essas informações para te divulgar!</div>
-      <textarea id="biografia" rows="8" placeholder="Conte sobre você, trabalhos, publicações, estilo, etc."></textarea>
+ <section class="step" id="step5" data-title="Ajustando a divulgação">
+  <div class="step-box">
 
-      <label class="title-label">Alguma observação?</label>
-      <textarea id="observacao" rows="4"
-        placeholder="Exemplo: Se possível eu queria dividir a mesa com o artista X!"></textarea>
-    </div>
+      <label class="title-label">Selecione a sua categoria*</label>
+        <div class="categoria-wrap" id="categoriaWrap">
+          <label class="radio">
+            <input type="radio" name="categoria" id="cat-artista" value="artista">
+            Artista
+          </label>
+          <label class="radio">
+            <input type="radio" name="categoria" id="cat-empresa" value="empresa">
+            Empresa
+          </label>
+        </div>
+        <div id="categoriaError" class="inline-error"></div>
+    
+    <!-- Canvas preview continua aqui -->
+    <canvas id="canvas" width="1080" height="1350"></canvas>
 
-    <div class="button-row">
-      <button class="btn-nav btn-voltar" data-prev>Voltar</button>
-      <button class="btn-nav btn-proximo" data-next>Próximo</button>
-    </div>
+    <div id="avisoTexto"></div>
 
-    <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
-  </section>
+    <!-- ACCORDION 1: Textos -->
+    <details class="acc" id="accTextos">
+      <summary class="acc__sum">Escrever Textos</summary>
 
-  <!-- ========== ETAPA 6 ========== -->
-  <section class="step" id="step6" data-title="Foto/Arte de divulgação">
-    <div class="step-box">
-      <label class="title-label">Envie sua foto ou arte de divulgação*</label>
-      <div class="hint">(Essa imagem será usada no preview para gerar seu post de divulgação)</div>
-      <input type="file" id="fotoDivulgacao" accept="image/*" />
-      <div id="fotoDivulgacaoError" class="inline-error"></div>
-    </div>
+      <div class="acc__body">
+        <label class="title-label">Frase que defina o que você faz*</label>
+        <div class="hint">(Pense como se fosse um título chamativo do seu trabalho)</div>
+        <input type="text" id="titulo" placeholder="Título" />
 
-    <div class="button-row">
-      <button class="btn-nav btn-voltar" data-prev>Voltar</button>
-      <button class="btn-nav btn-proximo" data-next>Próximo</button>
-    </div>
-
-    <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
-  </section>
-
-  <!-- ========== ETAPA 7 ========== -->
-  <section class="step" id="step7" data-title="Preview da sua divulgação">
-    <div class="step-box">
-      <!-- AJUSTE: canvas primeiro -->
-      <div class="preview-wrap">
-        <canvas id="canvas" width="1080" height="1350"></canvas>
+        <label class="title-label">Crie uma breve descrição*</label>
+        <textarea id="descricao" rows="4"></textarea>
+        <div class="hint" id="descCount"></div>
       </div>
+    </details>
 
-      <!-- sliders abaixo do preview -->
-      <label class="title-label">Tamanho</label>
-      <input type="range" id="imgScale" min="0.1" max="2" step="0.01" value="1" />
+    <!-- ACCORDION 2: Ajuste imagem -->
+    <details class="acc" id="accImagem">
+      <summary class="acc__sum">Ajuste da imagem de apoio</summary>
 
-      <label class="title-label">Mover horizontalmente</label>
-      <input type="range" id="imgX" min="-500" max="500" value="0" />
+      <div class="acc__body">
+        <label class="title-label">Tamanho</label>
+        <input type="range" id="imgScale" min="0.1" max="2" step="0.01" value="1" />
 
-      <label class="title-label">Mover verticalmente</label>
-      <input type="range" id="imgY" min="-500" max="500" value="0" />
+        <label class="title-label">Mover horizontalmente</label>
+        <input type="range" id="imgX" min="-500" max="500" value="0" />
 
-      <div id="avisoTexto"></div>
+        <label class="title-label">Mover verticalmente</label>
+        <input type="range" id="imgY" min="-500" max="500" value="0" />
+      </div>
+    </details>
+
+  </div>
+
+  <div class="button-row">
+    <button class="btn-nav btn-voltar" data-prev>Voltar</button>
+    <button class="btn-nav btn-proximo" data-next>Próximo</button>
+  </div>
+
+  <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
+</section>
+
+ <!-- ========== ETAPA 6 ========== -->
+  <section class="step" id="step6" data-title="Confirmar divulgação">
+  <div class="step-box">
+    
+
+    <img id="confirmPreview" alt="Preview da divulgação"
+      style="
+        width:100%;
+        max-width:420px;
+        height:auto;
+        display:block;
+        margin:0 auto;
+        border:1px solid #d9e7ff;
+        border-radius:10px;
+        background:#fff;
+      ">
+  </div>
+
+  <div class="button-row">
+    <button class="btn-nav btn-voltar" type="button" id="btnAjustar">Voltar/Ajustar</button>
+    <button class="btn-nav btn-proximo" type="button" id="btnConfirmar">Confirmar imagem</button>
+  </div>
+
+  <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
+</section>
+  
+  <!-- ========== ETAPA 7 ========== -->
+  <section class="step" id="step7" data-title="Informações adicionais">
+    <div class="step-box">
+      <label class="title-label">Texto complementar</label>
+      <div class="hint">(Biografia ou texto maior sobre você ou seu trabalho.)</div>
+      <textarea id="descricaolonga" rows="8"></textarea>
+
+      <label class="title-label">Tem alguma outra imagem para nos mandar?</label>
+      <input type="file" id="background" accept="image/*" />
     </div>
 
     <div class="button-row">
@@ -225,41 +233,35 @@
 
     <div class="button-row">
       <button class="btn-nav btn-voltar" data-prev>Voltar</button>
-      <button class="btn-nav btn-proximo" id="botao-enviar" onclick="enviarParaGoogle()">Enviar informações</button>
+      <button type="button" class="btn-nav btn-proximo" id="botao-enviar" onclick="enviarParaGoogle()">Enviar informações</button>
     </div>
 
     <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
   </section>
 
   <!-- FINAL -->
-  <section id="final-screen" class="final-screen">
-    <div class="final-card">
-      <h2>✅ Imagem Criada!</h2>
-      <p>Baixe e se divulgue!</p>
+<section id="final-screen" class="final-screen">
+  
+  <div class="step-box">
+    <h2>✅ Cadastro realizado com sucesso!</h2>
+    <p>
+      Prosseguiremos com a formalização do contrato e entraremos em contato.
+      Em breve comunicaremos sua participação no CMB e encaminharemos a imagem de divulgação.
+    </p>
+  </div>
 
-      <!-- Preview pequeno -->
-      <img id="finalPreview" class="final-preview" alt="Preview da imagem criada" />
+  <div class="button-row">
+    <button type="button"
+            class="btn-nav btn-proximo"
+            id="btn-menu"
+            onclick="goToMenu()">
+      Menu
+    </button>
+  </div>
 
-      <button class="btn-download" id="btn-final-download" onclick="baixarImagem()">Baixar Imagem</button>
+  <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
 
-      <!-- AJUSTE: botão compartilhar "rápido" -->
-      <button class="btn-share" id="btn-final-share" type="button">Compartilhar</button>
-
-      <div id="captionWrap" class="caption-wrap">
-        <h3>Ajuste e use essa descrição para as suas redes:</h3>
-        <textarea id="captionBox"></textarea>
-        <div style="text-align:center">
-          <button class="btn-copy" id="btnCopyCaption" type="button">Copiar</button>
-          <button class="btn-copy" id="btnShareNative" type="button">Compartilhar</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- fora do box branco -->
-    <div class="final-actions">
-      <button class="btn-nav btn-voltar" id="btn-menu-out" type="button" onclick="goToMenu()">Voltar para o Menu</button>
-    </div>
-  </section>
+</section>
 
   <div id="overlay">
     <div class="loader">
@@ -269,7 +271,7 @@
   </div>
 </main>
 
-<script src="app-expo_artistas.js?v=18"></script>
+<script src="app-expo_market.js?v=13"></script>
 
 <footer class="site-footer">
   <div class="footer-inner">
