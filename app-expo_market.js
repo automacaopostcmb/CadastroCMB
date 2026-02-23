@@ -379,7 +379,7 @@ async function enviarParaGoogle() {
   };
 
   const overlay = document.getElementById('overlay');
-  overlay.style.display = 'flex';
+  overlay.style.display = 'grid';
 
   try {
     const response = await fetch(
@@ -672,4 +672,5 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
