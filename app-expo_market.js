@@ -389,25 +389,23 @@ overlay.classList.add('active');
     const result = await response.json();
     const msg = document.getElementById('mensagem');
     msg.style.display = 'block';
-
 if (result.status === 'success') {
   msg.textContent = '✅ Enviado com sucesso!';
   msg.style.color = 'green';
 
-  // Esconde a etapa de revisão
+  // Esconde a etapa de revisão (step 8)
   const step8 = document.getElementById('step8');
   if (step8) step8.style.display = 'none';
 
-  // ✅ Mantém o header e troca para PRONTO!
-  // Mantém só o header (topbar) e esconde o título grande abaixo dele
-const stepTitle = document.getElementById('wizardStepTitle');
-if (stepTitle) stepTitle.style.display = 'none';
+  // 🔵 Esconde o título grande abaixo da topbar
+  const stepTitle = document.getElementById('wizardStepTitle');
+  if (stepTitle) stepTitle.style.display = 'none';
 
-// (opcional) texto no header: pode manter o que estava ou colocar algo curto
-const countEl = document.getElementById('wizardStepCount');
-if (countEl) countEl.textContent = 'CADASTRO ENVIADO';
+  // 🔵 Esconde o texto da topbar (ETAPA X DE Y)
+  const countEl = document.getElementById('wizardStepCount');
+  if (countEl) countEl.style.display = 'none';
 
-  // Mostra tela final
+  // Mostra a tela final
   const finalScreen = document.getElementById('final-screen');
   if (finalScreen) finalScreen.style.display = 'block';
 
@@ -678,6 +676,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
