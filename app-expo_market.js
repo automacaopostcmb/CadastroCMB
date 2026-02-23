@@ -129,7 +129,7 @@ function escapeHtml(s) {
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
 function loadImage(src) {
-  const bust = (/\?/.test(src) ? '&' : '?') + 'v=' + Date.now(); // cache-buster p/ ver mudanças
+  const bust = (/\?/.test(src) ? '&' : '?') + 'v=' + Date.now();
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
@@ -164,15 +164,17 @@ function initCanvas() {
   // uploads
   const logoInput = document.getElementById('logo');
   const lateralInput = document.getElementById('lateral');
+
   logoInput?.addEventListener('change', (e) => {
     const r = new FileReader();
     r.onload = (ev) => { logoImg = new Image(); logoImg.onload = gerarPost; logoImg.src = ev.target.result; };
-    r.readAsDataURL(e.target.files[0]);
+    if (e.target.files && e.target.files[0]) r.readAsDataURL(e.target.files[0]);
   });
+
   lateralInput?.addEventListener('change', (e) => {
     const r = new FileReader();
     r.onload = (ev) => { lateralImg = new Image(); lateralImg.onload = gerarPost; lateralImg.src = ev.target.result; };
-    r.readAsDataURL(e.target.files[0]);
+    if (e.target.files && e.target.files[0]) r.readAsDataURL(e.target.files[0]);
   });
 
   // sliders imagem de apoio + textos
@@ -191,18 +193,17 @@ function bindCategoriaRadios() {
     radio.addEventListener('change', () => selectCategoria(radio.value));
   });
 
-  // se já vier pré-selecionado
   const pre = document.querySelector('input[name="categoria"]:checked');
   if (pre) selectCategoria(pre.value);
 }
 async function selectCategoria(value) {
   categoriaSelecionada = value;
-  tarjaCfg = { ...TARJAS[value] };       // valores fixos definidos no código
+  tarjaCfg = { ...TARJAS[value] };
   try {
     tarjaImg = await loadImage(tarjaCfg.src);
   } catch (e) {
     console.error('Não foi possível carregar a tarja:', e);
-    tarjaImg = null; // fallback visual
+    tarjaImg = null;
   }
   gerarPost();
   revalidateStepNav();
@@ -233,14 +234,13 @@ function gerarPost() {
     ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
   }
 
-  // tarja (sobre o frame) — usa APENAS tarjaCfg (sem sliders)
+  // tarja
   if (tarjaCfg) {
     if (tarjaImg) {
       const w = tarjaImg.naturalWidth * tarjaCfg.scale;
       const h = tarjaImg.naturalHeight * tarjaCfg.scale;
       ctx.drawImage(tarjaImg, tarjaCfg.x, tarjaCfg.y, w, h);
     } else {
-      // fallback para debug visual
       ctx.fillStyle = '#ffd400';
       ctx.strokeStyle = '#000';
       ctx.lineWidth = 10;
@@ -278,9 +278,11 @@ function gerarPost() {
   ctx.fillStyle = '#333';
   const descricaoX = 400, descricaoY = 1050;
   const descricaoMaxWidth = 600, descricaoMaxLinhas = 5;
+
   const linhasManuais = descricao.split('\n');
   let todas = [];
   linhasManuais.forEach((l) => todas.push(...wrapText(l, descricaoMaxWidth, ctx)));
+
   const ultrapassouDescricao = todas.length > descricaoMaxLinhas;
   const linhasDescricao = todas.slice(0, descricaoMaxLinhas);
   linhasDescricao.forEach((linha, i) => ctx.fillText(linha, descricaoX, descricaoY + i * 40));
@@ -355,17 +357,16 @@ async function enviarParaGoogle() {
     previewBase64 = { name: 'preview.png', type: 'image/png', content: dataURL.split(',')[1] };
   }
 
-  // Normaliza Instagram para URL e extrai handle para legenda
   const instaParsed = normalizeInstagram(document.getElementById('insta').value);
-
   const legenda = buildCaptionFromForm();
+
   const dados = {
     nome: document.getElementById('nome').value,
     email: document.getElementById('email').value,
     telefone: document.getElementById('telefone').value,
     empresa: document.getElementById('empresa').value,
     site: document.getElementById('site').value,
-    insta: instaParsed.url,                 // <-- envia URL normalizada
+    insta: instaParsed.url,
     titulo: document.getElementById('titulo').value,
     descricao: document.getElementById('descricao').value,
     descricaolonga: document.getElementById('descricaolonga').value,
@@ -392,9 +393,17 @@ async function enviarParaGoogle() {
     if (result.status === 'success') {
       msg.textContent = '✅ Enviado com sucesso!';
       msg.style.color = 'green';
-      document.getElementById('step7').style.display = 'none';
-      document.getElementById('wizard-indicator').style.display = 'none';
-      document.getElementById('link-topo').style.display = 'none';
+
+      // esconde a etapa e header novo
+      const step7 = document.getElementById('step7');
+      if (step7) step7.style.display = 'none';
+
+      const topbar = document.getElementById('wizardTopbar');
+      if (topbar) topbar.style.display = 'none';
+
+      const stepTitle = document.getElementById('wizardStepTitle');
+      if (stepTitle) stepTitle.style.display = 'none';
+
       document.getElementById('final-screen').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
@@ -438,9 +447,11 @@ const REQUIRED_BY_STEP = {
   2: ['nome','email','telefone'],
   3: ['empresa','site','insta'],
   4: ['logo','lateral'],
-  5: ['titulo','descricao'], // categoria validada abaixo
-  6: []
+  5: ['titulo','descricao'],
+  6: [],
+  7: []
 };
+
 const GLOBAL_VALIDATORS = [];
 
 const STEP_VALIDATORS = {
@@ -470,7 +481,7 @@ const STEP_VALIDATORS = {
     const parsed = normalizeInstagram(instaInput.value);
     const okInsta = !!parsed.handle;
     showFieldError('insta', okInsta ? '' : 'Informe um Instagram válido (link ou @usuario).');
-    if (okInsta) instaInput.value = parsed.url; // salva normalizado no input
+    if (okInsta) instaInput.value = parsed.url;
 
     return okSite && okInsta;
   },
@@ -537,19 +548,33 @@ function revalidateStepNav() {
 }
 
 let steps = [], totalSteps = 0, currentStep = 1;
-function updateIndicator() {
-  const ind = document.getElementById('wizard-indicator');
-  if (ind) ind.textContent = `Etapa ${currentStep} de ${totalSteps}`;
+
+function getStepTitle(stepNumber) {
+  const el = steps?.[stepNumber - 1];
+  const t = (el?.dataset?.title || '').trim();
+  return t || `Etapa ${stepNumber}`;
 }
+
+function updateWizardHeader() {
+  const countEl = document.getElementById('wizardStepCount');
+  if (countEl) countEl.textContent = `ETAPA ${currentStep} DE ${totalSteps}`;
+
+  const titleEl = document.getElementById('wizardStepTitle');
+  if (titleEl) titleEl.textContent = getStepTitle(currentStep).toUpperCase();
+}
+
 function showStep(n) {
   currentStep = Math.max(1, Math.min(totalSteps, n));
   steps.forEach((el, idx) => el.classList.toggle('active', idx === currentStep - 1));
+
   if (currentStep === 5) { try { updateDescricaoCount(); } catch(e) {} }
   if (currentStep === 7) { try { buildReview(); } catch (e) { console.error('buildReview error', e); } }
-  updateIndicator();
+
+  updateWizardHeader();
   revalidateStepNav();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
 function buildReview() {
   const box = document.getElementById('review-list');
   if (!box) return;
@@ -584,7 +609,7 @@ function goToMenu() {
    BOOTSTRAP
    =========================== */
 document.addEventListener('DOMContentLoaded', () => {
-  const isWizardPage = !!document.querySelector('.step') && !!document.getElementById('wizard-indicator');
+  const isWizardPage = !!document.querySelector('.step') && !!document.getElementById('wizardStepCount');
   if (!isWizardPage) return;
 
   const telEl = document.getElementById('telefone');
@@ -606,6 +631,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   updateDescricaoCount();
 
+  updateWizardHeader();
+
   document.addEventListener('input', (e) => {
     const activeStep = steps[currentStep - 1];
     if (!activeStep?.contains(e.target)) return;
@@ -624,3 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
   showStep(1);
 });
 
+/* Expor globais */
+window.enviarParaGoogle = enviarParaGoogle;
+window.baixarImagem = baixarImagem;
+window.goToMenu = goToMenu;
