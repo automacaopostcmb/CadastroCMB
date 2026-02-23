@@ -395,8 +395,8 @@ async function enviarParaGoogle() {
       msg.style.color = 'green';
 
       // esconde a etapa e header novo
-      const step7 = document.getElementById('step7');
-      if (step7) step7.style.display = 'none';
+const step8 = document.getElementById('step8');
+if (step8) step8.style.display = 'none';
 
       const topbar = document.getElementById('wizardTopbar');
       if (topbar) topbar.style.display = 'none';
@@ -448,8 +448,9 @@ const REQUIRED_BY_STEP = {
   3: ['empresa','site','insta'],
   4: ['logo','lateral'],
   5: ['titulo','descricao'],
-  6: [],
-  7: []
+  6: [], // confirmar imagem
+  7: [], // informações adicionais
+  8: []  // review
 };
 
 const GLOBAL_VALIDATORS = [];
@@ -508,7 +509,7 @@ const STEP_VALIDATORS = {
     if (validationFlags.overflow) ok = false;
     return ok;
   },
-  7: () => { buildReview(); return true; }
+8: () => { buildReview(); return true; }
 };
 
 function isFilled(id) {
@@ -563,12 +564,25 @@ function updateWizardHeader() {
   if (titleEl) titleEl.textContent = getStepTitle(currentStep).toUpperCase();
 }
 
+function updateConfirmPreview() {
+  const img = document.getElementById('confirmPreview');
+  if (!img || !canvas) return;
+
+  // garante render final
+  gerarPost();
+
+  requestAnimationFrame(() => {
+    img.src = canvas.toDataURL('image/png');
+  });
+}
+
 function showStep(n) {
   currentStep = Math.max(1, Math.min(totalSteps, n));
   steps.forEach((el, idx) => el.classList.toggle('active', idx === currentStep - 1));
 
-  if (currentStep === 5) { try { updateDescricaoCount(); } catch(e) {} }
-  if (currentStep === 7) { try { buildReview(); } catch (e) { console.error('buildReview error', e); } }
+   if (currentStep === 5) { updateDescricaoCount(); }
+if (currentStep === 6) { updateConfirmPreview(); }
+if (currentStep === 8) { buildReview(); }
 
   updateWizardHeader();
   revalidateStepNav();
@@ -621,6 +635,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initCanvas();
   checkAuth();
 
+   document.getElementById('btnAjustar')?.addEventListener('click', () => showStep(5));
+document.getElementById('btnConfirmar')?.addEventListener('click', () => showStep(7));
+   
   steps = Array.from(document.querySelectorAll('.step'));
   totalSteps = steps.length;
 
@@ -655,3 +672,4 @@ document.addEventListener('DOMContentLoaded', () => {
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
