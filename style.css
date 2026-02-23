@@ -591,3 +591,49 @@ body.is-index .page-center{
   display: none !important;
 }
 
+ /* Botões do menu (hover/active "normal") */
+  #botoes button.menu-btn{
+    width: 100%;
+    border: 0;
+    color: #0b0b0b;
+    font-weight: 800;
+    padding: 14px 16px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+    box-shadow: 0 8px 18px rgba(0,0,0,.12);
+  }
+  #botoes button.menu-btn:hover{
+    filter: brightness(0.95);
+    transform: translateY(-1px);
+  }
+  #botoes button.menu-btn:active{
+    filter: brightness(0.90);
+    transform: translateY(0px);
+    box-shadow: 0 6px 14px rgba(0,0,0,.10);
+  }
+
+  /* “Sair” fora do box */
+  .logout-outside{
+    display: none;            /* só aparece após login */
+    margin-top: 14px;
+    text-align: center;
+    font-weight: 800;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+    text-shadow: 0 2px 10px rgba(0,0,0,.25);
+  }
+  .logout-outside:hover{
+    opacity: .92;
+  }
+
+  /* Texto de ajuda no menu */
+  .menu-hint{
+    margin: 10px 0 14px;
+    text-align: center;
+    font-size: 13.5px;
+    line-height: 1.35;
+    opacity: .85;
+  }
