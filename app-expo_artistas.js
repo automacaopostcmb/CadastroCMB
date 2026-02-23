@@ -18,6 +18,52 @@ const REVIEW_FIELDS = [
 ];
 
 /* ===========================
+   OVERLAY: mensagens rotativas
+   =========================== */
+
+const OVERLAY_STEPS = [
+  { after: 0,      msg: "Finalizando seu cadastro..." },
+  { after: 6000,   msg: "Salvando a sua imagem..." },
+  { after: 12000,  msg: "Quase lá!" },
+  { after: 25000,  msg: "Só mais um pouco…" },
+  { after: 40000,  msg: "Finalizando..." },
+  { after: 50000,  msg: "Só mais um pouco…" },
+  { after: 80000,  msg: "Está demorando mais do que o normal." },
+  { after: 100000, msg: "Imagem é pesada ou sua internet está ruim?" },
+  { after: 155000, msg: "Demorou mais do que o normal. Tente trocar de rede e reenviar." },
+];
+
+let overlayTimers = [];
+let overlayStartedAt = 0;
+
+function setOverlayText(text) {
+  const el = document.querySelector('#overlay .loader-text');
+  if (el) el.textContent = text || "Enviando...";
+}
+
+function startOverlayMessages(customSteps = OVERLAY_STEPS) {
+  stopOverlayMessages(); // garante que não acumula timers
+  overlayStartedAt = Date.now();
+
+  // primeira mensagem imediatamente
+  const first = customSteps?.[0]?.msg || "Enviando...";
+  setOverlayText(first);
+
+  overlayTimers = (customSteps || []).map((s) => {
+    return setTimeout(() => {
+      setOverlayText(s.msg);
+    }, Math.max(0, Number(s.after) || 0));
+  });
+}
+
+function stopOverlayMessages() {
+  overlayTimers.forEach((t) => clearTimeout(t));
+  overlayTimers = [];
+  overlayStartedAt = 0;
+  setOverlayText("Enviando...");
+}
+
+/* ===========================
    HELPERS
    =========================== */
 function showFieldError(inputId, msg) {
@@ -358,44 +404,47 @@ async function enviarParaGoogle() {
   };
   if (obs) dados.observacao = obs;
 
-  const overlay = document.getElementById('overlay');
-  overlay.style.display = 'grid';
+   const overlay = document.getElementById('overlay');
+overlay.style.display = 'grid';
+startOverlayMessages(); // ✅ começa a trocar o texto do overlay
 
-  try {
-    const response = await fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify(dados) });
-    const result = await response.json();
-    const msg = document.getElementById('mensagem');
-    msg.style.display = 'block';
+try {
+  const response = await fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify(dados) });
+  const result = await response.json();
 
- if (result.status === 'success') {
-  msg.textContent = '✅ Enviado com sucesso!';
-  msg.style.color = 'green';
+  const msg = document.getElementById('mensagem');
+  msg.style.display = 'block';
 
-  // esconde a etapa 8 (review) e abre tela final
-  const step8 = document.getElementById('step8');
-  if (step8) step8.style.display = 'none';
+  if (result.status === 'success') {
+    msg.textContent = '✅ Enviado com sucesso!';
+    msg.style.color = 'green';
 
-  showFinalScreen(); // ✅ centraliza tudo: header "PRONTO!", preview pequeno, tela final
+    // esconde a etapa 8 (review) e abre tela final
+    const step8 = document.getElementById('step8');
+    if (step8) step8.style.display = 'none';
 
-} else {
-  msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
-  msg.style.color = 'red';
-} 
-  } catch (err) {
-    const msg = document.getElementById('mensagem');
-    msg.textContent = '❌ Erro de rede. Tente novamente.';
+    showFinalScreen(); // ✅ centraliza tudo: header "PRONTO!", preview pequeno, tela final
+  } else {
+    msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
     msg.style.color = 'red';
-    msg.style.display = 'block';
-    console.error(err);
-  } finally {
-    overlay.style.display = 'none';
-    setTimeout(() => {
-      const msg = document.getElementById('mensagem');
-      if (msg) msg.textContent = '';
-    }, 5000);
   }
-}
 
+} catch (err) {
+  const msg = document.getElementById('mensagem');
+  msg.textContent = '❌ Erro de rede. Tente novamente.';
+  msg.style.color = 'red';
+  msg.style.display = 'block';
+  console.error(err);
+
+} finally {
+  stopOverlayMessages();        // ✅ para os timers e reseta texto
+  overlay.style.display = 'none';
+
+  setTimeout(() => {
+    const msg = document.getElementById('mensagem');
+    if (msg) msg.textContent = '';
+  }, 5000);
+}
 /* ===========================
    AUTENTICAÇÃO
    =========================== */
@@ -716,6 +765,7 @@ window.goToMenu = goToMenu;
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
 // window.goToMenu = goToMenu;
+
 
 
 
