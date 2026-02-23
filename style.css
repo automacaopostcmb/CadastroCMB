@@ -241,6 +241,117 @@ canvas {
   }
 }
 
+/* =========================
+   HEADER FIXO DO WIZARD
+   ========================= */
+
+:root{
+  --topbar-h: 56px;
+}
+
+.wizard-topbar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9990;
+  background: #083a63;  /* mesma família do footer */
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,.15);
+}
+
+.wizard-topbar__inner{
+  max-width: 1200px;
+  margin: 0 auto;
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--gutter);
+  text-align: center;
+}
+
+.wizard-topbar__title{
+  font-weight: 800;
+  letter-spacing: .3px;
+  font-size: 14px;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+/* Safe area (iPhone notch) */
+@supports (padding: env(safe-area-inset-top)) {
+  .wizard-topbar__inner{
+    padding-top: env(safe-area-inset-top);
+    height: calc(var(--topbar-h) + env(safe-area-inset-top));
+  }
+}
+
+/* Empurra o conteúdo pra baixo do header fixo */
+body{
+  padding-top: calc(var(--topbar-h) + 14px);
+}
+
+@supports (padding: env(safe-area-inset-top)) {
+  body{
+    padding-top: calc(var(--topbar-h) + env(safe-area-inset-top) + 14px);
+  }
+}
+
+/* =========================
+   BOX BRANCO PADRÃO POR ETAPA
+   ========================= */
+
+.step-box{
+  width: 100%;
+  max-width: 720px;
+  margin: 10px auto 0;
+  background:#fff;
+  border:1px solid #d9e7ff;
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 6px 14px rgba(0,0,0,.04);
+}
+
+/* o review-box já tem estilo, mas quando estiver dentro do step-box
+   tiramos “dobro” de sombra/borda visual */
+.step-box .review-box{
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* =========================
+   BOTÕES SEMPRE FORA DO BOX
+   ========================= */
+
+.button-row{
+  margin: 16px auto 0;
+}
+
+/* Link centralizado abaixo dos botões */
+.menu-under{
+  display:block;
+  width:100%;
+  max-width:520px;
+  margin: 12px auto 0;
+  text-align:center;
+  color:#ffffff;
+  font-size:14px;
+  text-decoration: underline;
+  opacity: .95;
+}
+.menu-under:hover{ opacity: 1; }
+
+/* =========================
+   AJUSTE DO LAYOUT PRINCIPAL
+   ========================= */
+
+/* antes você usava justify-content:center; isso “flutua” no meio.
+   agora faz mais sentido começar do topo (abaixo do header). */
+.page-center{
+  justify-content: flex-start;
+}
 
 
 
