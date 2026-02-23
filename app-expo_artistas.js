@@ -377,7 +377,11 @@ async function enviarParaGoogle() {
 
   const topbar = document.getElementById('wizardTopbar');
   if (topbar) topbar.style.display = 'none';
+       
+const stepTitle = document.getElementById('wizardStepTitle');
+if (stepTitle) stepTitle.style.display = 'none';
 
+       
   document.getElementById('final-screen').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 } else {
@@ -497,12 +501,24 @@ function getStepTitle(stepNumber) {
   return t || `Etapa ${stepNumber}`;
 }
 
-function updateWizardHeader() {
-  const titleEl = document.getElementById('wizardTitle');
-  if (!titleEl) return;
+function getStepTitle(stepNumber) {
+  const el = steps?.[stepNumber - 1];
+  const t = (el?.dataset?.title || '').trim();
+  return t || `Etapa ${stepNumber}`;
+}
 
-  const t = getStepTitle(currentStep).toUpperCase();
-  titleEl.textContent = `ETAPA ${currentStep} DE ${totalSteps} - ${t}`;
+function updateWizardHeader() {
+  // topo: só etapas
+  const countEl = document.getElementById('wizardStepCount');
+  if (countEl) {
+    countEl.textContent = `ETAPA ${currentStep} DE ${totalSteps}`;
+  }
+
+  // abaixo: título fora do box
+  const titleEl = document.getElementById('wizardStepTitle');
+  if (titleEl) {
+    titleEl.textContent = getStepTitle(currentStep).toUpperCase();
+  }
 }
 function showStep(n) {
   currentStep = Math.max(1, Math.min(totalSteps, n));
@@ -625,5 +641,6 @@ const isWizardPage = !!document.querySelector('.step') && !!document.getElementB
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
