@@ -134,6 +134,7 @@
 
     const titulo  = document.getElementById("tituloLogin");
     const loginAr = document.getElementById("login-area");
+    const loginLinks = document.getElementById("login-links");
     const menu    = document.getElementById("menu");
     const area    = document.getElementById("botoes");
     const loading = document.getElementById("loading");
@@ -141,6 +142,9 @@
     // só loading na tela
     titulo.style.display  = "none";
     loginAr.style.display = "none";
+    const loginLinks = document.getElementById("login-links");
+if (loginLinks) loginLinks.classList.add("hidden");
+    if (loginLinks) loginLinks.classList.add("hidden");
     menu.style.display    = "none";
     loading.style.display = "grid";
 
@@ -212,6 +216,7 @@
   </footer>
 </body>
 </html>
+
 
 
 
