@@ -298,6 +298,20 @@ body{
   }
 }
 
+/* =========================
+   BOX BRANCO PADRÃO POR ETAPA
+   ========================= */
+
+.step-box{
+  width: 100%;
+  max-width: 720px;
+  margin: 10px auto 0;
+  background:#fff;
+  border:1px solid #d9e7ff;
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 6px 14px rgba(0,0,0,.04);
+}
 
 /* o review-box já tem estilo, mas quando estiver dentro do step-box
    tiramos “dobro” de sombra/borda visual */
@@ -338,36 +352,6 @@ body{
 .page-center{
   justify-content: flex-start;
 }
-
-/* Título da etapa abaixo do header (fora do box branco) */
-.wizard-step-title{
-  width: 100%;
-  max-width: 720px;
-  margin: var(--spacing-md) auto var(--spacing-md);
-  text-align: center;
-  font-weight: 900;
-  letter-spacing: .3px;
-  color: #ffffff;
-  text-transform: uppercase;
-  font-size: 14px;
-}
-
-/* dá um respiro antes do box branco */
-.step-box{
-  width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
-  background:#fff;
-  border:1px solid #d9e7ff;
-  border-radius:12px;
-  padding: var(--spacing-sm) 18px var(--spacing-lg);
-  box-shadow:0 6px 14px rgba(0,0,0,.04);
-}
-
-@media (min-width:768px){
-  .wizard-step-title{ font-size: 15px; }
-}
-
 
 
 
