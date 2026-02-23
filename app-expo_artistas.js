@@ -497,7 +497,7 @@ async function checkAuth() {
   }
 }
    
-}
+
 
 /* ===========================
    WIZARD / VALIDAÇÕES
@@ -806,6 +806,7 @@ window.goToMenu = goToMenu;
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
 // window.goToMenu = goToMenu;
+
 
 
 
