@@ -589,8 +589,16 @@ function showFinalScreen() {
   const final = document.getElementById('final-screen');
   if (final) final.style.display = 'block';
 
-  // header: PRONTO!
+  // header: PRONTO! (mas sem texto na topbar)
   updateWizardHeader();
+
+  // ✅ esconde o texto da topbar só no FINAL
+  const topbarText = document.getElementById('wizardStepCount');
+  if (topbarText) topbarText.style.display = 'none';
+
+  // ✅ garante que o PRONTO! grande continue aparecendo
+  const titleEl = document.getElementById('wizardStepTitle');
+  if (titleEl) titleEl.style.display = 'block';
 
   // preview pequeno (se existir no HTML)
   const fp = document.getElementById('finalPreview');
@@ -644,6 +652,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('input', (e) => {
     if (wizardDone) return;
+const topbarText = document.getElementById('wizardStepCount');
+if (topbarText) topbarText.style.display = 'block'; 
     const activeStep = steps[currentStep - 1];
     if (!activeStep?.contains(e.target)) return;
     revalidateStepNav();
@@ -706,6 +716,7 @@ window.goToMenu = goToMenu;
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
 // window.goToMenu = goToMenu;
+
 
 
 
