@@ -380,10 +380,7 @@ async function enviarParaGoogle() {
 } else {
   msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
   msg.style.color = 'red';
-} else {
-      msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
-      msg.style.color = 'red';
-    }
+} 
   } catch (err) {
     const msg = document.getElementById('mensagem');
     msg.textContent = '❌ Erro de rede. Tente novamente.';
@@ -723,6 +720,7 @@ window.goToMenu = goToMenu;
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
 // window.goToMenu = goToMenu;
+
 
 
 
