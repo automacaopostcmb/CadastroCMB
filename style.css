@@ -298,20 +298,6 @@ body{
   }
 }
 
-/* =========================
-   BOX BRANCO PADRÃO POR ETAPA
-   ========================= */
-
-.step-box{
-  width: 100%;
-  max-width: 720px;
-  margin: 10px auto 0;
-  background:#fff;
-  border:1px solid #d9e7ff;
-  border-radius:12px;
-  padding:18px;
-  box-shadow:0 6px 14px rgba(0,0,0,.04);
-}
 
 /* o review-box já tem estilo, mas quando estiver dentro do step-box
    tiramos “dobro” de sombra/borda visual */
@@ -357,7 +343,7 @@ body{
 .wizard-step-title{
   width: 100%;
   max-width: 720px;
-  margin: 18px auto 18px; /* 👈 espaço igual em cima e embaixo */
+  margin: var(--spacing-md) auto var(--spacing-md);
   text-align: center;
   font-weight: 900;
   letter-spacing: .3px;
@@ -374,13 +360,14 @@ body{
   background:#fff;
   border:1px solid #d9e7ff;
   border-radius:12px;
-  padding: 10px 18px 18px 18px; /* 👈 topo menor */
+  padding: var(--spacing-sm) 18px var(--spacing-lg);
   box-shadow:0 6px 14px rgba(0,0,0,.04);
 }
 
 @media (min-width:768px){
   .wizard-step-title{ font-size: 15px; }
 }
+
 
 
 
