@@ -11,37 +11,51 @@
   <!-- CSS compartilhado -->
   <link rel="stylesheet" href="style.css?v=16">
 
-  <style>
-    .hint { font-size: 12px; color: #666; margin: 4px 0 10px; text-align:center; }
-    .inline-error { color:#d33; display:none; font-size:12px; margin:4px 0 8px; text-align:center; }
-    .title-label { margin-top: 12px; display:block; font-weight:600; text-align:center; }
-    #avisoTexto { margin: 10px 0; color:#c0392b; display:none; text-align:center; }
-    .preview-wrap{ position:relative; display:inline-block; }
+<style>
+  /* ===== SOMENTE O QUE É ESPECÍFICO DESTA PÁGINA ===== */
 
-    /* opcional – para uso fora do canvas */
-    .plaquinha{
-      display:inline-block;
-      padding:.3em .8em;
-      background:#ffd400;
-      border:6px solid #000;
-      border-radius:6px;
-      color:#111;
-      font:700 clamp(24px, 4vw, 46px)/1.1 "Comic Relief", Arial, sans-serif;
-      box-shadow:-7px 7px 0 #000;
-      white-space: nowrap;
-      text-align: left;
-    }
+  .preview-wrap{ position:relative; display:inline-block; }
 
-    /* Final: caixa da legenda */
-    .caption-wrap{
-      max-width:720px; margin:16px auto 0; display:none;
-      background:#fff; border:1px solid #d9e7ff; border-radius:12px;
-      padding:16px; box-shadow:0 6px 14px rgba(0,0,0,.04);
-    }
-    .caption-wrap h3{ margin:0 0 8px; font-size:18px; text-align:center; }
-    .caption-wrap textarea{ width:100%; min-height:140px; font-size:15px; padding:10px; }
-    .btn-copy{ margin-top:10px; width:180px; padding:10px 14px; border:none; border-radius:6px; background:#4dafff; color:#fff; font-weight:600; cursor:pointer; }
-  </style>
+  /* opcional – para uso fora do canvas */
+  .plaquinha{
+    display:inline-block;
+    padding:.3em .8em;
+    background:#ffd400;
+    border:6px solid #000;
+    border-radius:6px;
+    color:#111;
+    font:700 clamp(24px, 4vw, 46px)/1.1 "Comic Relief", Arial, sans-serif;
+    box-shadow:-7px 7px 0 #000;
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  /* Final: caixa da legenda */
+  .caption-wrap{
+    max-width:720px;
+    margin:16px auto 0;
+    display:none;
+    background:#fff;
+    border:1px solid #d9e7ff;
+    border-radius:12px;
+    padding:16px;
+    box-shadow:0 6px 14px rgba(0,0,0,.04);
+  }
+  .caption-wrap h3{ margin:0 0 8px; font-size:18px; text-align:center; }
+  .caption-wrap textarea{ width:100%; min-height:140px; font-size:15px; padding:10px; }
+
+  .btn-copy{
+    margin-top:10px;
+    width:180px;
+    padding:10px 14px;
+    border:none;
+    border-radius:6px;
+    background:#4dafff;
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+  }
+</style>
 </head>
 
 <body>
@@ -286,6 +300,7 @@
 
 </body>
 </html>
+
 
 
 
