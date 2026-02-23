@@ -30,26 +30,31 @@
     body { margin: 0; }
   </style>
 </head>
+
 <body class="is-index">
   <div class="page-center" style="--center-offset: -60px;">
     <img src="assets/logo-cmb.png" alt="Comic Market Brasil" class="header-logo">
 
-    
+    <!-- LOGIN -->
     <div id="login-area" class="auth-card">
-<input type="password" id="chave" class="auth-input" placeholder="Digite sua chave de acesso" />
+      <input type="password" id="chave" class="auth-input" placeholder="Digite sua chave de acesso" />
       <button id="btnEntrar" class="auth-btn" onclick="login()">Entrar</button>
     </div>
 
-        <div id="login-links" class="login-links">
-  <a href="">Seja um expositor</a>
-  <span>|</span>
-  <a href="">Participe da área dos Artistas</a>
-</div>
-    
+    <!-- LINKS (somem após login) -->
+    <div id="login-links" class="login-links">
+      <a href="">Seja um expositor</a>
+      <span>|</span>
+      <a href="">Participe da área dos Artistas</a>
+    </div>
+
+    <!-- MENU (aparece após login) -->
     <div id="menu" class="auth-card" style="display:none;">
       <h3>Páginas disponíveis</h3>
       <div id="botoes"></div>
-      <p id="linkSair" onclick="logout()"
+
+      <p id="linkSair"
+         onclick="logout()"
          style="cursor:pointer; color:#007bff; text-align:center; font-size:14px; margin-top:16px;">
         Sair
       </p>
@@ -62,158 +67,173 @@
   </div>
 
   <script>
-  // Endpoint do seu Apps Script de auth/menu
-  const API_URL = "https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec";
+    // Endpoint do seu Apps Script de auth/menu
+    const API_URL = "https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec";
 
-  // Definição das páginas do menu
-  const paginas = [
-    { nome: "area_artista",         label: "Área dos Artistas", href: "artistas.html" },
-    { nome: "expo_business",       label: "Expositor Área Business", href: "expo_business.html" },
-    { nome: "expo_market",         label: "Expositor Área Market",   href: "expo_market.html" },
-    { nome: "cadastro_masterclass",label: "Cadastro Masterclass",     href: "cadastro_masterclass.html" },
-    { nome: "cadastro_lancamento", label: "Cadastro de Lançamento",   href: "cadastro_lancamento.html" },
-  ];
+    // Definição das páginas do menu
+    const paginas = [
+      { nome: "area_artista",          label: "Área dos Artistas",        href: "artistas.html" },
+      { nome: "expo_business",         label: "Expositor Área Business",  href: "expo_business.html" },
+      { nome: "expo_market",           label: "Expositor Área Market",    href: "expo_market.html" },
+      { nome: "cadastro_masterclass",  label: "Cadastro Masterclass",     href: "cadastro_masterclass.html" },
+      { nome: "cadastro_lancamento",   label: "Cadastro de Lançamento",   href: "cadastro_lancamento.html" },
+    ];
 
-  let isLoading = false;
+    let isLoading = false;
 
-  function setLoading(state) {
-    isLoading = state;
-    const btn = document.getElementById("btnEntrar");
-    if (btn) {
-      btn.disabled = state;
-      btn.textContent = state ? "Carregando..." : "Entrar";
+    function setLoading(state) {
+      isLoading = state;
+      const btn = document.getElementById("btnEntrar");
+      if (btn) {
+        btn.disabled = state;
+        btn.textContent = state ? "Carregando..." : "Entrar";
+      }
     }
-  }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const params = new URLSearchParams(window.location.search);
-    const isBack = params.get("back") === "1";
-    const chave = (localStorage.getItem("chave") || "").trim();
+    function showLoginUI() {
+      const loginAr = document.getElementById("login-area");
+      const loginLinks = document.getElementById("login-links");
+      const menu = document.getElementById("menu");
+      const area = document.getElementById("botoes");
+      const chaveEl = document.getElementById("chave");
 
-  if (isBack && chave) {
-  const loginAr = document.getElementById("login-area");
-  const loginLinks = document.getElementById("login-links");
-  if (loginAr) loginAr.style.display = "none";
-  if (loginLinks) loginLinks.classList.add("hidden");
-  carregarMenu();
-} else {
-      localStorage.removeItem("chave");
-      document.getElementById("login-links")?.classList.remove("hidden");
-      document.getElementById("menu").style.display = "none";
-      document.getElementById("botoes").innerHTML = "";
-      document.getElementById("chave").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") login();
-      });
-    }
-  });
+      if (menu) menu.style.display = "none";
+      if (area) area.innerHTML = "";
 
-  function login() {
-    const chave = document.getElementById("chave").value.trim();
-    if (!chave) return alert("Digite sua chave.");
-    localStorage.setItem("chave", chave);
-    carregarMenu();
-  }
+      if (loginAr) loginAr.style.display = "block";
 
-function logout() {
-  localStorage.removeItem("chave");
-  setLoading(false);
-
-  const menu = document.getElementById("menu");
-  const area = document.getElementById("botoes");
-  const loginAr = document.getElementById("login-area");
-  const loginLinks = document.getElementById("login-links");
-
-  if (menu) menu.style.display = "none";
-  if (area) area.innerHTML = "";
-
-  const chaveEl = document.getElementById("chave");
-  if (chaveEl) chaveEl.value = "";
-
-  // volta a tela de login
-  if (loginAr) loginAr.style.display = "block";
-
-  // volta os links (tira o hidden)
-  if (loginLinks) {
-    loginLinks.classList.remove("hidden");
-    loginLinks.style.display = "block";
-  }
-
-  // se tiver back=1, limpa a URL
-  if (window.location.search.includes("back=1")) {
-    window.history.replaceState({}, "", "index.html");
-  }
-}
-
-  async function carregarMenu() {
-    if (isLoading) return;
-    const chave = localStorage.getItem("chave");
-    if (!chave) return;
-
-    setLoading(true);
-
-    const titulo  = document.getElementById("tituloLogin");
-    const loginAr = document.getElementById("login-area");
-    const loginLinks = document.getElementById("login-links");
-    const menu    = document.getElementById("menu");
-    const area    = document.getElementById("botoes");
-    const loading = document.getElementById("loading");
-
-    // só loading na tela
-
-if (titulo) titulo.style.display = "none";
-loginAr.style.display = "none";
-
-if (loginLinks) loginLinks.classList.add("hidden");
-
-menu.style.display    = "none";
-loading.style.display = "grid";
-
-    let algumPermitido = false;
-
-    try {
-      // Chama o backend pedindo o "menu" (com cache-buster)
-      const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}&menu=1&v=${Date.now()}`);
-      const data = await resp.json();
-
-      // Aceita dois formatos: {permissoes:{...}} OU {paginas:{...}}
-      let perms = data.permissoes || data.paginas || {};
-
-      // Normaliza: se vier "expo_artistas", espelha em "areaartista"
-      if (typeof perms.expo_artistas !== "undefined" && typeof perms.areaartista === "undefined") {
-        perms.areaartista = !!perms.expo_artistas;
+      if (loginLinks) {
+        loginLinks.classList.remove("hidden");
+        loginLinks.style.display = "block";
       }
 
-      area.innerHTML = "";
-
-      paginas.forEach((pag) => {
-        if (perms[pag.nome]) {
-          algumPermitido = true;
-          const btn = document.createElement("button");
-          btn.textContent = pag.label;
-          btn.addEventListener("click", () => {
-            window.location.href = pag.href || `${pag.nome}.html`;
-          });
-          area.appendChild(btn);
-        }
-      });
-
-    } catch (err) {
-      console.error(err);
-      alert("Erro ao carregar. Tente novamente.");
-      logout();
-      return;
-    } finally {
-      loading.style.display = "none";
+      if (chaveEl) chaveEl.value = "";
       setLoading(false);
     }
 
-    if (algumPermitido) {
-      menu.style.display = "block";
-    } else {
-      alert("Acesso inválido.");
-      logout();
+    function showMenuLoadingUI() {
+      const loginAr = document.getElementById("login-area");
+      const loginLinks = document.getElementById("login-links");
+      const menu = document.getElementById("menu");
+      const loading = document.getElementById("loading");
+
+      if (loginAr) loginAr.style.display = "none";
+      if (loginLinks) loginLinks.classList.add("hidden");
+      if (menu) menu.style.display = "none";
+      if (loading) loading.style.display = "grid";
     }
-  }
+
+    function hideOverlay() {
+      const loading = document.getElementById("loading");
+      if (loading) loading.style.display = "none";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const isBack = params.get("back") === "1";
+      const chave = (localStorage.getItem("chave") || "").trim();
+
+      // Enter no campo
+      const chaveEl = document.getElementById("chave");
+      if (chaveEl) {
+        chaveEl.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") login();
+        });
+      }
+
+      // Estado inicial
+      if (isBack && chave) {
+        // voltando de outra página com sessão salva -> carrega menu direto
+        const loginAr = document.getElementById("login-area");
+        const loginLinks = document.getElementById("login-links");
+        if (loginAr) loginAr.style.display = "none";
+        if (loginLinks) loginLinks.classList.add("hidden");
+        carregarMenu();
+      } else {
+        // primeira entrada -> limpa sessão e mostra login
+        localStorage.removeItem("chave");
+        showLoginUI();
+      }
+    });
+
+    function login() {
+      const chaveEl = document.getElementById("chave");
+      const chave = (chaveEl?.value || "").trim();
+      if (!chave) return alert("Digite sua chave.");
+
+      localStorage.setItem("chave", chave);
+      carregarMenu();
+    }
+
+    function logout() {
+      localStorage.removeItem("chave");
+
+      // limpa URL se voltou com back=1
+      if (window.location.search.includes("back=1")) {
+        window.history.replaceState({}, "", "index.html");
+      }
+
+      showLoginUI();
+    }
+
+    async function carregarMenu() {
+      if (isLoading) return;
+
+      const chave = (localStorage.getItem("chave") || "").trim();
+      if (!chave) return;
+
+      setLoading(true);
+      showMenuLoadingUI();
+
+      const menu = document.getElementById("menu");
+      const area = document.getElementById("botoes");
+
+      let algumPermitido = false;
+
+      try {
+        const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}&menu=1&v=${Date.now()}`);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+        const data = await resp.json();
+
+        // Aceita dois formatos: {permissoes:{...}} OU {paginas:{...}}
+        const perms = data.permissoes || data.paginas || {};
+
+        area.innerHTML = "";
+
+        paginas.forEach((pag) => {
+          if (perms[pag.nome]) {
+            algumPermitido = true;
+
+            const btn = document.createElement("button");
+            btn.textContent = pag.label;
+
+            btn.addEventListener("click", () => {
+              window.location.href = pag.href || `${pag.nome}.html`;
+            });
+
+            area.appendChild(btn);
+          }
+        });
+
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao carregar. Tente novamente.");
+        logout();
+        return;
+
+      } finally {
+        hideOverlay();
+        setLoading(false);
+      }
+
+      if (algumPermitido) {
+        if (menu) menu.style.display = "block";
+      } else {
+        alert("Acesso inválido.");
+        logout();
+      }
+    }
   </script>
 
   <script>
@@ -236,15 +256,3 @@ loading.style.display = "grid";
   </footer>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
