@@ -140,13 +140,14 @@
     const loading = document.getElementById("loading");
 
     // só loading na tela
-    titulo.style.display  = "none";
-    loginAr.style.display = "none";
-    const loginLinks = document.getElementById("login-links");
+
+if (titulo)  titulo.style.display  = "none";
+loginAr.style.display = "none";
+
 if (loginLinks) loginLinks.classList.add("hidden");
-    if (loginLinks) loginLinks.classList.add("hidden");
-    menu.style.display    = "none";
-    loading.style.display = "grid";
+
+menu.style.display    = "none";
+loading.style.display = "grid";
 
     let algumPermitido = false;
 
@@ -216,6 +217,7 @@ if (loginLinks) loginLinks.classList.add("hidden");
   </footer>
 </body>
 </html>
+
 
 
 
