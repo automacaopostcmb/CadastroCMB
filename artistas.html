@@ -12,11 +12,10 @@
   <link rel="stylesheet" href="style.css?v=15">
 
   <style>
-    .hint { font-size: 12px; color: #666; margin: 4px 0 10px; }
-    .inline-error { color:#d33; display:none; font-size:12px; margin:4px 0 8px; }
-    .title-label { margin-top: 12px; display:block; font-weight:600; }
-    .intro-box p { margin: 6px 0; }
-    #avisoTexto { margin: 10px 0; color:#c0392b; display:none; }
+    .hint { font-size: 12px; color: #666; margin: 4px 0 10px; text-align:center; }
+    .inline-error { color:#d33; display:none; font-size:12px; margin:4px 0 8px; text-align:center; }
+    .title-label { margin-top: 12px; display:block; font-weight:600; text-align:center; }
+    #avisoTexto { margin: 10px 0; color:#c0392b; display:none; text-align:center; }
     .preview-wrap{ position:relative; display:inline-block; }
 
     /* opcional – para uso fora do canvas */
@@ -46,149 +45,179 @@
 </head>
 
 <body>
+
+  <!-- ✅ HEADER FIXO -->
+  <header class="wizard-topbar" id="wizardTopbar" role="banner" aria-label="Etapa do cadastro">
+    <div class="wizard-topbar__inner">
+      <div id="wizardTitle" class="wizard-topbar__title">ETAPA 1 DE 8 - OI ARTISTA!</div>
+    </div>
+  </header>
+
   <main class="page-center">
-    <a class="link-voltar" id="link-topo" href="index.html?back=1">Voltar/Menu</a>
-    <div id="wizard-indicator">Etapa 1 de 8</div>
 
     <!-- ========== ETAPA 1 ========== -->
-    <section class="step active" id="step1">
-      <div class="faixa-secao"><span>Oi artista!</span></div>
-      <div id="intro-content" class="intro-box">
+    <section class="step active" id="step1" data-title="Oi artista!">
+      <div class="step-box">
         <h2>Vamos criar a sua imagem de divulgação? 🎨</h2>
-        <p>Agradecemos imensamente a sua presença nessa edição do CMB. Aqui vamos criar a sua divulgação, preencha seus dados e divulgue sua presença!</p>
-        <p>Clique em <strong>Próximo</strong> para começar!</p>
+        <p style="line-height:1.5; margin:10px 0; color:#333; font-size:15px; text-align:left;">
+          Agradecemos imensamente a sua presença nessa edição do CMB. Aqui vamos criar a sua divulgação,
+          preencha seus dados e divulgue sua presença!
+        </p>
+        <p style="line-height:1.5; margin:10px 0; color:#333; font-size:15px; text-align:left;">
+          Clique em <strong>Próximo</strong> para começar!
+        </p>
       </div>
+
       <div class="button-row">
         <button class="btn-nav btn-proximo" data-next>Próximo</button>
       </div>
+
+      <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
     </section>
 
     <!-- ========== ETAPA 2 ========== -->
-    <section class="step" id="step2">
-      <div class="faixa-secao"><span>Comprovante de Pagamento*</span></div>
-
-      <label class="title-label">Envie a foto do comprovante de pagamento da mesa*</label>
-      <div class="hint">(JPG/PNG ou screenshot nítido)</div>
-      <input type="file" id="comprovante" accept="image/*" />
-      <div id="comprovanteError" class="inline-error"></div>
+    <section class="step" id="step2" data-title="Comprovante de Pagamento">
+      <div class="step-box">
+        <label class="title-label">Envie a foto do comprovante de pagamento da mesa*</label>
+        <div class="hint">(JPG/PNG ou screenshot nítido)</div>
+        <input type="file" id="comprovante" accept="image/*" />
+        <div id="comprovanteError" class="inline-error"></div>
+      </div>
 
       <div class="button-row">
         <button class="btn-nav btn-voltar" data-prev>Voltar</button>
         <button class="btn-nav btn-proximo" data-next>Próximo</button>
       </div>
+
+      <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
     </section>
 
     <!-- ========== ETAPA 3 ========== -->
-    <section class="step" id="step3">
-      <div class="faixa-secao"><span>Dados do Artista</span></div>
+    <section class="step" id="step3" data-title="Dados do Artista">
+      <div class="step-box">
+        <label class="title-label">Nome completo*</label>
+        <input type="text" id="nomeCompleto" />
 
-      <label class="title-label">Nome completo*</label>
-      <input type="text" id="nomeCompleto" />
+        <label class="title-label">Nome artístico* (Como você será divulgado)</label>
+        <input type="text" id="nomeArtistico" />
 
-      <label class="title-label">Nome artístico* (Como você será divulgado)</label>
-      <input type="text" id="nomeArtistico" />
+        <label class="title-label">E-mail do artista*</label>
+        <input type="email" id="emailArtista" placeholder="voce@email.com"
+               autocomplete="email" autocapitalize="off" autocorrect="off"
+               spellcheck="false" inputmode="email" />
+        <div id="emailArtistaError" class="inline-error"></div>
 
-      <label class="title-label">E-mail do artista*</label>
-      <input type="email" id="emailArtista" placeholder="voce@email.com"
-             autocomplete="email" autocapitalize="off" autocorrect="off"
-             spellcheck="false" inputmode="email" />
-      <div id="emailArtistaError" class="inline-error"></div>
-
-      <label class="title-label">Telefone do artista*</label>
-      <input type="tel" id="telefoneArtista" placeholder="(11) 99999-9999" inputmode="tel" />
-      <div id="telefoneArtistaError" class="inline-error"></div>
+        <label class="title-label">Telefone do artista*</label>
+        <input type="tel" id="telefoneArtista" placeholder="(11) 99999-9999" inputmode="tel" />
+        <div id="telefoneArtistaError" class="inline-error"></div>
+      </div>
 
       <div class="button-row">
         <button class="btn-nav btn-voltar" data-prev>Voltar</button>
         <button class="btn-nav btn-proximo" data-next>Próximo</button>
       </div>
+
+      <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
     </section>
 
     <!-- ========== ETAPA 4 ========== -->
-    <section class="step" id="step4">
-      <div class="faixa-secao"><span>Dados do Ajudante (opcional)</span></div>
+    <section class="step" id="step4" data-title="Dados do Ajudante (opcional)">
+      <div class="step-box">
+        <label class="title-label">Nome do ajudante</label>
+        <input type="text" id="nomeAjudante" />
 
-      <label class="title-label">Nome do ajudante</label>
-      <input type="text" id="nomeAjudante" />
-
-      <label class="title-label">E-mail do ajudante</label>
-      <input type="email" id="emailAjudante" placeholder="ajudante@email.com"
-             autocomplete="email" autocapitalize="off" autocorrect="off"
-             spellcheck="false" inputmode="email" />
-      <div id="emailAjudanteError" class="inline-error"></div>
+        <label class="title-label">E-mail do ajudante</label>
+        <input type="email" id="emailAjudante" placeholder="ajudante@email.com"
+               autocomplete="email" autocapitalize="off" autocorrect="off"
+               spellcheck="false" inputmode="email" />
+        <div id="emailAjudanteError" class="inline-error"></div>
+      </div>
 
       <div class="button-row">
         <button class="btn-nav btn-voltar" data-prev>Voltar</button>
         <button class="btn-nav btn-proximo" data-next>Próximo</button>
       </div>
+
+      <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
     </section>
 
     <!-- ========== ETAPA 5 ========== -->
-    <section class="step" id="step5">
-      <div class="faixa-secao"><span>Sobre você*</span></div>
+    <section class="step" id="step5" data-title="Sobre você">
+      <div class="step-box">
+        <label class="title-label">Biografia*</label>
+        <div class="hint">(Sem limite – escreva à vontade)</div>
+        <textarea id="biografia" rows="8" placeholder="Conte sobre você, trabalhos, publicações, estilo, etc."></textarea>
 
-      <label class="title-label">Biografia*</label>
-      <div class="hint">(Sem limite – escreva à vontade)</div>
-      <textarea id="biografia" rows="8" placeholder="Conte sobre você, trabalhos, publicações, estilo, etc."></textarea>
+        <label class="title-label">Alguma observação?</label>
+        <textarea id="observacao" rows="4"
+          placeholder="Exemplo: Se possível eu queria dividir a mesa com o artista X!"></textarea>
+      </div>
 
-<label class="title-label">Alguma observação?</label>
-<textarea id="observacao" rows="4"
-  placeholder="Exemplo: Se possível eu queria dividir a mesa com o artista X!"></textarea>
-
-      
       <div class="button-row">
         <button class="btn-nav btn-voltar" data-prev>Voltar</button>
         <button class="btn-nav btn-proximo" data-next>Próximo</button>
       </div>
+
+      <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
     </section>
 
     <!-- ========== ETAPA 6 ========== -->
-    <section class="step" id="step6">
-      <div class="faixa-secao"><span>Foto/Arte de divulgação*</span></div>
-
-      <label class="title-label">Envie sua foto ou arte de divulgação*</label>
-      <div class="hint">(Essa imagem será usada no preview para gerar seu post de divulgação)</div>
-      <input type="file" id="fotoDivulgacao" accept="image/*" />
-      <div id="fotoDivulgacaoError" class="inline-error"></div>
+    <section class="step" id="step6" data-title="Foto/Arte de divulgação">
+      <div class="step-box">
+        <label class="title-label">Envie sua foto ou arte de divulgação*</label>
+        <div class="hint">(Essa imagem será usada no preview para gerar seu post de divulgação)</div>
+        <input type="file" id="fotoDivulgacao" accept="image/*" />
+        <div id="fotoDivulgacaoError" class="inline-error"></div>
+      </div>
 
       <div class="button-row">
         <button class="btn-nav btn-voltar" data-prev>Voltar</button>
         <button class="btn-nav btn-proximo" data-next>Próximo</button>
       </div>
+
+      <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
     </section>
 
     <!-- ========== ETAPA 7 ========== -->
-    <section class="step" id="step7">
-      <div class="faixa-secao"><span>Preview da sua divulgação</span></div>
+    <section class="step" id="step7" data-title="Preview da sua divulgação">
+      <div class="step-box">
+        <label class="title-label">Tamanho</label>
+        <input type="range" id="imgScale" min="0.1" max="2" step="0.01" value="1" />
 
-      <label class="title-label">Tamanho</label>
-      <input type="range" id="imgScale" min="0.1" max="2" step="0.01" value="1" />
-      <label class="title-label">Mover horizontalmente</label>
-      <input type="range" id="imgX" min="-500" max="500" value="0" />
-      <label class="title-label">Mover verticalmente</label>
-      <input type="range" id="imgY" min="-500" max="500" value="0" />
+        <label class="title-label">Mover horizontalmente</label>
+        <input type="range" id="imgX" min="-500" max="500" value="0" />
 
-      <div class="preview-wrap">
-        <canvas id="canvas" width="1080" height="1350"></canvas>
+        <label class="title-label">Mover verticalmente</label>
+        <input type="range" id="imgY" min="-500" max="500" value="0" />
+
+        <div class="preview-wrap">
+          <canvas id="canvas" width="1080" height="1350"></canvas>
+        </div>
+
+        <div id="avisoTexto"></div>
       </div>
-      <div id="avisoTexto"></div>
 
       <div class="button-row">
         <button class="btn-nav btn-voltar" data-prev>Voltar</button>
         <button class="btn-nav btn-proximo" data-next>Próximo</button>
       </div>
+
+      <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
     </section>
 
     <!-- ========== ETAPA 8 ========== -->
-    <section class="step" id="step8">
-      <div class="faixa-secao"><span>Revise seus dados</span></div>
-      <div id="review-list" class="review-box"></div>
-      <div id="mensagem"></div>
+    <section class="step" id="step8" data-title="Revise seus dados">
+      <div class="step-box">
+        <div id="review-list" class="review-box" style="margin-top:0;"></div>
+        <div id="mensagem"></div>
+      </div>
 
       <div class="button-row">
         <button class="btn-nav btn-voltar" data-prev>Voltar</button>
         <button class="btn-nav btn-proximo" id="botao-enviar" onclick="enviarParaGoogle()">Enviar informações</button>
       </div>
+
+      <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
     </section>
 
     <!-- FINAL -->
@@ -198,7 +227,6 @@
         <p>Você já pode baixar a imagem e se divulgar!.</p>
         <button class="btn-download" id="btn-final-download" onclick="baixarImagem()">Baixar Imagem</button>
 
-        <!-- NOVO: Descrição para redes sociais (aparece após baixar) -->
         <div id="captionWrap" class="caption-wrap">
           <h3>Ajuste e use essa descrição para as suas redes:</h3>
           <textarea id="captionBox"></textarea>
@@ -220,7 +248,6 @@
     </div>
   </main>
 
-  <!-- JS desta página -->
   <script src="app-expo_artistas.js?v=17"></script>
 
   <footer class="site-footer">
@@ -232,11 +259,3 @@
   </footer>
 </body>
 </html>
-
-
-
-
-
-
-
-
