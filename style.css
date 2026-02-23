@@ -568,4 +568,26 @@ body.is-index .page-center{
   margin-right: 0;
 }
 
+.login-links{
+  margin-top: 14px;
+  text-align: center;
+}
+
+.login-links a,
+.login-links span{
+  color: #ffffff;
+}
+
+.login-links a{
+  text-decoration: none;
+}
+
+.login-links a:hover{
+  text-decoration: underline;
+}
+
+/* classe para esconder */
+.hidden{
+  display: none !important;
+}
 
