@@ -238,14 +238,14 @@ function getCanvasBlob() {
   });
 }
 async function shareNative() {
-  const text = getCaptionText() || 'Comic Market Brasil';
+  const text = getCaptionText() || buildCaptionFromForm() || 'Comic Market Brasil';
 
   // 1) Copia a legenda antes de abrir o share (para o Instagram colar)
   let copied = false;
   try {
     await navigator.clipboard.writeText(text);
     copied = true;
-  } catch(e){ /* alguns navegadores podem bloquear; seguimos mesmo assim */ }
+  } catch(e){ /* ok */ }
 
   // 2) Tenta compartilhar com imagem + texto
   try {
@@ -265,13 +265,12 @@ async function shareNative() {
       throw new Error('Web Share não suportado');
     }
   } catch (err) {
-    // Fallback final: já copiamos o texto, então avisa o usuário
     console.warn(err);
     alert('Seu navegador não suporta compartilhamento direto. A legenda já foi copiada; compartilhe a imagem e cole o texto.');
     return;
   }
 
-  // 3) Feedback curto para o usuário
+  // 3) Feedback curto
   const btn = document.getElementById('btnShareNative');
   if (btn) {
     const old = btn.textContent;
@@ -279,7 +278,6 @@ async function shareNative() {
     setTimeout(() => (btn.textContent = old), 1800);
   }
 }
-
 
 /* ===========================
    ENVIO / AUTH (Apps Script)
@@ -370,21 +368,31 @@ async function enviarParaGoogle() {
     msg.style.display = 'block';
 
     if (result.status === 'success') {
-  msg.textContent = '✅ Enviado com sucesso!';
-  msg.style.color = 'green';
+      msg.textContent = '✅ Enviado com sucesso!';
+      msg.style.color = 'green';
 
-  document.getElementById('step8').style.display = 'none';
+      // esconde a etapa 8 e mostra o final
+      document.getElementById('step8').style.display = 'none';
 
-  const topbar = document.getElementById('wizardTopbar');
-  if (topbar) topbar.style.display = 'none';
-       
-const stepTitle = document.getElementById('wizardStepTitle');
-if (stepTitle) stepTitle.style.display = 'none';
+      // AJUSTE: NÃO esconder header; trocar textos para "PRONTO!"
+      const countEl = document.getElementById('wizardStepCount');
+      if (countEl) countEl.textContent = 'PRONTO!';
 
-       
-  document.getElementById('final-screen').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-} else {
+      const titleEl = document.getElementById('wizardStepTitle');
+      if (titleEl) titleEl.textContent = 'PRONTO!';
+
+      // mostra final
+      document.getElementById('final-screen').style.display = 'block';
+
+      // AJUSTE: preview pequeno no final
+      const fp = document.getElementById('finalPreview');
+      if (fp && canvas) {
+        fp.src = canvas.toDataURL('image/png');
+        fp.style.display = 'block';
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
       msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
       msg.style.color = 'red';
     }
@@ -441,19 +449,31 @@ const STEP_VALIDATORS = {
     showFieldError('telefoneArtista', '');
 
     if (!nomeCompleto || !nomeArtistico) return false;
-    if (!EMAIL_REGEX.test(emailArtista)) { showFieldError('emailArtista','Informe um e-mail válido.'); return false; }
-    if (telNorm.length < 8) { showFieldError('telefoneArtista','Telefone inválido.'); return false; }
+
+    if (!EMAIL_REGEX.test(emailArtista)) {
+      showFieldError('emailArtista','Informe um e-mail válido.');
+      return false;
+    }
+
+    if (telNorm.length < 8) {
+      showFieldError('telefoneArtista','Telefone inválido.');
+      return false;
+    }
+
     return true;
   },
+
   4: () => {
     const emailAjudante = cleanEmailValue(document.getElementById('emailAjudante')?.value);
     showFieldError('emailAjudante','');
+
     if (emailAjudante && !EMAIL_REGEX.test(emailAjudante)) {
       showFieldError('emailAjudante','E-mail inválido.');
       return false;
     }
     return true;
   },
+
   8: () => { buildReview(); return true; }
 };
 
@@ -463,6 +483,7 @@ function isFilled(id) {
   if (el.type === 'file') return el.files && el.files.length > 0;
   return (el.value || '').trim().length > 0;
 }
+
 function markValidity(ids = []) {
   ids.forEach((id) => {
     const el = document.getElementById(id);
@@ -471,18 +492,20 @@ function markValidity(ids = []) {
     if (!isFilled(id)) el.classList.add('invalid');
   });
 }
+
 function validateStep(stepNumber) {
   const required = REQUIRED_BY_STEP[stepNumber] || [];
   markValidity(required);
 
-  let ok = required.every(isFilled);
-  if (!ok) return false;
+  const okRequired = required.every(isFilled);
+  if (!okRequired) return false;
 
   const stepFn = STEP_VALIDATORS[stepNumber];
   if (stepFn && stepFn() === false) return false;
 
   return true;
 }
+
 function revalidateStepNav() {
   const activeStep = steps[currentStep - 1];
   const isValid = validateStep(currentStep);
@@ -490,7 +513,13 @@ function revalidateStepNav() {
   if (nextBtn) nextBtn.disabled = !isValid;
 }
 
+/* ===========================
+   CONTROLE DE ETAPAS / HEADER
+   =========================== */
 let steps = [], totalSteps = 0, currentStep = 1;
+
+// ✅ quando true, o header fica travado em "PRONTO!"
+let wizardDone = false;
 
 // >>> etapa do ajudante para o alerta
 const AJUDANTE_STEP = 4;
@@ -501,33 +530,47 @@ function getStepTitle(stepNumber) {
   return t || `Etapa ${stepNumber}`;
 }
 
-
-
 function updateWizardHeader() {
-  // topo: só etapas
   const countEl = document.getElementById('wizardStepCount');
+  const titleEl = document.getElementById('wizardStepTitle');
+
+  // ✅ estado final
+  if (wizardDone) {
+    if (countEl) countEl.textContent = 'PRONTO!';
+    if (titleEl) titleEl.textContent = 'PRONTO!';
+    return;
+  }
+
+  // topo: só etapas
   if (countEl) {
     countEl.textContent = `ETAPA ${currentStep} DE ${totalSteps}`;
   }
 
   // abaixo: título fora do box
-  const titleEl = document.getElementById('wizardStepTitle');
   if (titleEl) {
     titleEl.textContent = getStepTitle(currentStep).toUpperCase();
   }
 }
+
 function showStep(n) {
+  // se já terminou, não navega mais em steps
+  if (wizardDone) return;
+
   currentStep = Math.max(1, Math.min(totalSteps, n));
   steps.forEach((el, idx) => el.classList.toggle('active', idx === currentStep - 1));
+
   if (currentStep === 7) { try { gerarPost(); } catch(e) {} }
   if (currentStep === 8) { try { buildReview(); } catch(e) { console.error('buildReview error', e); } }
+
   updateWizardHeader();
   revalidateStepNav();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
 function buildReview() {
   const box = document.getElementById('review-list');
   if (!box) return;
+
   const parts = REVIEW_FIELDS.map(({ id, label }) => {
     const el = document.getElementById(id);
     let val = '';
@@ -540,7 +583,43 @@ function buildReview() {
       </div>
     `;
   });
+
   box.innerHTML = parts.join('');
+}
+
+/* ===========================
+   FINALIZAÇÃO (TELA FINAL)
+   =========================== */
+function showFinalScreen() {
+  // trava wizard
+  wizardDone = true;
+
+  // remove steps da tela
+  document.querySelectorAll('.step').forEach(s => {
+    s.classList.remove('active');
+    // opcional: mantém display padrão; quem controla visibilidade é .active
+  });
+
+  // mostra final
+  const final = document.getElementById('final-screen');
+  if (final) final.style.display = 'block';
+
+  // header: PRONTO!
+  updateWizardHeader();
+
+  // preview pequeno (se existir no HTML)
+  const fp = document.getElementById('finalPreview');
+  if (fp && canvas) {
+    try {
+      fp.src = canvas.toDataURL('image/png');
+      fp.style.display = 'block';
+    } catch(e) {
+      // se der CORS no canvas, apenas não mostra preview
+      fp.style.display = 'none';
+    }
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ===========================
@@ -555,7 +634,10 @@ function goToMenu() {
    BOOTSTRAP
    =========================== */
 document.addEventListener('DOMContentLoaded', () => {
-const isWizardPage = !!document.querySelector('.step') && !!document.getElementById('wizardStepCount');
+  const isWizardPage =
+    !!document.querySelector('.step') &&
+    !!document.getElementById('wizardStepCount');
+
   if (!isWizardPage) return;
 
   initCanvas();
@@ -563,8 +645,9 @@ const isWizardPage = !!document.querySelector('.step') && !!document.getElementB
 
   steps = Array.from(document.querySelectorAll('.step'));
   totalSteps = steps.length;
-updateWizardHeader();
-   
+
+  updateWizardHeader();
+
   // revalida ao digitar/colar/blur/autofill nas etapas 3 e 4
   ['nomeCompleto','nomeArtistico','emailArtista','telefoneArtista','nomeAjudante','emailAjudante'].forEach((id) => {
     const el = document.getElementById(id);
@@ -575,16 +658,22 @@ updateWizardHeader();
   });
 
   document.addEventListener('input', (e) => {
+    if (wizardDone) return;
     const activeStep = steps[currentStep - 1];
     if (!activeStep?.contains(e.target)) return;
     revalidateStepNav();
   });
+
   document.addEventListener('change', (e) => {
+    if (wizardDone) return;
     const activeStep = steps[currentStep - 1];
     if (!activeStep?.contains(e.target)) return;
     revalidateStepNav();
   });
+
   document.addEventListener('click', (e) => {
+    if (wizardDone) return;
+
     if (e.target.matches('[data-next]')) {
       if (!validateStep(currentStep)) return;
 
@@ -605,7 +694,9 @@ updateWizardHeader();
       showStep(currentStep + 1);
     }
 
-    if (e.target.matches('[data-prev]')) showStep(currentStep - 1);
+    if (e.target.matches('[data-prev]')) {
+      showStep(currentStep - 1);
+    }
   });
 
   // botão Copiar legenda
@@ -619,7 +710,6 @@ updateWizardHeader();
         btnCopy.textContent = 'Copiado ✔';
         setTimeout(()=>btnCopy.textContent='Copiar', 1500);
       } catch(e) {
-        // fallback
         box.select(); document.execCommand('copy');
         btnCopy.textContent = 'Copiado ✔';
         setTimeout(()=>btnCopy.textContent='Copiar', 1500);
@@ -627,18 +717,24 @@ updateWizardHeader();
     });
   }
 
-  // botão Compartilhar (Web Share)
+  // botão Compartilhar (o antigo do captionWrap)
   const btnShare = document.getElementById('btnShareNative');
   if (btnShare) btnShare.addEventListener('click', shareNative);
+
+  // ✅ botão novo "Compartilhar" da tela final (atalho)
+  const btnFinalShare = document.getElementById('btn-final-share');
+  if (btnFinalShare) btnFinalShare.addEventListener('click', shareNative);
 
   showStep(1);
 });
 
 /* Expor funções globais */
-window.enviarParaGoogle = enviarParaGoogle;
-window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
 
+// ⚠️ manter suas globais já existentes (se você já tinha isso no final do arquivo)
+// window.enviarParaGoogle = enviarParaGoogle;
+// window.baixarImagem = baixarImagem;
+// window.goToMenu = goToMenu;
 
 
 
