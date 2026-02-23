@@ -349,7 +349,7 @@ body{
   letter-spacing: .3px;
   color: #ffffff;
   text-transform: uppercase;
-  font-size: 14px;
+  font-size: 20px;
 }
 
 /* dá um respiro antes do box branco */
@@ -367,6 +367,7 @@ body{
 @media (min-width:768px){
   .wizard-step-title{ font-size: 15px; }
 }
+
 
 
 
