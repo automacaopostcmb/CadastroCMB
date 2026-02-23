@@ -370,14 +370,17 @@ async function enviarParaGoogle() {
     msg.style.display = 'block';
 
     if (result.status === 'success') {
-      msg.textContent = '✅ Enviado com sucesso!';
-      msg.style.color = 'green';
-      document.getElementById('step8').style.display = 'none';
-      document.getElementById('wizard-indicator').style.display = 'none';
-      document.getElementById('link-topo').style.display = 'none';
-      document.getElementById('final-screen').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
+  msg.textContent = '✅ Enviado com sucesso!';
+  msg.style.color = 'green';
+
+  document.getElementById('step8').style.display = 'none';
+
+  const topbar = document.getElementById('wizardTopbar');
+  if (topbar) topbar.style.display = 'none';
+
+  document.getElementById('final-screen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+} else {
       msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
       msg.style.color = 'red';
     }
@@ -488,16 +491,25 @@ let steps = [], totalSteps = 0, currentStep = 1;
 // >>> etapa do ajudante para o alerta
 const AJUDANTE_STEP = 4;
 
-function updateIndicator() {
-  const ind = document.getElementById('wizard-indicator');
-  if (ind) ind.textContent = `Etapa ${currentStep} de ${totalSteps}`;
+function getStepTitle(stepNumber) {
+  const el = steps?.[stepNumber - 1];
+  const t = (el?.dataset?.title || '').trim();
+  return t || `Etapa ${stepNumber}`;
+}
+
+function updateWizardHeader() {
+  const titleEl = document.getElementById('wizardTitle');
+  if (!titleEl) return;
+
+  const t = getStepTitle(currentStep).toUpperCase();
+  titleEl.textContent = `ETAPA ${currentStep} DE ${totalSteps} - ${t}`;
 }
 function showStep(n) {
   currentStep = Math.max(1, Math.min(totalSteps, n));
   steps.forEach((el, idx) => el.classList.toggle('active', idx === currentStep - 1));
   if (currentStep === 7) { try { gerarPost(); } catch(e) {} }
   if (currentStep === 8) { try { buildReview(); } catch(e) { console.error('buildReview error', e); } }
-  updateIndicator();
+  updateWizardHeader();
   revalidateStepNav();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -531,7 +543,7 @@ function goToMenu() {
    BOOTSTRAP
    =========================== */
 document.addEventListener('DOMContentLoaded', () => {
-  const isWizardPage = !!document.querySelector('.step') && !!document.getElementById('wizard-indicator');
+const isWizardPage = !!document.querySelector('.step') && !!document.getElementById('wizardTitle');
   if (!isWizardPage) return;
 
   initCanvas();
@@ -613,4 +625,5 @@ document.addEventListener('DOMContentLoaded', () => {
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
