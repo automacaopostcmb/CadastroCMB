@@ -9,13 +9,6 @@ html { height: 100%; overflow-x: hidden; }
 /* Gutter lateral */
 :root{
   --gutter: clamp(12px, 4vw, 20px);
-  /* ✅ espaçamentos consistentes */
-  --spacing-lg: 18px;
-  --spacing-md: 12px;
-  --spacing-sm: 8px;
-
-  --topbar-h: 56px;
-}
 }
 
 /* Body com gradiente e coluna (rodapé gruda no fim) */
@@ -187,13 +180,7 @@ canvas {
 
 /* Wrapper central */
 .page-center{
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-md);
-  justify-content: flex-start;
-  padding: var(--spacing-lg) 0;
+  flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:12px; padding:24px 0;
 }
 
 /* Logo */
@@ -206,29 +193,24 @@ canvas {
 
 /* ===== Overlay de loading do INDEX ===== */
 #loading{
-  position: fixed;
-  inset: 0;
-  width: 100svw;
-  height: 100svh;
-  max-width: none !important;
-  display: none;                 /* o JS liga/desliga */
-  place-items: center;           /* ✅ centro vertical + horizontal */
-  z-index: 2147483647;
-
-  /* ✅ fundo escurecido + blur */
-  background: rgba(0,0,0,0.45);
-  backdrop-filter: blur(8px) saturate(120%);
-  -webkit-backdrop-filter: blur(8px) saturate(120%);
-  will-change: backdrop-filter;
+  position:fixed;
+  inset:0;
+  width:100svw;           /* viewport real em mobile */
+  height:100svh;
+  max-width:none !important;   /* impede travar em 420px */
+  display:none;                /* o JS liga/desliga */
+ place-items: start center;          /* centraliza quando vira grid */
+  background:rgba(0,0,0,.35);
+  z-index:10000;
 }
-
 #loading .loading-bubble{
-  padding: 14px 18px;
-  background: #fff;
-  border-radius: 12px;
-  font-weight: 700;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.20);
-  color: #000;
+  margin:0;
+  padding:12px 16px;
+  background:#fff;
+  border-radius:10px;
+  font-weight:700;
+  box-shadow:0 6px 18px rgba(0,0,0,.15);
+  color:#000;
 }
 
 #observacao::placeholder { color:#777; }
@@ -253,137 +235,6 @@ canvas {
     padding-bottom: calc(14px + env(safe-area-inset-bottom));
   }
 }
-
-/* =========================
-   HEADER FIXO DO WIZARD
-   ========================= */
-
-:root{
-  --topbar-h: 56px;
-}
-
-.wizard-topbar{
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 9990;
-  background: #083a63;  /* mesma família do footer */
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(0,0,0,.15);
-}
-
-.wizard-topbar__inner{
-  max-width: 1200px;
-  margin: 0 auto;
-  height: var(--topbar-h);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 var(--gutter);
-  text-align: center;
-}
-
-.wizard-topbar__title{
-  font-weight: 800;
-  letter-spacing: .3px;
-  font-size: 14px;
-  line-height: 1.2;
-  text-transform: uppercase;
-}
-
-/* Safe area (iPhone notch) */
-@supports (padding: env(safe-area-inset-top)) {
-  .wizard-topbar__inner{
-    padding-top: env(safe-area-inset-top);
-    height: calc(var(--topbar-h) + env(safe-area-inset-top));
-  }
-}
-
-/* Empurra o conteúdo pra baixo do header fixo */
-body{
-  padding-top: calc(var(--topbar-h) + 14px);
-}
-
-@supports (padding: env(safe-area-inset-top)) {
-  body{
-    padding-top: calc(var(--topbar-h) + env(safe-area-inset-top) + 14px);
-  }
-}
-
-
-/* o review-box já tem estilo, mas quando estiver dentro do step-box
-   tiramos “dobro” de sombra/borda visual */
-.step-box .review-box{
-  border: none;
-  box-shadow: none;
-  padding: 0;
-}
-
-/* =========================
-   BOTÕES SEMPRE FORA DO BOX
-   ========================= */
-
-.button-row{
-  margin: 16px auto 0;
-}
-
-/* Link centralizado abaixo dos botões */
-.menu-under{
-  display:block;
-  width:100%;
-  max-width:520px;
-  margin: 12px auto 0;
-  text-align:center;
-  color:#ffffff;
-  font-size:14px;
-  text-decoration: underline;
-  opacity: .95;
-}
-.menu-under:hover{ opacity: 1; }
-
-/* =========================
-   AJUSTE DO LAYOUT PRINCIPAL
-   ========================= */
-
-/* antes você usava justify-content:center; isso “flutua” no meio.
-   agora faz mais sentido começar do topo (abaixo do header). */
-.page-center{
-  justify-content: flex-start;
-}
-
-/* Título da etapa abaixo do header (fora do box branco) */
-.wizard-step-title{
-  width: 100%;
-  max-width: 720px;
-  margin: var(--spacing-md) auto var(--spacing-md);
-  text-align: center;
-  font-weight: 900;
-  letter-spacing: .3px;
-  color: #ffffff;
-  text-transform: uppercase;
-  font-size: 16px; /* no mobile */
-}
-@media (min-width:768px){
-  .wizard-step-title{ font-size: 15px; } /* se quiser menor no PC */
-}
-
-/* dá um respiro antes do box branco */
-.step-box{
-  width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
-  background:#fff;
-  border:1px solid #d9e7ff;
-  border-radius:12px;
-  padding: var(--spacing-sm) 18px var(--spacing-lg);
-  box-shadow:0 6px 14px rgba(0,0,0,.04);
-}
-
-
-
-
-
 
 
 
