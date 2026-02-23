@@ -34,7 +34,6 @@
   <div class="page-center" style="--center-offset: -60px;">
     <img src="assets/logo-cmb.png" alt="Comic Market Brasil" class="header-logo">
 
-<h2 id="tituloLogin" style="display:none;">Login</h2>
     
     <div id="login-area" class="auth-card">
 <input type="password" id="chave" class="auth-input" placeholder="Digite sua chave de acesso" />
@@ -91,12 +90,15 @@
     const isBack = params.get("back") === "1";
     const chave = (localStorage.getItem("chave") || "").trim();
 
-    if (isBack && chave) {
-      document.getElementById("tituloLogin").style.display = "none";
-      document.getElementById("login-area").style.display = "none";
-      carregarMenu();
-    } else {
+  if (isBack && chave) {
+  const loginAr = document.getElementById("login-area");
+  const loginLinks = document.getElementById("login-links");
+  if (loginAr) loginAr.style.display = "none";
+  if (loginLinks) loginLinks.classList.add("hidden");
+  carregarMenu();
+} else {
       localStorage.removeItem("chave");
+      document.getElementById("login-links")?.classList.remove("hidden");
       document.getElementById("menu").style.display = "none";
       document.getElementById("botoes").innerHTML = "";
       document.getElementById("chave").addEventListener("keydown", (e) => {
@@ -112,18 +114,35 @@
     carregarMenu();
   }
 
-  function logout() {
-    localStorage.removeItem("chave");
-    setLoading(false);
-    document.getElementById("menu").style.display = "none";
-    document.getElementById("botoes").innerHTML = "";
-    document.getElementById("chave").value = "";
-    document.getElementById("tituloLogin").style.display = "block";
-    document.getElementById("login-area").style.display = "block";
-    if (window.location.search.includes("back=1")) {
-      window.history.replaceState({}, "", "index.html");
-    }
+function logout() {
+  localStorage.removeItem("chave");
+  setLoading(false);
+
+  const menu = document.getElementById("menu");
+  const area = document.getElementById("botoes");
+  const loginAr = document.getElementById("login-area");
+  const loginLinks = document.getElementById("login-links");
+
+  if (menu) menu.style.display = "none";
+  if (area) area.innerHTML = "";
+
+  const chaveEl = document.getElementById("chave");
+  if (chaveEl) chaveEl.value = "";
+
+  // volta a tela de login
+  if (loginAr) loginAr.style.display = "block";
+
+  // volta os links (tira o hidden)
+  if (loginLinks) {
+    loginLinks.classList.remove("hidden");
+    loginLinks.style.display = "block";
   }
+
+  // se tiver back=1, limpa a URL
+  if (window.location.search.includes("back=1")) {
+    window.history.replaceState({}, "", "index.html");
+  }
+}
 
   async function carregarMenu() {
     if (isLoading) return;
@@ -141,7 +160,7 @@
 
     // só loading na tela
 
-if (titulo)  titulo.style.display  = "none";
+if (titulo) titulo.style.display = "none";
 loginAr.style.display = "none";
 
 if (loginLinks) loginLinks.classList.add("hidden");
@@ -217,6 +236,7 @@ loading.style.display = "grid";
   </footer>
 </body>
 </html>
+
 
 
 
