@@ -556,5 +556,16 @@ body.is-index .page-center{
   justify-content: center;
 }
 
+/* Remove “respiro” extra no topo do card (primeiro filho) */
+.auth-card > :first-child{
+  margin-top: 0 !important;
+}
+
+.auth-card input,
+.auth-card button{
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
 
 
