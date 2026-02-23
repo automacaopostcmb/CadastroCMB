@@ -3,104 +3,123 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Gerador de Post</title>
+  <title>Cadastro – Expositor Market (CMB)</title>
 
   <!-- Fonte usada no canvas -->
   <link href="https://fonts.googleapis.com/css2?family=Comic+Relief&display=swap" rel="stylesheet">
 
-  <!-- CSS externo -->
-  <link rel="stylesheet" href="style.css?v=10">
+  <!-- CSS externo (ideal: o mesmo CSS do artista, com wizard-topbar/step-box/menu-under) -->
+  <link rel="stylesheet" href="style.css?v=15">
 
-  <!-- Estilo leve local (pode mover para style.css) -->
   <style>
-    .categoria-wrap{display:flex;gap:28px;align-items:center;flex-wrap:wrap;margin:8px 0 10px}
+    .categoria-wrap{display:flex;gap:28px;align-items:center;flex-wrap:wrap;margin:8px 0 10px;justify-content:center}
     .categoria-wrap .radio{display:flex;gap:8px;align-items:center;font-size:16px}
     .categoria-wrap input[type="radio"]{width:18px;height:18px}
   </style>
 </head>
 
 <body>
-  <main class="page-center">
-    <a class="link-voltar" id="link-topo" href="index.html?back=1">Voltar/Menu</a>
-    <div id="wizard-indicator">Etapa 1 de 7</div>
 
-    <!-- ========== ETAPA 1 ========== -->
-    <section class="step active" id="step1">
-      <div class="faixa-secao"><span>Cadastro de expositor Market</span></div>
-      <div id="intro-content" class="intro-box">
-        <h2>Cadastro de expositor na área Market do CMB 🎉</h2>
-        <p>Preencha seus dados para formalizar seu cadastro de expositor.</p>
-        <p>Clique em <strong>Próximo</strong> para começar!</p>
-      </div>
-      <div class="button-row">
-        <button class="btn-nav btn-proximo" data-next>Próximo</button>
-      </div>
-    </section>
+<header class="wizard-topbar" id="wizardTopbar" role="banner" aria-label="Etapa do cadastro">
+  <div class="wizard-topbar__inner">
+    <div id="wizardStepCount" class="wizard-topbar__title">ETAPA 1 DE 1</div>
+  </div>
+</header>
 
-    <!-- ==========  2 ========== -->
-    <section class="step" id="step2">
-      <div class="faixa-secao"><span>Sobre você:</span></div>
+<main class="page-center">
+  <!-- Título da etapa (fora do box) -->
+  <div id="wizardStepTitle" class="wizard-step-title">TÍTULO</div>
 
-      <label class="title-label">Seu nome:</label>
+  <!-- ========== ETAPA 1 ========== -->
+  <section class="step active" id="step1" data-title="Cadastro de expositor Market">
+    <div class="step-box">
+      <h2>Cadastro de expositor na área Market do CMB 🎉</h2>
+      <p style="line-height:1.5; margin:10px 0; color:#333; font-size:15px; text-align:left;">
+        Preencha seus dados para formalizar seu cadastro de expositor.
+      </p>
+      <p style="line-height:1.5; margin:10px 0; color:#333; font-size:15px; text-align:left;">
+        Clique em <strong>Próximo</strong> para começar!
+      </p>
+    </div>
+
+    <div class="button-row">
+      <button class="btn-nav btn-proximo" data-next>Próximo</button>
+    </div>
+
+    <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
+  </section>
+
+  <!-- ========== ETAPA 2 ========== -->
+  <section class="step" id="step2" data-title="Sobre você">
+    <div class="step-box">
+      <label class="title-label">Seu nome*</label>
       <input type="text" id="nome" />
 
-      <label class="title-label">E-mail:</label>
-      <input type="email" id="email" placeholder="seu@email.com" />
+      <label class="title-label">E-mail*</label>
+      <input type="email" id="email" placeholder="seu@email.com" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="email" />
       <div id="emailError" class="inline-error"></div>
 
-      <label class="title-label">Número de telefone</label>
-      <input type="tel" id="telefone" placeholder="(00) 00000-0000" />
+      <label class="title-label">Número de telefone*</label>
+      <input type="tel" id="telefone" placeholder="(00) 00000-0000" inputmode="tel" />
       <div id="telefoneError" class="inline-error"></div>
+    </div>
 
-      <div class="button-row">
-        <button class="btn-nav btn-voltar" data-prev>Voltar</button>
-        <button class="btn-nav btn-proximo" data-next>Próximo</button>
-      </div>
-    </section>
+    <div class="button-row">
+      <button class="btn-nav btn-voltar" data-prev>Voltar</button>
+      <button class="btn-nav btn-proximo" data-next>Próximo</button>
+    </div>
 
-    <!-- ==========  3 ========== -->
-    <section class="step" id="step3">
-      <div class="faixa-secao"><span>Sobre sua empresa:</span></div>
+    <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
+  </section>
 
-      <label class="title-label">Nome da sua empresa:</label>
+  <!-- ========== ETAPA 3 ========== -->
+  <section class="step" id="step3" data-title="Sobre sua empresa">
+    <div class="step-box">
+      <label class="title-label">Nome da sua empresa*</label>
       <input type="text" id="empresa" />
 
-      <label class="title-label">Site:</label>
+      <label class="title-label">Site*</label>
       <div class="hint">(Cole o link do seu site. Caso não tenha, pode ser o link da sua rede social)</div>
       <input type="text" id="site" />
       <div id="siteError" class="inline-error"></div>
 
-      <label class="title-label">Instagram:</label>
+      <label class="title-label">Instagram*</label>
       <input type="text" id="insta" placeholder="Seu link ou @usuario" />
       <div id="instaError" class="inline-error"></div>
+    </div>
 
-      <div class="button-row">
-        <button class="btn-nav btn-voltar" data-prev>Voltar</button>
-        <button class="btn-nav btn-proximo" data-next>Próximo</button>
-      </div>
-    </section>
+    <div class="button-row">
+      <button class="btn-nav btn-voltar" data-prev>Voltar</button>
+      <button class="btn-nav btn-proximo" data-next>Próximo</button>
+    </div>
 
-    <!-- ==========  4 ========== -->
-    <section class="step" id="step4">
-      <div class="faixa-secao"><span>Imagens</span></div>
+    <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
+  </section>
 
-      <label class="title-label">Envie o seu Logo com fundo transparente:</label>
+  <!-- ========== ETAPA 4 ========== -->
+  <section class="step" id="step4" data-title="Imagens">
+    <div class="step-box">
+      <label class="title-label">Envie o seu Logo com fundo transparente*</label>
       <div class="hint">(Mínimo 500x500px. Use uma imagem sem bordas, mesmo que transparentes.)</div>
       <input type="file" id="logo" accept="image/*" />
 
-      <label class="title-label">Envie uma imagem de apoio:</label>
-      <div class="hint">(Mínimo 500x500px. Essa é um outra imagem que podemos usar para mostrar mais de você.)</div>
+      <label class="title-label">Envie uma imagem de apoio*</label>
+      <div class="hint">(Mínimo 500x500px. Essa é uma outra imagem que podemos usar para mostrar mais de você.)</div>
       <input type="file" id="lateral" accept="image/*" />
+    </div>
 
-      <div class="button-row">
-        <button class="btn-nav btn-voltar" data-prev>Voltar</button>
-        <button class="btn-nav btn-proximo" data-next>Próximo</button>
-      </div>
-    </section>
+    <div class="button-row">
+      <button class="btn-nav btn-voltar" data-prev>Voltar</button>
+      <button class="btn-nav btn-proximo" data-next>Próximo</button>
+    </div>
 
-    <!-- ========== ETAPA 5 ========== -->
-    <section class="step" id="step5">
-      <div class="faixa-secao"><span>Selecione a sua categoria:</span></div>
+    <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
+  </section>
+
+  <!-- ========== ETAPA 5 ========== -->
+  <section class="step" id="step5" data-title="Preview da divulgação">
+    <div class="step-box">
+      <label class="title-label">Selecione a sua categoria*</label>
       <div class="categoria-wrap" id="categoriaWrap">
         <label class="radio">
           <input type="radio" name="categoria" id="cat-artista" value="artista">
@@ -113,11 +132,14 @@
       </div>
       <div id="categoriaError" class="inline-error"></div>
 
-      <div class="faixa-secao"><span>Imagem de apoio</span></div>
+      <label class="title-label">Imagem de apoio</label>
+
       <label class="title-label">Tamanho</label>
       <input type="range" id="imgScale" min="0.1" max="2" step="0.01" value="1" />
+
       <label class="title-label">Mover horizontalmente</label>
       <input type="range" id="imgX" min="-500" max="500" value="0" />
+
       <label class="title-label">Mover verticalmente</label>
       <input type="range" id="imgY" min="-500" max="500" value="0" />
 
@@ -125,76 +147,84 @@
 
       <div id="avisoTexto"></div>
 
-      <label class="title-label">Frase que defina o que você faz</label>
+      <label class="title-label">Frase que defina o que você faz*</label>
       <div class="hint">(Pense como se fosse um título chamativo do seu trabalho)</div>
       <input type="text" id="titulo" placeholder="Título" />
 
-      <label class="title-label">Crie uma breve descrição:</label>
+      <label class="title-label">Crie uma breve descrição*</label>
       <textarea id="descricao" rows="4"></textarea>
-      <div class="hint" id="descCount"></div> <!-- contador dinâmico -->
+      <div class="hint" id="descCount"></div>
+    </div>
 
-      <div class="button-row">
-        <button class="btn-nav btn-voltar" data-prev>Voltar</button>
-        <button class="btn-nav btn-proximo" data-next>Próximo</button>
-      </div>
-    </section>
+    <div class="button-row">
+      <button class="btn-nav btn-voltar" data-prev>Voltar</button>
+      <button class="btn-nav btn-proximo" data-next>Próximo</button>
+    </div>
 
-    <!-- ========== ETAPA 6 ========== -->
-    <section class="step" id="step6">
-      <div class="faixa-secao"><span>Informações adicionais:</span></div>
+    <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
+  </section>
+
+  <!-- ========== ETAPA 6 ========== -->
+  <section class="step" id="step6" data-title="Informações adicionais">
+    <div class="step-box">
       <label class="title-label">Texto complementar</label>
       <div class="hint">(Biografia ou texto maior sobre você ou seu trabalho.)</div>
       <textarea id="descricaolonga" rows="8"></textarea>
 
       <label class="title-label">Tem alguma outra imagem para nos mandar?</label>
       <input type="file" id="background" accept="image/*" />
+    </div>
 
-      <div class="button-row">
-        <button class="btn-nav btn-voltar" data-prev>Voltar</button>
-        <button class="btn-nav btn-proximo" data-next>Próximo</button>
-      </div>
-    </section>
+    <div class="button-row">
+      <button class="btn-nav btn-voltar" data-prev>Voltar</button>
+      <button class="btn-nav btn-proximo" data-next>Próximo</button>
+    </div>
 
-    <!-- ========== ETAPA 7 ========== -->
-    <section class="step" id="step7">
-      <div class="faixa-secao"><span>Confira suas informações</span></div>
-      <div id="review-list" class="review-box"></div>
+    <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
+  </section>
+
+  <!-- ========== ETAPA 7 ========== -->
+  <section class="step" id="step7" data-title="Revise seus dados">
+    <div class="step-box">
+      <div id="review-list" class="review-box" style="margin-top:0;"></div>
       <div id="mensagem"></div>
-
-      <div class="button-row">
-        <button class="btn-nav btn-voltar" data-prev>Voltar</button>
-        <button class="btn-nav btn-proximo" id="botao-enviar" onclick="enviarParaGoogle()">Enviar informações</button>
-      </div>
-    </section>
-
-    <!-- FINAL -->
-    <section id="final-screen" class="final-screen">
-      <div class="final-card">
-        <h2>✅ Cadastro realizado com sucesso!</h2>
-        <p>Prosseguiremos com a formalização do contrato e entraremos em contato. Em breve comunicaremos sua participação no CMB e encaminharemos a imagem de divulgação.</p>
-      <!-- <button class="btn-download" id="btn-final-download" onclick="baixarImagem()">Baixar Imagem</button> TIRE DO COMENTÁRIO PARA O BOTÃO APARECER-->
-        <button class="btn-menu" id="btn-menu" onclick="goToMenu()">Menu</button>
-      </div>
-    </section>
-
-    <div id="overlay">
-      <div class="loader">
-        <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
-        <div class="loader-text">Enviando...</div>
-      </div>
     </div>
-  </main>
 
-  <!-- Bump para forçar recarregamento -->
-  <script src="app-expo_market.js?v=12"></script>
-
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <strong>Criado por Bruno Lima • </strong>
-      <a href="mailto:limasketch@gmail.com">Implemente no seu evento.</a>
-      <small>© 2025 Automatic Post. Todos os direitos reservados.</small>
+    <div class="button-row">
+      <button class="btn-nav btn-voltar" data-prev>Voltar</button>
+      <button class="btn-nav btn-proximo" id="botao-enviar" onclick="enviarParaGoogle()">Enviar informações</button>
     </div>
-  </footer>
+
+    <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
+  </section>
+
+  <!-- FINAL -->
+  <section id="final-screen" class="final-screen">
+    <div class="final-card">
+      <h2>✅ Cadastro realizado com sucesso!</h2>
+      <p>Prosseguiremos com a formalização do contrato e entraremos em contato. Em breve comunicaremos sua participação no CMB e encaminharemos a imagem de divulgação.</p>
+      <!-- <button class="btn-download" id="btn-final-download" onclick="baixarImagem()">Baixar Imagem</button> -->
+      <button class="btn-menu" id="btn-menu" onclick="goToMenu()">Menu</button>
+    </div>
+  </section>
+
+  <div id="overlay">
+    <div class="loader">
+      <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
+      <div class="loader-text">Enviando...</div>
+    </div>
+  </div>
+</main>
+
+<script src="app-expo_market.js?v=13"></script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <strong>Criado por Bruno Lima • </strong>
+    <a href="mailto:limasketch@gmail.com">Implemente no seu evento.</a>
+    <small>© 2025 Automatic Post. Todos os direitos reservados.</small>
+  </div>
+</footer>
+
 </body>
 </html>
-
