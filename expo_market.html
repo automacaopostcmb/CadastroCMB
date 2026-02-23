@@ -240,14 +240,28 @@
   </section>
 
   <!-- FINAL -->
-  <section id="final-screen" class="final-screen">
-    <div class="final-card">
-      <h2>✅ Cadastro realizado com sucesso!</h2>
-      <p>Prosseguiremos com a formalização do contrato e entraremos em contato. Em breve comunicaremos sua participação no CMB e encaminharemos a imagem de divulgação.</p>
-      <!-- <button class="btn-download" id="btn-final-download" onclick="baixarImagem()">Baixar Imagem</button> -->
-      <button class="btn-menu" id="btn-menu" onclick="goToMenu()">Menu</button>
-    </div>
-  </section>
+<section id="final-screen" class="final-screen">
+  
+  <div class="step-box">
+    <h2>✅ Cadastro realizado com sucesso!</h2>
+    <p>
+      Prosseguiremos com a formalização do contrato e entraremos em contato.
+      Em breve comunicaremos sua participação no CMB e encaminharemos a imagem de divulgação.
+    </p>
+  </div>
+
+  <div class="button-row">
+    <button type="button"
+            class="btn-nav btn-proximo"
+            id="btn-menu"
+            onclick="goToMenu()">
+      Menu
+    </button>
+  </div>
+
+  <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
+
+</section>
 
   <div id="overlay">
     <div class="loader">
@@ -269,6 +283,7 @@
 
 </body>
 </html>
+
 
 
 
