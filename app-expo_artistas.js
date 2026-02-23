@@ -501,11 +501,7 @@ function getStepTitle(stepNumber) {
   return t || `Etapa ${stepNumber}`;
 }
 
-function getStepTitle(stepNumber) {
-  const el = steps?.[stepNumber - 1];
-  const t = (el?.dataset?.title || '').trim();
-  return t || `Etapa ${stepNumber}`;
-}
+
 
 function updateWizardHeader() {
   // topo: só etapas
@@ -559,7 +555,7 @@ function goToMenu() {
    BOOTSTRAP
    =========================== */
 document.addEventListener('DOMContentLoaded', () => {
-const isWizardPage = !!document.querySelector('.step') && !!document.getElementById('wizardTitle');
+const isWizardPage = !!document.querySelector('.step') && !!document.getElementById('wizardStepCount');
   if (!isWizardPage) return;
 
   initCanvas();
@@ -567,7 +563,8 @@ const isWizardPage = !!document.querySelector('.step') && !!document.getElementB
 
   steps = Array.from(document.querySelectorAll('.step'));
   totalSteps = steps.length;
-
+updateWizardHeader();
+   
   // revalida ao digitar/colar/blur/autofill nas etapas 3 e 4
   ['nomeCompleto','nomeArtistico','emailArtista','telefoneArtista','nomeAjudante','emailAjudante'].forEach((id) => {
     const el = document.getElementById(id);
@@ -641,6 +638,7 @@ const isWizardPage = !!document.querySelector('.step') && !!document.getElementB
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
