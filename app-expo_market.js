@@ -390,23 +390,27 @@ async function enviarParaGoogle() {
     const msg = document.getElementById('mensagem');
     msg.style.display = 'block';
 
-    if (result.status === 'success') {
-      msg.textContent = '✅ Enviado com sucesso!';
-      msg.style.color = 'green';
+if (result.status === 'success') {
+  msg.textContent = '✅ Enviado com sucesso!';
+  msg.style.color = 'green';
 
-      // esconde a etapa e header novo
-const step8 = document.getElementById('step8');
-if (step8) step8.style.display = 'none';
+  // Esconde a etapa de revisão
+  const step8 = document.getElementById('step8');
+  if (step8) step8.style.display = 'none';
 
-      const topbar = document.getElementById('wizardTopbar');
-      if (topbar) topbar.style.display = 'none';
+  // ✅ Mantém o header e troca para PRONTO!
+  const countEl = document.getElementById('wizardStepCount');
+  if (countEl) countEl.textContent = 'PRONTO!';
 
-      const stepTitle = document.getElementById('wizardStepTitle');
-      if (stepTitle) stepTitle.style.display = 'none';
+  const stepTitle = document.getElementById('wizardStepTitle');
+  if (stepTitle) stepTitle.textContent = 'PRONTO!';
 
-      document.getElementById('final-screen').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
+  // Mostra tela final
+  const finalScreen = document.getElementById('final-screen');
+  if (finalScreen) finalScreen.style.display = 'block';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+} else {
       msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
       msg.style.color = 'red';
     }
@@ -672,5 +676,6 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
