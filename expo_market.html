@@ -117,52 +117,67 @@
   </section>
 
   <!-- ========== ETAPA 5 ========== -->
-  <section class="step" id="step5" data-title="Preview da divulgação">
-    <div class="step-box">
-      <label class="title-label">Selecione a sua categoria*</label>
-      <div class="categoria-wrap" id="categoriaWrap">
-        <label class="radio">
-          <input type="radio" name="categoria" id="cat-artista" value="artista">
-          artista confirmado
-        </label>
-        <label class="radio">
-          <input type="radio" name="categoria" id="cat-empresa" value="empresa">
-          empresa confirmada
-        </label>
+ <section class="step" id="step5" data-title="Preview da divulgação">
+  <div class="step-box">
+
+    <!-- Canvas preview continua aqui -->
+    <canvas id="canvas" width="1080" height="1350"></canvas>
+
+    <div id="avisoTexto"></div>
+
+    <!-- ACCORDION 1: Textos -->
+    <details class="acc" id="accTextos" open>
+      <summary class="acc__sum">Escrever Textos</summary>
+
+      <div class="acc__body">
+        <label class="title-label">Frase que defina o que você faz*</label>
+        <div class="hint">(Pense como se fosse um título chamativo do seu trabalho)</div>
+        <input type="text" id="titulo" placeholder="Título" />
+
+        <label class="title-label">Crie uma breve descrição*</label>
+        <textarea id="descricao" rows="4"></textarea>
+        <div class="hint" id="descCount"></div>
       </div>
-      <div id="categoriaError" class="inline-error"></div>
+    </details>
 
-      <label class="title-label">Imagem de apoio</label>
+    <!-- ACCORDION 2: Ajuste imagem -->
+    <details class="acc" id="accImagem">
+      <summary class="acc__sum">Ajuste da imagem de apoio</summary>
 
-      <label class="title-label">Tamanho</label>
-      <input type="range" id="imgScale" min="0.1" max="2" step="0.01" value="1" />
+      <div class="acc__body">
+        <label class="title-label">Selecione a sua categoria*</label>
+        <div class="categoria-wrap" id="categoriaWrap">
+          <label class="radio">
+            <input type="radio" name="categoria" id="cat-artista" value="artista">
+            artista confirmado
+          </label>
+          <label class="radio">
+            <input type="radio" name="categoria" id="cat-empresa" value="empresa">
+            empresa confirmada
+          </label>
+        </div>
+        <div id="categoriaError" class="inline-error"></div>
 
-      <label class="title-label">Mover horizontalmente</label>
-      <input type="range" id="imgX" min="-500" max="500" value="0" />
+        <label class="title-label">Tamanho</label>
+        <input type="range" id="imgScale" min="0.1" max="2" step="0.01" value="1" />
 
-      <label class="title-label">Mover verticalmente</label>
-      <input type="range" id="imgY" min="-500" max="500" value="0" />
+        <label class="title-label">Mover horizontalmente</label>
+        <input type="range" id="imgX" min="-500" max="500" value="0" />
 
-      <canvas id="canvas" width="1080" height="1350"></canvas>
+        <label class="title-label">Mover verticalmente</label>
+        <input type="range" id="imgY" min="-500" max="500" value="0" />
+      </div>
+    </details>
 
-      <div id="avisoTexto"></div>
+  </div>
 
-      <label class="title-label">Frase que defina o que você faz*</label>
-      <div class="hint">(Pense como se fosse um título chamativo do seu trabalho)</div>
-      <input type="text" id="titulo" placeholder="Título" />
+  <div class="button-row">
+    <button class="btn-nav btn-voltar" data-prev>Voltar</button>
+    <button class="btn-nav btn-proximo" data-next>Próximo</button>
+  </div>
 
-      <label class="title-label">Crie uma breve descrição*</label>
-      <textarea id="descricao" rows="4"></textarea>
-      <div class="hint" id="descCount"></div>
-    </div>
-
-    <div class="button-row">
-      <button class="btn-nav btn-voltar" data-prev>Voltar</button>
-      <button class="btn-nav btn-proximo" data-next>Próximo</button>
-    </div>
-
-    <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
-  </section>
+  <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
+</section>
 
   <!-- ========== ETAPA 6 ========== -->
   <section class="step" id="step6" data-title="Informações adicionais">
@@ -228,3 +243,4 @@
 
 </body>
 </html>
+
