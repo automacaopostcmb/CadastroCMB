@@ -26,6 +26,45 @@ const REVIEW_FIELDS = [
   { id: 'insta', label: 'Instagram', format: (v) => normalizeInstagram(v).url }
 ];
 
+/* ===========================
+   OVERLAY: mensagens rotativas
+   =========================== */
+
+const OVERLAY_STEPS = [
+  { after: 0,      msg: "Separando informações..." },
+  { after: 6000,   msg: "Enviando informações..." },
+  { after: 12000,  msg: "Salvando imagens..." },
+  { after: 25000,  msg: "Cadastrando expositor..." },
+  { after: 40000,  msg: "Quase lá!" },
+  { after: 50000,  msg: "Finalizando..." },
+  { after: 80000,  msg: "Está demorando mais do que o normal." },
+  { after: 100000, msg: "Só mais um pouco..." },
+  { after: 155000, msg: "Demorou mais do que o normal. Tente trocar de rede e reenviar." },
+];
+
+let overlayTimers = [];
+
+function setOverlayText(text) {
+  // pega o texto do loader dentro do overlay (mesma estrutura da outra página)
+  const el = document.querySelector('#overlay .loader-text');
+  if (el) el.textContent = text || "Enviando...";
+}
+
+function startOverlayMessages(steps = OVERLAY_STEPS) {
+  stopOverlayMessages(); // evita acumular timers em reenvio
+  setOverlayText(steps?.[0]?.msg || "Enviando...");
+
+  overlayTimers = (steps || []).map((s) =>
+    setTimeout(() => setOverlayText(s.msg), Math.max(0, Number(s.after) || 0))
+  );
+}
+
+function stopOverlayMessages() {
+  overlayTimers.forEach((t) => clearTimeout(t));
+  overlayTimers = [];
+  setOverlayText("Enviando...");
+}
+
 const step5Messages = { charError: '' };
 const validationFlags = { overflow: false };
 
@@ -380,53 +419,57 @@ async function enviarParaGoogle() {
 
 const overlay = document.getElementById('overlay');
 overlay.classList.add('active');
+startOverlayMessages(); // ✅ começa a trocar mensagens
 
-  try {
-    const response = await fetch(
-      'https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec',
-      { method: 'POST', body: JSON.stringify(dados) }
-    );
-    const result = await response.json();
-    const msg = document.getElementById('mensagem');
-    msg.style.display = 'block';
-if (result.status === 'success') {
-  msg.textContent = '✅ Enviado com sucesso!';
-  msg.style.color = 'green';
+try {
+  const response = await fetch(
+    'https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec',
+    { method: 'POST', body: JSON.stringify(dados) }
+  );
 
-  // Esconde a etapa de revisão (step 8)
-  const step8 = document.getElementById('step8');
-  if (step8) step8.style.display = 'none';
+  const result = await response.json();
+  const msg = document.getElementById('mensagem');
+  msg.style.display = 'block';
 
-  // 🔵 Esconde o título grande abaixo da topbar
-  const stepTitle = document.getElementById('wizardStepTitle');
-  if (stepTitle) stepTitle.style.display = 'none';
+  if (result.status === 'success') {
+    msg.textContent = '✅ Enviado com sucesso!';
+    msg.style.color = 'green';
 
-  // 🔵 Esconde o texto da topbar (ETAPA X DE Y)
-  const countEl = document.getElementById('wizardStepCount');
-  if (countEl) countEl.style.display = 'none';
+    const step8 = document.getElementById('step8');
+    if (step8) step8.style.display = 'none';
 
-  // Mostra a tela final
-  const finalScreen = document.getElementById('final-screen');
-  if (finalScreen) finalScreen.style.display = 'block';
+    const stepTitle = document.getElementById('wizardStepTitle');
+    if (stepTitle) stepTitle.style.display = 'none';
 
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-} else {
-      msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
-      msg.style.color = 'red';
-    }
-  } catch (err) {
-    const msg = document.getElementById('mensagem');
-    msg.textContent = '❌ Erro de rede. Tente novamente.';
+    const countEl = document.getElementById('wizardStepCount');
+    if (countEl) countEl.style.display = 'none';
+
+    const finalScreen = document.getElementById('final-screen');
+    if (finalScreen) finalScreen.style.display = 'block';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } else {
+    msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
     msg.style.color = 'red';
-    msg.style.display = 'block';
-    console.error(err);
-  } finally {
-overlay.classList.remove('active');
-    setTimeout(() => {
-      const msg = document.getElementById('mensagem');
-      if (msg) msg.textContent = '';
-    }, 5000);
   }
+
+} catch (err) {
+  const msg = document.getElementById('mensagem');
+  msg.textContent = '❌ Erro de rede. Tente novamente.';
+  msg.style.color = 'red';
+  msg.style.display = 'block';
+  console.error(err);
+
+} finally {
+  stopOverlayMessages();           // ✅ para e reseta mensagens
+  overlay.classList.remove('active');
+
+  setTimeout(() => {
+    const msg = document.getElementById('mensagem');
+    if (msg) msg.textContent = '';
+  }, 5000);
+}
 }
 
 /* ===========================
@@ -676,6 +719,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
