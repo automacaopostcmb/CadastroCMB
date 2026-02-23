@@ -172,13 +172,47 @@ canvas {
 }
 
 /* Overlay de envio (wizard) */
+/* ===== Overlay de envio do WIZARD (igual ao #loading do index) ===== */
 #overlay{
-  display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-  background-color:rgba(255,255,255,0.85); z-index:9999; justify-content:center; align-items:center; font-weight:bold;
+  position: fixed;
+  inset: 0;
+  width: 100svw;
+  height: 100svh;
+  max-width: none !important;
+
+  display: none;              /* JS liga/desliga */
+  place-items: center;        /* centro vertical + horizontal */
+
+  z-index: 2147483647;
+
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  will-change: backdrop-filter;
 }
-.loader{ text-align:center; }
-.loader-gif{ width:80px; height:80px; display:block; margin:0 auto 12px; }
-.loader-text{ font-size:20px; color:#000; }
+
+/* “bolha” branca no centro */
+#overlay .loader{
+  padding: 14px 18px;
+  background: #fff;
+  border-radius: 12px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.20);
+  color: #000;
+  text-align:center;
+}
+
+#overlay .loader-gif{
+  width:80px;
+  height:80px;
+  display:block;
+  margin:0 auto 12px;
+}
+
+#overlay .loader-text{
+  font-size: 18px;
+  color:#000;
+}
 
 /* =========================
    ESTRUTURA DE PÁGINA
@@ -398,5 +432,6 @@ body{
 .acc__body{
   padding: 0 16px 14px;
 }
+
 
 
