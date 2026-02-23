@@ -180,15 +180,19 @@ canvas {
   height: 100svh;
   max-width: none !important;
 
-  display: none;              /* JS liga/desliga */
-  place-items: center;        /* centro vertical + horizontal */
-
+  display: none;              /* começa escondido */
   z-index: 2147483647;
 
   background: rgba(0,0,0,0.45);
   backdrop-filter: blur(8px) saturate(120%);
   -webkit-backdrop-filter: blur(8px) saturate(120%);
   will-change: backdrop-filter;
+}
+
+/* quando estiver ativo */
+#overlay.active{
+  display: grid;
+  place-items: center;
 }
 
 /* “bolha” branca no centro */
@@ -432,6 +436,7 @@ body{
 .acc__body{
   padding: 0 16px 14px;
 }
+
 
 
 
