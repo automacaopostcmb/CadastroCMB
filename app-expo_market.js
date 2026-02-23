@@ -378,8 +378,8 @@ async function enviarParaGoogle() {
     categoria: categoriaSelecionada || ''
   };
 
-  const overlay = document.getElementById('overlay');
-  overlay.style.display = 'grid';
+const overlay = document.getElementById('overlay');
+overlay.classList.add('active');
 
   try {
     const response = await fetch(
@@ -399,11 +399,13 @@ if (result.status === 'success') {
   if (step8) step8.style.display = 'none';
 
   // ✅ Mantém o header e troca para PRONTO!
-  const countEl = document.getElementById('wizardStepCount');
-  if (countEl) countEl.textContent = 'PRONTO!';
+  // Mantém só o header (topbar) e esconde o título grande abaixo dele
+const stepTitle = document.getElementById('wizardStepTitle');
+if (stepTitle) stepTitle.style.display = 'none';
 
-  const stepTitle = document.getElementById('wizardStepTitle');
-  if (stepTitle) stepTitle.textContent = 'PRONTO!';
+// (opcional) texto no header: pode manter o que estava ou colocar algo curto
+const countEl = document.getElementById('wizardStepCount');
+if (countEl) countEl.textContent = 'CADASTRO ENVIADO';
 
   // Mostra tela final
   const finalScreen = document.getElementById('final-screen');
@@ -421,7 +423,7 @@ if (result.status === 'success') {
     msg.style.display = 'block';
     console.error(err);
   } finally {
-    overlay.style.display = 'none';
+overlay.classList.remove('active');
     setTimeout(() => {
       const msg = document.getElementById('mensagem');
       if (msg) msg.textContent = '';
@@ -676,6 +678,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
