@@ -361,7 +361,7 @@ async function enviarParaGoogle() {
   if (obs) dados.observacao = obs;
 
   const overlay = document.getElementById('overlay');
-  overlay.style.display = 'flex';
+  overlay.style.display = 'grid';
 
   try {
     const response = await fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify(dados) });
@@ -638,6 +638,7 @@ updateWizardHeader();
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
