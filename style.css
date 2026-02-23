@@ -440,6 +440,121 @@ body{
 
 #final-screen .menu-under{ display:none; }
 
+/* =========================
+   LOGIN MAIS "AMIGÁVEL" (INDEX)
+   ========================= */
+
+/* Card do login/menu */
+.auth-card{
+  width: 100%;
+  max-width: 520px;
+  margin: 10px auto 0;
+  padding: 18px;
+  border-radius: 14px;
+
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(255,255,255,0.55);
+
+  box-shadow:
+    0 18px 40px rgba(0,0,0,0.12),
+    0 6px 14px rgba(0,0,0,0.10);
+
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+}
+
+/* Inputs mais “modernos” */
+.auth-input{
+  width: 100%;
+  max-width: none;        /* o card já limita */
+  margin: 10px 0;
+  padding: 14px 14px;
+
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #eaf3ff;
+
+  font-size: 16px;
+  outline: none;
+
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04) inset;
+}
+
+.auth-input::placeholder{ color: rgba(0,0,0,0.55); }
+
+.auth-input:focus{
+  border-color: rgba(2,134,255,0.55);
+  box-shadow:
+    0 0 0 4px rgba(2,134,255,0.18),
+    0 1px 0 rgba(0,0,0,0.04) inset;
+  background: #ffffff;
+}
+
+/* Botão “CTA” */
+.auth-btn{
+  width: 100%;
+  max-width: none;
+  margin: 12px 0 0;
+  padding: 14px 14px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background: #f2c300; /* amarelo CMB-ish */
+  color: #111;
+  font-weight: 800;
+  font-size: 16px;
+
+  cursor: pointer;
+  box-shadow: 0 10px 18px rgba(0,0,0,0.14);
+  transition: transform .08s ease, filter .15s ease, opacity .15s ease;
+}
+
+.auth-btn:hover{ filter: brightness(0.98); }
+.auth-btn:active{ transform: translateY(1px); }
+
+.auth-btn:disabled{
+  opacity: .65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Botões do menu (gerados via JS) com o mesmo “look” */
+#botoes button{
+  width: 100%;
+  max-width: none;
+  margin: 10px 0 0;
+  padding: 14px 14px;
+
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #ffffff;
+
+  font-weight: 800;
+  cursor: pointer;
+
+  box-shadow: 0 10px 18px rgba(0,0,0,0.10);
+  transition: transform .08s ease, filter .15s ease;
+}
+
+#botoes button:hover{ filter: brightness(0.99); }
+#botoes button:active{ transform: translateY(1px); }
+
+/* Título “Login” mais parecido com o exemplo 2 */
+#tituloLogin{
+  font-weight: 900;
+  color: #0b1b2a;
+  margin: 8px 0 6px;
+}
+
+body.is-index{
+  padding-top: 0 !important; /* não herdar o topbar do wizard */
+}
+
+body.is-index .page-center{
+  justify-content: center;
+}
 
 
 
