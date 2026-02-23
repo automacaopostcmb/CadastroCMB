@@ -732,13 +732,13 @@ body.is-index .page-center{
 }
 
 .btn-light-text{
-  display: block;            /* 👈 isso permite centralizar */
-  margin: 14px auto 0;       /* 👈 auto centraliza horizontalmente */
+  display: block;            
+  margin: 14px auto 0;       
   text-align: center;
 
   font-weight: 800;
   color: #fff;
-  cursor: pointer;
+  cursor: default;              /* melhor que pointer na div */
   user-select: none;
   text-decoration: none;
   text-shadow: 0 2px 10px rgba(0,0,0,.25);
@@ -746,9 +746,22 @@ body.is-index .page-center{
   transition: opacity .2s ease;
 }
 
-.btn-light-text:hover{
-  opacity: .92;
+/* Links individuais */
+.btn-light-text a{
+  display: block;              /* quebra linha */
+  margin: 6px 0;               /* espaço entre eles */
+
+  color: #ffffff;              /* força branco */
+  text-decoration: none;       /* remove sublinhado */
+
+  cursor: pointer;             /* cursor só no link */
+  transition: opacity .2s ease;
 }
+
+.btn-light-text a:hover{
+  opacity: 0.85;
+}
+
 
 
 
