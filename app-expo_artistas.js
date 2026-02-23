@@ -662,20 +662,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.matches('[data-next]')) {
       if (!validateStep(currentStep)) return;
 
-      // ⚠️ Aviso ao sair da etapa do ajudante se houver dados preenchidos
-      if (currentStep === AJUDANTE_STEP) {
-        const nomeAj  = (document.getElementById('nomeAjudante')?.value || '').trim();
-        const emailAj = cleanEmailValue(document.getElementById('emailAjudante')?.value || '');
-        if (nomeAj || emailAj) {
-          const ok = confirm(
-            '⚠️ Atenção!\n\n' +
-            'Tenha certeza de que o seu ajudante já se cadastrou no site de compra de ingressos do CMB usando este mesmo e-mail que você acabou de informar.\n' +
-            'Ele só precisa realizar o cadastro.'
-          );
-          if (!ok) return; // não avança se cancelar
-        }
-      }
-
       showStep(currentStep + 1);
     }
 
@@ -720,6 +706,7 @@ window.goToMenu = goToMenu;
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
 // window.goToMenu = goToMenu;
+
 
 
 
