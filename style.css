@@ -1,35 +1,66 @@
-/* =========================
-   ESTILOS GERAIS / LAYOUT
-   ========================= */
+/* =====================================================================
+   STYLE.CSS — Wizard CMB (Área dos Artistas)
+   - Header fixo no topo
+   - Footer fixo embaixo
+   - Conteúdo centralizado ENTRE header e footer (mobile + desktop)
+   ===================================================================== */
 
-/* Base */
+/* =========================
+   1) RESET / BASE
+   ========================= */
 *, *::before, *::after { box-sizing: border-box; }
 html { height: 100%; overflow-x: hidden; }
 
-/* Gutter lateral */
+/* =========================
+   2) VARIÁVEIS GLOBAIS
+   ========================= */
 :root{
+  /* espaçamento lateral responsivo */
   --gutter: clamp(12px, 4vw, 20px);
+
+  /* alturas fixas (usadas pra calcular o “miolo” central) */
+  --topbar-h: 56px;     /* header fixo */
+  --footer-h: 64px;     /* footer fixo */
 }
 
-/* Body com gradiente e coluna (rodapé gruda no fim) */
+/* =========================
+   3) BODY / FUNDO / LAYOUT GERAL
+   - Mantém a página em coluna e garante 100vh
+   - Reserva espaço pro header (top) e footer (bottom)
+   ========================= */
 body{
   font-family: Arial, sans-serif;
   margin: 0;
-  padding-block: 0;
+
+  /* gutter lateral */
   padding-inline: var(--gutter);
+
+  /* reserva o espaço do header e footer fixos */
+  padding-top: calc(var(--topbar-h) + 14px);
+  padding-bottom: calc(var(--footer-h) + 14px);
+
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+
+  /* fundo */
   background: linear-gradient(180deg, #0286ff 0%, #22a6ff 35%, #94d8ff 75%, #eaf4ff 100%);
   background-attachment: fixed;
+}
+
+/* Safe-area (iPhone notch / home bar) */
+@supports (padding: env(safe-area-inset-top)) {
+  body{
+    padding-top: calc(var(--topbar-h) + env(safe-area-inset-top) + 14px);
+    padding-bottom: calc(var(--footer-h) + env(safe-area-inset-bottom) + 14px);
+  }
 }
 
 h1, h2, h3 { text-align: center; margin: 0 0 14px 0; }
 
 /* =========================
-   COMPONENTES
+   4) COMPONENTES (INPUTS / CANVAS)
    ========================= */
-
 input, textarea, button {
   width: 100%;
   max-width: 420px;
@@ -38,12 +69,14 @@ input, textarea, button {
   font-size: 16px;
   display: block;
 }
+
 input[type="range"] {
   width: 100%;
   max-width: 500px;
   margin: 6px auto 12px;
   display: block;
 }
+
 canvas {
   margin: 20px auto;
   width: 100%;
@@ -54,7 +87,38 @@ canvas {
   background: #fff;
 }
 
-/* Faixa full-bleed */
+/* Ajustes desktop */
+@media (min-width:768px){
+  input, textarea, button, .link-voltar{ max-width:520px; }
+  canvas{ max-width:640px; }
+}
+
+/* =========================
+   5) UI PEQUENA (HINTS / MENSAGENS)
+   ========================= */
+.hint { font-size: 13px; color: #444; margin-bottom: 10px; text-align: center; }
+
+#mensagem{ margin-top:10px; font-weight:bold; text-align:center; }
+
+/* aviso de limite de texto */
+#avisoTexto{
+  color:#d93025; font-size:13px; margin:10px auto; text-align:center;
+  display:none; max-width:600px;
+}
+
+/* erro inline (validações) */
+.inline-error{
+  color:#d93025;
+  font-size:13px;
+  text-align:center;
+  margin-top:-6px;
+  margin-bottom:8px;
+  display:none;
+}
+
+/* =========================
+   6) FAIXA FULL-BLEED (se usada)
+   ========================= */
 .faixa-secao{
   margin: 16px calc(var(--gutter) * -1);
   padding: 12px var(--gutter);
@@ -63,40 +127,53 @@ canvas {
 }
 .faixa-secao span{ color: #fff; font-size: 22px; font-weight: bold; }
 
-.hint { font-size: 13px; color: #444; margin-bottom: 10px; text-align: center; }
-
-/* Link "Voltar" topo */
+/* =========================
+   7) LINKS “VOLTAR” (genérico / menu-under)
+   ========================= */
 .link-voltar{
-  display:block; width:100%; max-width:520px; margin:8px auto 16px;
-  text-align:center; color:#ffffff; font-size:14px; text-decoration:none;
+  display:block;
+  width:100%;
+  max-width:520px;
+  margin:8px auto 16px;
+  text-align:center;
+  color:#ffffff;
+  font-size:14px;
+  text-decoration:none;
 }
 .link-voltar:hover{ text-decoration:underline; }
 
-#mensagem{ margin-top:10px; font-weight:bold; text-align:center; }
-
-@media (min-width:768px){
-  input, textarea, button, .link-voltar{ max-width:520px; }
-  canvas{ max-width:640px; }
+/* link centralizado abaixo dos botões */
+.menu-under{
+  display:block;
+  width:100%;
+  max-width:520px;
+  margin: 12px auto 0;
+  text-align:center;
+  color:#ffffff;
+  font-size:14px;
+  text-decoration: underline;
+  opacity: .95;
 }
+.menu-under:hover{ opacity: 1; }
 
-/* Aviso etapa 5 */
-#avisoTexto{
-  color:#d93025; font-size:13px; margin:10px auto; text-align:center;
-  display:none; max-width:600px;
-}
-
-/* Rótulos */
+/* =========================
+   8) RÓTULOS / PLAQUINHA
+   ========================= */
 .title-label{
-  display:block; font-weight:700; color:#111; text-align:center;
-  font-size:16px; margin:16px auto 6px;
+  display:block;
+  font-weight:700;
+  color:#111;
+  text-align:center;
+  font-size:16px;
+  margin:16px auto 6px;
 }
 
-/* O selo da plaquinha */
+/* selo “plaquinha” (fora do canvas, se usado) */
 .plaquinha {
   display:inline-block;
   padding:.3em .8em;
-  background:#ffd400;            /* amarelo */
-  border:6px solid #000;         /* contorno preto */
+  background:#ffd400;
+  border:6px solid #000;
   border-radius:6px;
   color:#111;
   font:700 clamp(24px, 4vw, 46px)/1.1 "Comic Relief", Arial, sans-serif;
@@ -104,75 +181,155 @@ canvas {
   position:relative;
   z-index:1;
 
-  /* ADICIONE ESTAS LINHAS 👇 */
-  white-space: nowrap;    /* força tudo numa linha só */
-  text-align: left;       /* texto alinhado à esquerda */
+  /* manter numa linha só */
+  white-space: nowrap;
+  text-align: left;
 }
 
-
-/* Wizard */
+/* =========================
+   9) WIZARD (ETAPAS)
+   ========================= */
 .step{ display:none; }
 .step.active{ display:block; }
 #wizard-indicator{ text-align:center; font-size:14px; margin:8px 0 0; color:#333; }
 
-/* Navegação */
-.button-row{
-  display:flex; justify-content:center; align-items:center; gap:16px;
-  margin:20px auto 0; width:100%; max-width:520px;
+/* caixa branca padrão de cada etapa */
+.step-box{
+  width: 100%;
+  max-width: 720px;
+  margin: 10px auto 0;
+  background:#fff;
+  border:1px solid #d9e7ff;
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 6px 14px rgba(0,0,0,.04);
 }
-.btn-nav{ width:auto; min-width:160px; padding:10px 16px; border-radius:6px; border:none; font-weight:600; cursor:pointer; }
+
+/* quando review-box estiver dentro do step-box, evita “dobrar” borda/sombra */
+.step-box .review-box{
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* =========================
+   10) NAVEGAÇÃO (BOTÕES)
+   ========================= */
+.button-row{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:16px;
+
+  margin:16px auto 0;
+  width:100%;
+  max-width:520px;
+}
+
+.btn-nav{
+  width:auto;
+  min-width:160px;
+  padding:10px 16px;
+  border-radius:6px;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+}
+
 .btn-voltar{ background:#ddd; color:#333; }
+
 .btn-proximo{
   background:#16a34a;
   color:#fff;
 }
-.btn-proximo:hover{
-  background:#15803d;
-}
+.btn-proximo:hover{ background:#15803d; }
 .btn-proximo:disabled{ background:#aacfff; cursor:not-allowed; }
 
-/* Download */
+/* =========================
+   11) DOWNLOAD / TELA FINAL
+   ========================= */
 .btn-download{
-  background:#28a745; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold;
-  padding:10px 16px; width:260px; display:block; margin:20px auto;
+  background:#28a745;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+  padding:10px 16px;
+  width:260px;
+  display:block;
+  margin:20px auto;
 }
 
-/* Campo inválido */
-.invalid{ outline:2px solid #ff4d4f; border-color:#ff4d4f!important; background:#fff7f7; }
+/* campo inválido (validação) */
+.invalid{
+  outline:2px solid #ff4d4f;
+  border-color:#ff4d4f !important;
+  background:#fff7f7;
+}
 
-/* Intro */
+/* intro box (se usado) */
 .intro-box{
-  max-width:720px; margin:24px auto 0; background:#fff; border:1px solid #d9e7ff;
-  border-radius:12px; padding:18px; box-shadow:0 6px 14px rgba(0,0,0,.04);
+  max-width:720px;
+  margin:24px auto 0;
+  background:#fff;
+  border:1px solid #d9e7ff;
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 6px 14px rgba(0,0,0,.04);
 }
 .intro-box h2{ margin-top:4px; }
 .intro-box p{ line-height:1.5; margin:10px 0; color:#333; font-size:15px; text-align:left; }
 
-/* Erro inline */
-.inline-error{ color:#d93025; font-size:13px; text-align:center; margin-top:-6px; margin-bottom:8px; display:none; }
-
-/* Revisão */
+/* revisão */
 .review-box{
-  max-width:720px; margin:12px auto 0; background:#fff; border:1px solid #d9e7ff;
-  border-radius:12px; padding:16px 18px; box-shadow:0 6px 14px rgba(0,0,0,0.04); text-align:center;
+  max-width:720px;
+  margin:12px auto 0;
+  background:#fff;
+  border:1px solid #d9e7ff;
+  border-radius:12px;
+  padding:16px 18px;
+  box-shadow:0 6px 14px rgba(0,0,0,0.04);
+  text-align:center;
 }
 .review-item{ margin:12px 0; }
 .review-label{ font-weight:700; display:block; margin-bottom:4px; }
 .review-value{ white-space:pre-wrap; color:#333; }
 
-/* Tela final */
+/* tela final */
 .final-screen{ display:none; }
 .final-card{
-  max-width:720px; margin:24px auto 0; background:#fff; border:1px solid #d9e7ff;
-  border-radius:12px; padding:18px; box-shadow:0 6px 14px rgba(0,0,0,0.04); text-align:center;
+  max-width:720px;
+  margin:24px auto 0;
+  background:#fff;
+  border:1px solid #d9e7ff;
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 6px 14px rgba(0,0,0,0.04);
+  text-align:center;
 }
 .btn-menu{
-  background:#505bda; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:600;
-  padding:10px 16px; width:260px; display:block; margin:10px auto 0;
+  background:#505bda;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:600;
+  padding:10px 16px;
+  width:260px;
+  display:block;
+  margin:10px auto 0;
 }
 
+/* placeholders observação */
+#observacao::placeholder { color:#777; }
+#observacao:focus::placeholder { opacity:0; }
 
-/* ===== Overlay de envio do WIZARD (igual ao #loading do index) ===== */
+/* =========================
+   12) OVERLAYS (LOADING)
+   - #overlay: envio do wizard
+   - #loading: loading do index
+   ========================= */
 #overlay{
   position: fixed;
   inset: 0;
@@ -180,8 +337,8 @@ canvas {
   height: 100svh;
   max-width: none !important;
 
-  display: none;              /* começa escondido */
-  place-items: center;        /* ✅ centraliza sempre */
+  display: none;
+  place-items: center;
   z-index: 2147483647;
 
   background: rgba(0,0,0,0.45);
@@ -189,13 +346,8 @@ canvas {
   -webkit-backdrop-filter: blur(8px) saturate(120%);
   will-change: backdrop-filter;
 }
+#overlay.active{ display: grid; }
 
-/* quando estiver ativo */
-#overlay.active{
-  display: grid;
-}
-
-/* “bolha” branca no centro */
 #overlay .loader{
   padding: 14px 18px;
   background: #fff;
@@ -205,55 +357,34 @@ canvas {
   color: #000;
   text-align:center;
 }
-
 #overlay .loader-gif{
   width:80px;
   height:80px;
   display:block;
   margin:0 auto 12px;
 }
-
 #overlay .loader-text{
   font-size: 18px;
   color:#000;
 }
 
-
-/* =========================
-   ESTRUTURA DE PÁGINA
-   ========================= */
-
-/* Wrapper central */
-.page-center{
-  flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:12px; padding:24px 0;
-}
-
-/* Logo */
-.header-logo{ display:block; width:clamp(160px, 50vw, 280px); height:auto; margin:0 auto 8px; }
-
-/* Largura dos blocos (NÃO inclui o overlay) */
-#login-area, #menu{ width:100%; max-width:420px; }
-
-
-
-/* ===== Overlay de loading do INDEX ===== */
+/* loading do index */
 #loading{
   position: fixed;
   inset: 0;
   width: 100svw;
   height: 100svh;
   max-width: none !important;
-  display: none;                 /* o JS liga/desliga */
-  place-items: center;           /* ✅ centro vertical + horizontal */
+
+  display: none;
+  place-items: center;
   z-index: 2147483647;
 
-  /* ✅ fundo escurecido + blur */
   background: rgba(0,0,0,0.45);
   backdrop-filter: blur(8px) saturate(120%);
   -webkit-backdrop-filter: blur(8px) saturate(120%);
   will-change: backdrop-filter;
 }
-
 #loading .loading-bubble{
   padding: 14px 18px;
   background: #fff;
@@ -263,44 +394,47 @@ canvas {
   color: #000;
 }
 
-#observacao::placeholder { color:#777; }
-#observacao:focus::placeholder { opacity:0; }
+/* =========================
+   13) ESTRUTURA (PAGE-CENTER)
+   - Conteúdo SEMPRE centralizado no espaço entre header e footer
+   ========================= */
+.page-center{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  /* centraliza no “miolo” */
+  align-items: center;
+  justify-content: center;
+
+  /* garante centralização entre header e footer */
+  min-height: calc(100dvh - var(--topbar-h) - var(--footer-h));
+
+  gap: 12px;
+  padding: 24px 0;
+}
+
+/* logo (se usado) */
+.header-logo{
+  display:block;
+  width:clamp(160px, 50vw, 280px);
+  height:auto;
+  margin:0 auto 8px;
+}
+
+/* largura de blocos no index */
+#login-area, #menu{ width:100%; max-width:420px; }
 
 /* =========================
-   RODAPÉ FULL-BLEED
+   14) HEADER FIXO (TOPBAR)
    ========================= */
-.site-footer{
-  margin:24px calc(var(--gutter) * -1) 0;
-  background:#083a63;
-  color:#fff;
-}
-.site-footer .footer-inner{
-  max-width:1200px; margin:0 auto; padding:14px var(--gutter); text-align:center; line-height:1.5;
-}
-.site-footer a{ color:#fff; text-decoration:underline; }
-.site-footer a:hover{ opacity:.9; }
-
-@supports (padding: env(safe-area-inset-bottom)) {
-  .site-footer .footer-inner{
-    padding-bottom: calc(14px + env(safe-area-inset-bottom));
-  }
-}
-
-/* =========================
-   HEADER FIXO DO WIZARD
-   ========================= */
-
-:root{
-  --topbar-h: 56px;
-}
-
 .wizard-topbar{
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 9990;
-  background: #083a63;  /* mesma família do footer */
+  background: #083a63;
   color: #fff;
   box-shadow: 0 4px 14px rgba(0,0,0,.15);
 }
@@ -324,7 +458,7 @@ canvas {
   text-transform: uppercase;
 }
 
-/* Safe area (iPhone notch) */
+/* safe-area do topo */
 @supports (padding: env(safe-area-inset-top)) {
   .wizard-topbar__inner{
     padding-top: env(safe-area-inset-top);
@@ -332,82 +466,52 @@ canvas {
   }
 }
 
-/* Empurra o conteúdo pra baixo do header fixo */
-body{
-  padding-top: calc(var(--topbar-h) + 14px);
-}
-
-@supports (padding: env(safe-area-inset-top)) {
-  body{
-    padding-top: calc(var(--topbar-h) + env(safe-area-inset-top) + 14px);
-  }
-}
-
-/* =========================
-   BOX BRANCO PADRÃO POR ETAPA
-   ========================= */
-
-.step-box{
-  width: 100%;
-  max-width: 720px;
-  margin: 10px auto 0;
-  background:#fff;
-  border:1px solid #d9e7ff;
-  border-radius:12px;
-  padding:18px;
-  box-shadow:0 6px 14px rgba(0,0,0,.04);
-}
-
-/* o review-box já tem estilo, mas quando estiver dentro do step-box
-   tiramos “dobro” de sombra/borda visual */
-.step-box .review-box{
-  border: none;
-  box-shadow: none;
-  padding: 0;
-}
-
-/* =========================
-   BOTÕES SEMPRE FORA DO BOX
-   ========================= */
-
-.button-row{
-  margin: 16px auto 0;
-}
-
-/* Link centralizado abaixo dos botões */
-.menu-under{
-  display:block;
-  width:100%;
-  max-width:520px;
-  margin: 12px auto 0;
-  text-align:center;
-  color:#ffffff;
-  font-size:14px;
-  text-decoration: underline;
-  opacity: .95;
-}
-.menu-under:hover{ opacity: 1; }
-
-/* =========================
-   AJUSTE DO LAYOUT PRINCIPAL
-   ========================= */
-
-/* antes você usava justify-content:center; isso “flutua” no meio.
-   agora faz mais sentido começar do topo (abaixo do header). */
-.page-center{
-  justify-content: flex-start;
-}
-
-/* Título da etapa abaixo do topbar */
+/* título de etapa (abaixo do header fixo) */
 .wizard-step-title{
   text-align: center;
   font-size: 22px;
-  font-weight: 800;   /* mais pesado */
-  color: #ffffff;     /* branco */
+  font-weight: 800;
+  color: #ffffff;
   margin: 12px 0 4px;
 }
 
-/* ===== Accordion (dropbox) ===== */
+/* =========================
+   15) FOOTER FIXO
+   - fica sempre colado embaixo
+   - o body já reserva espaço via padding-bottom
+   ========================= */
+.site-footer{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9990;
+
+  height: var(--footer-h);
+  margin: 0;
+
+  background:#083a63;
+  color:#fff;
+
+  display: flex;
+  align-items: center;
+}
+
+.site-footer .footer-inner{
+  width: 100%;
+  max-width:1200px;
+  margin:0 auto;
+  padding: 10px var(--gutter);
+  text-align:center;
+  line-height:1.2;
+}
+
+.site-footer a{ color:#fff; text-decoration:underline; }
+.site-footer a:hover{ opacity:.9; }
+
+/* =========================
+   16) ACCORDION (DETAILS/SUMMARY)
+   ========================= */
 .acc{
   margin-top: 12px;
   border: 1px solid #bfe0ff;
@@ -433,18 +537,15 @@ body{
   opacity: .8;
 }
 .acc[open] .acc__sum::after{ content:"▴"; }
+.acc__body{ padding: 0 16px 14px; }
 
-.acc__body{
-  padding: 0 16px 14px;
-}
-
+/* oculta o menu-under na tela final */
 #final-screen .menu-under{ display:none; }
 
 /* =========================
-   LOGIN MAIS "AMIGÁVEL" (INDEX)
+   17) LOGIN “AMIGÁVEL” (INDEX)
+   - Só aplica se o body tiver class .is-index
    ========================= */
-
-/* Card do login/menu */
 .auth-card{
   width: 100%;
   max-width: 520px;
@@ -463,10 +564,9 @@ body{
   -webkit-backdrop-filter: blur(8px) saturate(120%);
 }
 
-/* Inputs mais “modernos” */
 .auth-input{
   width: 100%;
-  max-width: none;        /* o card já limita */
+  max-width: none;
   margin: 10px 0;
   padding: 14px 14px;
 
@@ -479,9 +579,7 @@ body{
 
   box-shadow: 0 1px 0 rgba(0,0,0,0.04) inset;
 }
-
 .auth-input::placeholder{ color: rgba(0,0,0,0.55); }
-
 .auth-input:focus{
   border-color: rgba(2,134,255,0.55);
   box-shadow:
@@ -490,7 +588,6 @@ body{
   background: #ffffff;
 }
 
-/* Botão “CTA” */
 .auth-btn{
   width: 100%;
   max-width: none;
@@ -500,7 +597,7 @@ body{
   border: 0;
   border-radius: 12px;
 
-  background: #f2c300; /* amarelo CMB-ish */
+  background: #f2c300;
   color: #111;
   font-weight: 800;
   font-size: 16px;
@@ -509,10 +606,8 @@ body{
   box-shadow: 0 10px 18px rgba(0,0,0,0.14);
   transition: transform .08s ease, filter .15s ease, opacity .15s ease;
 }
-
 .auth-btn:hover{ filter: brightness(0.98); }
 .auth-btn:active{ transform: translateY(1px); }
-
 .auth-btn:disabled{
   opacity: .65;
   cursor: not-allowed;
@@ -520,7 +615,7 @@ body{
   box-shadow: none;
 }
 
-/* Botões do menu (gerados via JS) com o mesmo “look” */
+/* botões do menu gerados via JS */
 #botoes button{
   width: 100%;
   max-width: none;
@@ -537,30 +632,28 @@ body{
   box-shadow: 0 10px 18px rgba(0,0,0,0.10);
   transition: transform .08s ease, filter .15s ease;
 }
-
 #botoes button:hover{ filter: brightness(0.99); }
 #botoes button:active{ transform: translateY(1px); }
 
-/* Título “Login” mais parecido com o exemplo 2 */
 #tituloLogin{
   font-weight: 900;
   color: #0b1b2a;
   margin: 8px 0 6px;
 }
 
+/* index não deve herdar padding-top do wizard */
 body.is-index{
-  padding-top: 0 !important; /* não herdar o topbar do wizard */
+  padding-top: 0 !important;
+  padding-bottom: 0 !important; /* opcional: se index não usa footer fixo */
 }
 
+/* no index, centraliza o card no meio */
 body.is-index .page-center{
-  justify-content: center;
+  min-height: 100dvh;
 }
 
-/* Remove “respiro” extra no topo do card (primeiro filho) */
-.auth-card > :first-child{
-  margin-top: 0 !important;
-}
-
+/* remove “respiro” extra no topo do card */
+.auth-card > :first-child{ margin-top: 0 !important; }
 .auth-card input,
 .auth-card button{
   max-width: none;
@@ -568,72 +661,60 @@ body.is-index .page-center{
   margin-right: 0;
 }
 
+/* links do index */
 .login-links{
   margin-top: 14px;
   text-align: center;
 }
-
 .login-links a,
-.login-links span{
-  color: #ffffff;
+.login-links span{ color: #ffffff; }
+.login-links a{ text-decoration: none; }
+.login-links a:hover{ text-decoration: underline; }
+
+/* utilitário */
+.hidden{ display: none !important; }
+
+/* botões menu com hover/active “normal” */
+#botoes button.menu-btn{
+  width: 100%;
+  border: 0;
+  color: #0b0b0b;
+  font-weight: 800;
+  padding: 14px 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+  box-shadow: 0 8px 18px rgba(0,0,0,.12);
+}
+#botoes button.menu-btn:hover{
+  filter: brightness(0.95);
+  transform: translateY(-1px);
+}
+#botoes button.menu-btn:active{
+  filter: brightness(0.90);
+  transform: translateY(0px);
+  box-shadow: 0 6px 14px rgba(0,0,0,.10);
 }
 
-.login-links a{
+/* “Sair” fora do box */
+.logout-outside{
+  display: none;
+  margin-top: 14px;
+  text-align: center;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
   text-decoration: none;
+  text-shadow: 0 2px 10px rgba(0,0,0,.25);
 }
+.logout-outside:hover{ opacity: .92; }
 
-.login-links a:hover{
-  text-decoration: underline;
+/* texto de ajuda no menu */
+.menu-hint{
+  margin: 10px 0 14px;
+  text-align: center;
+  font-size: 13.5px;
+  line-height: 1.35;
+  opacity: .85;
 }
-
-/* classe para esconder */
-.hidden{
-  display: none !important;
-}
-
- /* Botões do menu (hover/active "normal") */
-  #botoes button.menu-btn{
-    width: 100%;
-    border: 0;
-    color: #0b0b0b;
-    font-weight: 800;
-    padding: 14px 16px;
-    border-radius: 14px;
-    cursor: pointer;
-    transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
-    box-shadow: 0 8px 18px rgba(0,0,0,.12);
-  }
-  #botoes button.menu-btn:hover{
-    filter: brightness(0.95);
-    transform: translateY(-1px);
-  }
-  #botoes button.menu-btn:active{
-    filter: brightness(0.90);
-    transform: translateY(0px);
-    box-shadow: 0 6px 14px rgba(0,0,0,.10);
-  }
-
-  /* “Sair” fora do box */
-  .logout-outside{
-    display: none;            /* só aparece após login */
-    margin-top: 14px;
-    text-align: center;
-    font-weight: 800;
-    color: #fff;
-    cursor: pointer;
-    user-select: none;
-    text-decoration: none;
-    text-shadow: 0 2px 10px rgba(0,0,0,.25);
-  }
-  .logout-outside:hover{
-    opacity: .92;
-  }
-
-  /* Texto de ajuda no menu */
-  .menu-hint{
-    margin: 10px 0 14px;
-    text-align: center;
-    font-size: 13.5px;
-    line-height: 1.35;
-    opacity: .85;
-  }
