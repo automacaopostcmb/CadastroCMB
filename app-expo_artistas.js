@@ -445,6 +445,7 @@ try {
     if (msg) msg.textContent = '';
   }, 5000);
 }
+}
 /* ===========================
    AUTENTICAÇÃO
    =========================== */
@@ -765,6 +766,7 @@ window.goToMenu = goToMenu;
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
 // window.goToMenu = goToMenu;
+
 
 
 
