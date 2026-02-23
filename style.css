@@ -357,7 +357,7 @@ body{
 .wizard-step-title{
   width: 100%;
   max-width: 720px;
-  margin: 12px auto 0;
+  margin: 18px auto 18px; /* 👈 espaço igual em cima e embaixo */
   text-align: center;
   font-weight: 900;
   letter-spacing: .3px;
@@ -368,12 +368,20 @@ body{
 
 /* dá um respiro antes do box branco */
 .step-box{
-  margin-top: 10px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  background:#fff;
+  border:1px solid #d9e7ff;
+  border-radius:12px;
+  padding: 10px 18px 18px 18px; /* 👈 topo menor */
+  box-shadow:0 6px 14px rgba(0,0,0,.04);
 }
 
 @media (min-width:768px){
   .wizard-step-title{ font-size: 15px; }
 }
+
 
 
 
