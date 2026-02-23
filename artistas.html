@@ -234,35 +234,55 @@
     <a class="menu-under" href="index.html?back=1">Voltar para o Menu</a>
   </section>
 
-  <!-- FINAL -->
-  <section id="final-screen" class="final-screen">
-    <div class="final-card">
-      <h2>✅ Imagem Criada!</h2>
-      <p>Baixe e se divulgue!</p>
+<!-- FINAL -->
+<section id="final-screen" class="final-screen">
+  <div class="final-card">
+    <h2>✅ Imagem Criada!</h2>
+    <p>Baixe e divulgue a sua presença!</p>
 
-      <!-- Preview pequeno -->
-      <img id="finalPreview" class="final-preview" alt="Preview da imagem criada" />
+    <!-- Preview pequeno -->
+    <img id="finalPreview"
+         style="max-width: 320px; width: 100%; height: auto; margin: 20px auto; display:block; border-radius:12px;">
 
-      <button class="btn-download" id="btn-final-download" onclick="baixarImagem()">Baixar Imagem</button>
+    <button class="btn-download" id="btn-final-download" onclick="baixarImagem()">
+      Baixar Imagem
+    </button>
 
-      <!-- AJUSTE: botão compartilhar "rápido" -->
-      <button class="btn-share" id="btn-final-share" type="button">Compartilhar</button>
+    <!-- Botão compartilhar (mesmo padrão do download, mas amarelo) -->
+    <button id="btn-final-share" type="button"
+            style="
+              width: 100%;
+              max-width: 260px;
+              padding: 10px 16px;
+              border-radius: 6px;
+              border: none;
+              background-color: #f4c200;
+              color: #000;
+              font-weight: 600;
+              cursor: pointer;
+              display: block;
+              margin: 10px auto 0;
+            ">
+      Compartilhar
+    </button>
 
-      <div id="captionWrap" class="caption-wrap">
-        <h3>Ajuste e use essa descrição para as suas redes:</h3>
-        <textarea id="captionBox"></textarea>
-        <div style="text-align:center">
-          <button class="btn-copy" id="btnCopyCaption" type="button">Copiar</button>
-          <button class="btn-copy" id="btnShareNative" type="button">Compartilhar</button>
-        </div>
+    <div id="captionWrap" class="caption-wrap">
+      <h3>Ajuste e use essa descrição para as suas redes:</h3>
+      <textarea id="captionBox"></textarea>
+      <div style="text-align:center">
+        <button class="btn-copy" id="btnCopyCaption" type="button">Copiar</button>
+        <button class="btn-copy" id="btnShareNative" type="button">Compartilhar</button>
       </div>
     </div>
+  </div>
 
-    <!-- fora do box branco -->
-    <div class="final-actions">
-      <button class="btn-nav btn-voltar" id="btn-menu-out" type="button" onclick="goToMenu()">Voltar para o Menu</button>
-    </div>
-  </section>
+  <!-- fora do box branco -->
+  <div class="final-actions">
+    <button class="btn-nav btn-voltar" id="btn-menu-out" type="button" onclick="goToMenu()">
+      Voltar para o Menu
+    </button>
+  </div>
+</section>
 
   <div id="overlay">
     <div class="loader">
@@ -284,4 +304,5 @@
 
 </body>
 </html>
+
 
