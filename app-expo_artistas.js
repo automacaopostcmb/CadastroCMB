@@ -76,7 +76,7 @@ function hideAuthOverlay() {
 
 function blockAndRedirect(message, url = 'index.html') {
   showAuthOverlay(message);
-  setTimeout(() => { window.location.href = url; }, 900);
+  setTimeout(() => { window.location.href = url; }, 1500);
 }
 
 function stopOverlayMessages() {
@@ -806,6 +806,7 @@ window.goToMenu = goToMenu;
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
 // window.goToMenu = goToMenu;
+
 
 
 
