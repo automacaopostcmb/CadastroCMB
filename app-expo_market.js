@@ -68,6 +68,38 @@ function stopOverlayMessages() {
 const step5Messages = { charError: '' };
 const validationFlags = { overflow: false };
 
+function showAuthOverlay(message) {
+  const overlay = document.getElementById('overlay');
+  if (!overlay) return;
+
+  // garante que não está no modo "envio"
+  overlay.classList.remove('active');
+  overlay.classList.add('auth');
+
+  // força aparecer (se no seu CSS o .active controla display)
+  overlay.style.display = 'grid';
+
+  // texto
+  const el = document.querySelector('#overlay .loader-text');
+  if (el) el.textContent = message || 'Faça login primeiro.';
+}
+
+function hideAuthOverlay() {
+  const overlay = document.getElementById('overlay');
+  if (!overlay) return;
+
+  overlay.classList.remove('auth');
+  overlay.style.display = 'none';
+
+  const el = document.querySelector('#overlay .loader-text');
+  if (el) el.textContent = 'Enviando...';
+}
+
+function blockAndRedirect(message, url = 'index.html', delay = 1500) {
+  showAuthOverlay(message);
+  setTimeout(() => { window.location.href = url; }, delay); // 👈 aqui ajusta o “tempo do popup”
+}
+
 /* ===========================
    HELPERS
    =========================== */
@@ -480,10 +512,27 @@ const API_URL =
 const PAGINA = 'expo_market';
 async function checkAuth() {
   const chave = (localStorage.getItem('chave') || '').trim();
-  if (!chave) { alert('Faça login primeiro.'); window.location.href = 'index.html'; return; }
-  const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}`);
-  const data = await resp.json();
-  if (!data.permitido) { alert('Você não tem permissão para acessar esta página.'); window.location.href = 'index.html'; }
+
+  if (!chave) {
+    blockAndRedirect('Faça login primeiro.', 'index.html', 2000);
+    return;
+  }
+
+  try {
+    const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}&v=${Date.now()}`);
+    const data = await resp.json();
+
+    if (!data.permitido) {
+      blockAndRedirect('Você não tem permissão para acessar esta página.', 'index.html', 2200);
+      return;
+    }
+
+    // se quiser, ao passar auth, garante overlay sumido
+    // hideAuthOverlay();
+
+  } catch (e) {
+    blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html', 2500);
+  }
 }
 
 /* ===========================
@@ -719,6 +768,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
