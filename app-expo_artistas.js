@@ -444,8 +444,8 @@ try {
     msg.style.color = 'green';
 
     // esconde a etapa 8 (review) e abre tela final
-    const step8 = document.getElementById('step8');
-    if (step8) step8.style.display = 'none';
+const step9 = document.getElementById('step9');
+if (step9) step9.style.display = 'none';
 
     showFinalScreen(); // ✅ centraliza tudo: header "PRONTO!", preview pequeno, tela final
   } else {
@@ -509,8 +509,9 @@ const REQUIRED_BY_STEP = {
   4: [], // ajudante opcional
   5: ['biografia'],
   6: ['fotoDivulgacao'],
-  7: [],
-  8: []
+  7: [], // ajuste
+  8: [], // confirmação (nova)
+  9: []  // revisão/envio (antiga 8)
 };
 
 const STEP_VALIDATORS = {
@@ -549,7 +550,8 @@ const STEP_VALIDATORS = {
     return true;
   },
 
-  8: () => { buildReview(); return true; }
+  // ✅ agora a revisão é a etapa 9
+  9: () => { buildReview(); return true; }
 };
 
 function isFilled(id) {
@@ -627,6 +629,24 @@ function updateWizardHeader() {
   }
 }
 
+function updateConfirmPreview() {
+  const img = document.getElementById('confirmPreview');
+  if (!img) return;
+
+  if (!canvas) {
+    img.removeAttribute('src');
+    return;
+  }
+
+  try {
+    img.src = canvas.toDataURL('image/png');
+  } catch (e) {
+    // se der CORS (não deveria, já que a foto é local),
+    // apenas não exibe o preview
+    img.removeAttribute('src');
+  }
+}
+
 function showStep(n) {
   // se já terminou, não navega mais em steps
   if (wizardDone) return;
@@ -634,8 +654,22 @@ function showStep(n) {
   currentStep = Math.max(1, Math.min(totalSteps, n));
   steps.forEach((el, idx) => el.classList.toggle('active', idx === currentStep - 1));
 
-  if (currentStep === 7) { try { gerarPost(); } catch(e) {} }
-  if (currentStep === 8) { try { buildReview(); } catch(e) { console.error('buildReview error', e); } }
+  if (currentStep === 7) { 
+    try { gerarPost(); } catch(e) {} 
+  }
+
+  // ✅ nova etapa de confirmação
+  if (currentStep === 8) {
+    try { 
+      gerarPost();           // garante que o canvas está atualizado
+      updateConfirmPreview(); // joga o canvas no <img>
+    } catch(e) {}
+  }
+
+  // ✅ revisão agora é a etapa 9
+  if (currentStep === 9) { 
+    try { buildReview(); } catch(e) { console.error('buildReview error', e); } 
+  }
 
   updateWizardHeader();
   revalidateStepNav();
@@ -806,16 +840,3 @@ window.goToMenu = goToMenu;
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
 // window.goToMenu = goToMenu;
-
-
-
-
-
-
-
-
-
-
-
-
-
