@@ -61,7 +61,7 @@ function showAuthOverlay(message) {
   if (!overlay) return;
 
   overlay.classList.add('auth');
-  overlay.style.display = 'grid';     // você já usa isso nessa página
+  overlay.style.display = 'grid';
   setOverlayText(message || 'Faça login primeiro.');
 }
 
@@ -95,11 +95,13 @@ function showFieldError(inputId, msg) {
   if (box) { box.textContent = msg || ''; box.style.display = msg ? 'block' : 'none'; }
   if (input) input.classList.toggle('invalid', !!msg);
 }
+
 function escapeHtml(s) {
   return String(s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
+
 // Saneia e-mails (remove invisíveis e espaços, normaliza)
 function cleanEmailValue(raw) {
   let v = (raw || '');
@@ -108,6 +110,7 @@ function cleanEmailValue(raw) {
   v = v.replace(/\s+/g, '');
   return v;
 }
+
 // Telefone simples: mantém dígitos; válido se tiver >= 8 dígitos
 function normalizePhone(raw) {
   return (raw || '').replace(/\D+/g, '');
@@ -142,7 +145,11 @@ function initCanvas() {
   const fotoInput = document.getElementById('fotoDivulgacao');
   fotoInput?.addEventListener('change', (e) => {
     const r = new FileReader();
-    r.onload = (ev) => { fotoImg = new Image(); fotoImg.onload = gerarPost; fotoImg.src = ev.target.result; };
+    r.onload = (ev) => {
+      fotoImg = new Image();
+      fotoImg.onload = gerarPost;
+      fotoImg.src = ev.target.result;
+    };
     if (e.target.files && e.target.files[0]) r.readAsDataURL(e.target.files[0]);
   });
 
@@ -226,11 +233,13 @@ function drawPlaquinhaCanvas(c, text, x, y, scale = plaquinhaScale) {
   // sombra “blocada”
   drawRoundedRect(c, x + SHADOW_X, y + SHADOW_Y,
                   rectW + BORDER * 2, rectH + BORDER * 2, RADIUS);
-  c.fillStyle = '#000'; c.fill();
+  c.fillStyle = '#000';
+  c.fill();
 
   // caixa amarela
   drawRoundedRect(c, x, y, rectW, rectH, RADIUS);
-  c.fillStyle = '#ffd400'; c.fill();
+  c.fillStyle = '#ffd400';
+  c.fill();
 
   // contorno
   c.lineWidth = BORDER;
@@ -300,12 +309,14 @@ function buildCaptionFromForm() {
 function getCaptionText() {
   return (document.getElementById('captionBox')?.value || '').trim();
 }
+
 function getCanvasBlob() {
   return new Promise((resolve) => {
     if (!canvas) return resolve(null);
     canvas.toBlob((blob) => resolve(blob), 'image/png');
   });
 }
+
 async function shareNative() {
   const text = getCaptionText() || buildCaptionFromForm() || 'Comic Market Brasil';
 
@@ -357,7 +368,9 @@ async function enviarParaGoogle() {
   let faltando = [];
   obrig.forEach((id) => {
     const el = document.getElementById(id);
-    const v = (el && el.type === 'file') ? (el.files && el.files.length ? 'ok' : '') : (el?.value || '').trim();
+    const v = (el && el.type === 'file')
+      ? (el.files && el.files.length ? 'ok' : '')
+      : (el?.value || '').trim();
     if (!v) faltando.push(id);
   });
 
@@ -387,10 +400,12 @@ async function enviarParaGoogle() {
   }
 
   const toBase64 = (file) => new Promise((res, rej) => {
-    const r = new FileReader(); r.readAsDataURL(file);
+    const r = new FileReader();
+    r.readAsDataURL(file);
     r.onload = () => res(r.result);
     r.onerror = rej;
   });
+
   async function processarImagem(id) {
     const f = document.getElementById(id).files[0];
     if (!f) return null;
@@ -425,51 +440,53 @@ async function enviarParaGoogle() {
     fotoDivulgacao:  fotoDivulgB64,
     preview:         previewBase64
   };
+
   if (obs) dados.observacao = obs;
 
-   const overlay = document.getElementById('overlay');
-   overlay.classList.remove('auth'); // ✅ garante modo normal (com gif)
-overlay.style.display = 'grid';
-startOverlayMessages(); // ✅ começa a trocar o texto do overlay
+  const overlay = document.getElementById('overlay');
+  overlay.classList.remove('auth');
+  overlay.style.display = 'grid';
+  startOverlayMessages();
 
-try {
-  const response = await fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify(dados) });
-  const result = await response.json();
+  try {
+    const response = await fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify(dados) });
+    const result = await response.json();
 
-  const msg = document.getElementById('mensagem');
-  msg.style.display = 'block';
-
-  if (result.status === 'success') {
-    msg.textContent = '✅ Enviado com sucesso!';
-    msg.style.color = 'green';
-
-    // esconde a etapa 8 (review) e abre tela final
-const step9 = document.getElementById('step9');
-if (step9) step9.style.display = 'none';
-
-    showFinalScreen(); // ✅ centraliza tudo: header "PRONTO!", preview pequeno, tela final
-  } else {
-    msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
-    msg.style.color = 'red';
-  }
-
-} catch (err) {
-  const msg = document.getElementById('mensagem');
-  msg.textContent = '❌ Erro de rede. Tente novamente.';
-  msg.style.color = 'red';
-  msg.style.display = 'block';
-  console.error(err);
-
-} finally {
-  stopOverlayMessages();        // ✅ para os timers e reseta texto
-  overlay.style.display = 'none';
-
-  setTimeout(() => {
     const msg = document.getElementById('mensagem');
-    if (msg) msg.textContent = '';
-  }, 5000);
+    msg.style.display = 'block';
+
+    if (result.status === 'success') {
+      msg.textContent = '✅ Enviado com sucesso!';
+      msg.style.color = 'green';
+
+      // esconde a etapa 9 (review) e abre tela final
+      const step9 = document.getElementById('step9');
+      if (step9) step9.style.display = 'none';
+
+      showFinalScreen();
+    } else {
+      msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
+      msg.style.color = 'red';
+    }
+
+  } catch (err) {
+    const msg = document.getElementById('mensagem');
+    msg.textContent = '❌ Erro de rede. Tente novamente.';
+    msg.style.color = 'red';
+    msg.style.display = 'block';
+    console.error(err);
+
+  } finally {
+    stopOverlayMessages();
+    overlay.style.display = 'none';
+
+    setTimeout(() => {
+      const msg = document.getElementById('mensagem');
+      if (msg) msg.textContent = '';
+    }, 5000);
+  }
 }
-}
+
 /* ===========================
    AUTENTICAÇÃO
    =========================== */
@@ -496,8 +513,6 @@ async function checkAuth() {
     blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html');
   }
 }
-   
-
 
 /* ===========================
    WIZARD / VALIDAÇÕES
@@ -550,8 +565,8 @@ const STEP_VALIDATORS = {
     return true;
   },
 
-  // ✅ agora a revisão é a etapa 9
-  9: () => { buildReview(); return true; }
+  // ✅ revisão é a etapa 9 (mas buildReview é disparado no showStep(9), para não duplicar)
+  9: () => true
 };
 
 function isFilled(id) {
@@ -598,7 +613,7 @@ let steps = [], totalSteps = 0, currentStep = 1;
 // ✅ quando true, o header fica travado em "PRONTO!"
 let wizardDone = false;
 
-// >>> etapa do ajudante para o alerta
+// >>> etapa do ajudante para o alerta (mantida)
 const AJUDANTE_STEP = 4;
 
 function getStepTitle(stepNumber) {
@@ -629,6 +644,9 @@ function updateWizardHeader() {
   }
 }
 
+/* ===========================
+   CONFIRMAÇÃO (PREVIEW IMG)
+   =========================== */
 function updateConfirmPreview() {
   const img = document.getElementById('confirmPreview');
   if (!img) return;
@@ -641,8 +659,6 @@ function updateConfirmPreview() {
   try {
     img.src = canvas.toDataURL('image/png');
   } catch (e) {
-    // se der CORS (não deveria, já que a foto é local),
-    // apenas não exibe o preview
     img.removeAttribute('src');
   }
 }
@@ -654,21 +670,21 @@ function showStep(n) {
   currentStep = Math.max(1, Math.min(totalSteps, n));
   steps.forEach((el, idx) => el.classList.toggle('active', idx === currentStep - 1));
 
-  if (currentStep === 7) { 
-    try { gerarPost(); } catch(e) {} 
+  if (currentStep === 7) {
+    try { gerarPost(); } catch(e) {}
   }
 
   // ✅ nova etapa de confirmação
   if (currentStep === 8) {
-    try { 
-      gerarPost();           // garante que o canvas está atualizado
-      updateConfirmPreview(); // joga o canvas no <img>
+    try {
+      gerarPost();
+      updateConfirmPreview();
     } catch(e) {}
   }
 
   // ✅ revisão agora é a etapa 9
-  if (currentStep === 9) { 
-    try { buildReview(); } catch(e) { console.error('buildReview error', e); } 
+  if (currentStep === 9) {
+    try { buildReview(); } catch(e) { console.error('buildReview error', e); }
   }
 
   updateWizardHeader();
@@ -706,14 +722,13 @@ function showFinalScreen() {
   // remove steps da tela
   document.querySelectorAll('.step').forEach(s => {
     s.classList.remove('active');
-    // opcional: mantém display padrão; quem controla visibilidade é .active
   });
 
   // mostra final
   const final = document.getElementById('final-screen');
   if (final) final.style.display = 'block';
 
-  // header: PRONTO! (mas sem texto na topbar)
+  // header: PRONTO!
   updateWizardHeader();
 
   // ✅ esconde o texto da topbar só no FINAL
@@ -731,7 +746,6 @@ function showFinalScreen() {
       fp.src = canvas.toDataURL('image/png');
       fp.style.display = 'block';
     } catch(e) {
-      // se der CORS no canvas, apenas não mostra preview
       fp.style.display = 'none';
     }
   }
@@ -776,8 +790,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('input', (e) => {
     if (wizardDone) return;
-const topbarText = document.getElementById('wizardStepCount');
-if (topbarText) topbarText.style.display = 'block'; 
+
+    const topbarText = document.getElementById('wizardStepCount');
+    if (topbarText) topbarText.style.display = 'block';
+
     const activeStep = steps[currentStep - 1];
     if (!activeStep?.contains(e.target)) return;
     revalidateStepNav();
@@ -795,7 +811,6 @@ if (topbarText) topbarText.style.display = 'block';
 
     if (e.target.matches('[data-next]')) {
       if (!validateStep(currentStep)) return;
-
       showStep(currentStep + 1);
     }
 
@@ -835,8 +850,6 @@ if (topbarText) topbarText.style.display = 'block';
 
 /* Expor funções globais */
 window.goToMenu = goToMenu;
-
-// ⚠️ manter suas globais já existentes (se você já tinha isso no final do arquivo)
+// Se você precisa expor explicitamente (dependendo do seu HTML), descomente:
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
-// window.goToMenu = goToMenu;
