@@ -153,6 +153,7 @@ canvas {
   font-size:14px;
   text-decoration: underline;
   opacity: .95;
+   cursor: pointer;
 }
 .menu-under:hover{ opacity: 1; }
 
@@ -766,6 +767,7 @@ body.is-index .page-center{
 .btn-light-text a:hover{
   opacity: 0.85;
 }
+
 
 
 
