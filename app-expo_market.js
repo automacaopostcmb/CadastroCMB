@@ -450,8 +450,14 @@ async function enviarParaGoogle() {
   };
 
 const overlay = document.getElementById('overlay');
+
+// 🔒 garante que não ficou em modo "auth" (bloqueio/login)
+overlay.classList.remove('auth');
+
+// 🚀 ativa modo normal de envio
 overlay.classList.add('active');
-startOverlayMessages(); // ✅ começa a trocar mensagens
+
+startOverlayMessages();
 
 try {
   const response = await fetch(
@@ -768,6 +774,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
