@@ -352,7 +352,7 @@ const tituloY = 837;
 const tituloMaxWidth = 815;
 const tituloMaxLinhas = 2;
 const tituloLineHeight = 54;
-const tituloShiftDuasLinhas = -12; // sobe 12px quando tiver 2 linhas
+const tituloShiftDuasLinhas = -24; // sobe 12px quando tiver 2 linhas
 
 const linhasTitulo = wrapText(titulo, tituloMaxWidth, ctx);
 const ultrapassouTitulo = linhasTitulo.length > tituloMaxLinhas;
@@ -843,6 +843,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
