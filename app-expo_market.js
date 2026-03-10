@@ -348,7 +348,7 @@ ctx.textAlign = 'center';
    ctx.textBaseline = 'top';
 
 const tituloX = canvas.width / 2;
-const tituloY = 846;
+const tituloY = 831;
 const tituloMaxWidth = 815;
 const tituloMaxLinhas = 2;
 const tituloLineHeight = 54;
@@ -840,6 +840,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
