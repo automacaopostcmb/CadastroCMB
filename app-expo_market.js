@@ -2,7 +2,7 @@
    CONFIGURAÇÃO
    ========================================================= */
 const FRAME_URL =
-  'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Frame_expo_market.png';
+  'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_expo_market.png';
 
 /* ===== TARJAS (AJUSTE AQUI) =====
    x e y = posição em px (0,0 no canto superior esquerdo do canvas)
@@ -774,6 +774,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
