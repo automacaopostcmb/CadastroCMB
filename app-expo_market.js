@@ -449,20 +449,51 @@ if (typeof revalidateStepNav === 'function') revalidateStepNav();
 }
 
 function wrapText(text, maxWidth, context) {
-  const palavras = text.split(' ');
+
   const linhas = [];
+  const palavras = text.split(' ');
   let linha = '';
-  palavras.forEach((p) => {
-    const teste = linha + p + ' ';
+
+  palavras.forEach((palavra) => {
+
+    const teste = linha + palavra + ' ';
     const largura = context.measureText(teste).width;
+
     if (largura > maxWidth && linha !== '') {
+
       linhas.push(linha.trim());
-      linha = p + ' ';
+      linha = palavra + ' ';
+
+    } else if (context.measureText(palavra).width > maxWidth) {
+
+      // palavra gigante (sem espaço) → quebrar em partes
+      let parte = '';
+
+      for (let char of palavra) {
+
+        const testeParte = parte + char;
+
+        if (context.measureText(testeParte).width > maxWidth) {
+          linhas.push(parte);
+          parte = char;
+        } else {
+          parte = testeParte;
+        }
+
+      }
+
+      linha = parte + ' ';
+
     } else {
+
       linha = teste;
+
     }
+
   });
-  if (linha !== '') linhas.push(linha.trim());
+
+  if (linha.trim() !== '') linhas.push(linha.trim());
+
   return linhas;
 }
 
@@ -900,6 +931,7 @@ document.getElementById('accTextos')?.addEventListener('toggle', (e) => {
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
