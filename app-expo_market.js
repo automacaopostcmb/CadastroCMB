@@ -635,14 +635,14 @@ const STEP_VALIDATORS = {
     ok = false;
   }
 
-  const selected = document.querySelector('input[name="categoria"]:checked');
-  const catErr = document.getElementById('categoriaError');
-  if (!selected) {
-    ok = false;
-    catErr && (catErr.textContent = 'Selecione uma categoria para continuar.');
-  } else {
-    catErr && (catErr.textContent = '');
-  }
+
+const selected = document.querySelector('input[name="categoria"]:checked');
+const catErr = document.getElementById('categoriaError');
+
+if (!selected) {
+  ok = false;
+}
+catErr && (catErr.textContent = '');
 
   updateStep5Warning();
   return ok;
@@ -669,15 +669,15 @@ function validateStep(stepNumber) {
   markValidity(required);
 
   let ok = required.every(isFilled);
-  if (!ok) return false;
 
   for (const fn of GLOBAL_VALIDATORS) {
-    if (fn && fn(stepNumber) === false) return false;
+    if (fn && fn(stepNumber) === false) ok = false;
   }
-  const stepFn = STEP_VALIDATORS[stepNumber];
-  if (stepFn && stepFn() === false) return false;
 
-  return true;
+  const stepFn = STEP_VALIDATORS[stepNumber];
+  if (stepFn && stepFn() === false) ok = false;
+
+  return ok;
 }
 function revalidateStepNav() {
   const activeStep = steps[currentStep - 1];
@@ -778,10 +778,6 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
   steps = Array.from(document.querySelectorAll('.step'));
   totalSteps = steps.length;
 
-document.getElementById('descricao')?.addEventListener('input', () => {
-  revalidateStepNav();
-});
-
   updateWizardHeader();
 
   document.addEventListener('input', (e) => {
@@ -806,6 +802,7 @@ document.getElementById('descricao')?.addEventListener('input', () => {
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
