@@ -789,6 +789,24 @@ body.is-index .page-center{
   line-height:1.4;
 }
 
+.accordion-wrap {
+  border: 2px solid transparent;
+  border-radius: 16px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.accordion-wrap.erro {
+  border-color: #d93025;
+}
+
+.accordion-wrap .accordion-toggle {
+  background: #f4c200;
+  transition: background-color 0.2s ease;
+}
+
+.accordion-wrap.opened-once .accordion-toggle {
+  background: #fff;
+}
 
 
 
