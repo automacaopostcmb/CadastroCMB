@@ -716,12 +716,12 @@ const STEP_VALIDATORS = {
 
   if (!accordionFlags.imagemAjustada) {
     ok = false;
-    step5Messages.errors.push('Abra e revise o ajuste da imagem de apoio.');
+    step5Messages.errors.push('Abra e ajuste a imagem de apoio.');
   }
 
   if (!accordionFlags.textoAjustado) {
     ok = false;
-    step5Messages.errors.push('Abra e revise o ajuste dos textos.');
+    step5Messages.errors.push('Abra e adicione os textos.');
   }
 
   updateAccordionErrorState();
@@ -900,6 +900,7 @@ document.getElementById('accTextos')?.addEventListener('toggle', (e) => {
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
