@@ -120,21 +120,21 @@
  <section class="step" id="step5" data-title="Ajustando a divulgação">
   <div class="step-box">
 
-      <label class="title-label">Selecione a sua categoria*</label>
-<div class="categoria-wrap" id="categoriaWrap">
-  <label class="radio">
-    <input type="radio" name="categoria" id="cat-artista" value="artista">
-    Artista
-  </label>
-  <label class="radio">
-    <input type="radio" name="categoria" id="cat-empresa" value="empresa">
-    Empresa
-  </label>
-</div>
+    <label class="title-label">Selecione a sua categoria*</label>
+    <div class="categoria-wrap" id="categoriaWrap">
+      <label class="radio">
+        <input type="radio" name="categoria" id="cat-artista" value="artista">
+        Artista
+      </label>
+      <label class="radio">
+        <input type="radio" name="categoria" id="cat-empresa" value="empresa">
+        Empresa
+      </label>
+    </div>
 
-<!-- ACCORDION 2: Ajuste imagem -->
+    <!-- ACCORDION 2: Ajuste imagem -->
     <details class="acc" id="accImagem">
-      <summary class="acc__sum">Ajuste a imagem de apoio</summary>
+      <summary class="acc__sum" id="accImagemSum">Ajuste a imagem de apoio</summary>
 
       <div class="acc__body">
         <label class="title-label">Tamanho</label>
@@ -147,15 +147,14 @@
         <input type="range" id="imgY" min="-500" max="500" value="0" />
       </div>
     </details>
-    
-    <!-- Canvas preview continua aqui -->
+
     <canvas id="canvas" width="1080" height="1350"></canvas>
 
     <div id="avisoTexto"></div>
 
     <!-- ACCORDION 1: Textos -->
     <details class="acc" id="accTextos">
-      <summary class="acc__sum">Escrever Textos</summary>
+      <summary class="acc__sum" id="accTextosSum">Escrever Textos</summary>
 
       <div class="acc__body">
         <label class="title-label">Frase que defina o que você faz*</label>
@@ -174,7 +173,7 @@
     <button class="btn-nav btn-proximo" data-next>Próximo</button>
   </div>
 
-<a class="btn-light-text"    href="index.html?back=1"> Menu </a>
+  <a class="btn-light-text" href="index.html?back=1"> Menu </a>
 </section>
 
  <!-- ========== ETAPA 6 ========== -->
@@ -267,6 +266,7 @@
 
 </body>
 </html>
+
 
 
 
