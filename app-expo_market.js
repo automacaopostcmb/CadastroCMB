@@ -346,26 +346,19 @@ ctx.font = 'bold 48px "Comic Relief"';
 ctx.fillStyle = '#000000';
 ctx.textAlign = 'center';
 
-const tituloX = 540; // ou canvas.width / 2
+const tituloX = canvas.width / 2;
+const tituloY = 846;
 const tituloMaxWidth = 815;
 const tituloMaxLinhas = 2;
-
-// AJUSTE AQUI
-const tituloYUmaLinha = 846;   // Y quando o título tiver 1 linha
-const tituloYDuasLinhas = 815; // Y da primeira linha quando tiver 2 linhas
-const tituloLineHeight = 54;   // distância entre a 1ª e a 2ª linha
+const tituloLineHeight = 54;
 
 const linhasTitulo = wrapText(titulo, tituloMaxWidth, ctx);
 const ultrapassouTitulo = linhasTitulo.length > tituloMaxLinhas;
 const linhasTituloSlice = linhasTitulo.slice(0, tituloMaxLinhas);
 
-if (linhasTituloSlice.length === 1) {
-  ctx.fillText(linhasTituloSlice[0], tituloX, tituloYUmaLinha);
-} else {
-  linhasTituloSlice.forEach((linha, i) => {
-    ctx.fillText(linha, tituloX, tituloYDuasLinhas + i * tituloLineHeight);
-  });
-}
+linhasTituloSlice.forEach((linha, i) => {
+  ctx.fillText(linha, tituloX, tituloY + i * tituloLineHeight);
+});
   // descrição
 
 const descricao = (document.getElementById('descricao').value || '').trim();
@@ -846,6 +839,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
