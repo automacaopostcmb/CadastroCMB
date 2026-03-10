@@ -355,8 +355,8 @@ if (logoImg) {
   const descricao = (document.getElementById('descricao').value || '').trim();
   ctx.font = '28px "Comic Relief"';
   ctx.fillStyle = '#333';
-  const descricaoX = 128, descricaoY = 996;
-  const descricaoMaxWidth = 600, descricaoMaxLinhas = 5;
+  const descricaoX = 128, descricaoY = 1015;
+  const descricaoMaxWidth = 934, descricaoMaxLinhas = 4;
 
   const linhasManuais = descricao.split('\n');
   let todas = [];
@@ -782,5 +782,6 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
