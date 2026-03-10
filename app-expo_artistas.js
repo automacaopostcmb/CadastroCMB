@@ -123,9 +123,9 @@ let canvas, ctx, frameImg, fotoImg;
 let fontsReady = false;
 
 // posição da plaquinha no canvas (1080x1350)
-let plaquinhaX = 33;   // + direita
-let plaquinhaY = 955;  // + baixo
-let plaquinhaScale = 0.65; // 1 = 100%, 0.85 = 85%, 1.25 = 125%
+let plaquinhaX = 1030;
+let plaquinhaY = 955;
+let plaquinhaScale = 0.65; 1 = 100%, 0.85 = 85%, 1.25 = 125%
 
 /* ===========================
    CANVAS
@@ -211,7 +211,6 @@ function drawPlaquinhaCanvas(c, text, x, y, scale = plaquinhaScale) {
   const SHADOW_Y  = 7  * s;
   const MAX_WIDTH = 940 * s;
 
-  // fonte + shrink-to-fit
   let fontSize = 64 * s;
   c.font = `700 ${fontSize}px "Comic Relief", Arial, sans-serif`;
   if (!fontsReady) c.font = `700 ${fontSize}px Arial, sans-serif`;
@@ -230,27 +229,37 @@ function drawPlaquinhaCanvas(c, text, x, y, scale = plaquinhaScale) {
   const rectW = Math.ceil(metrics.width + PADDING_X * 2);
   const rectH = Math.ceil(textH + PADDING_Y * 2);
 
-  // sombra “blocada”
-  drawRoundedRect(c, x + SHADOW_X, y + SHADOW_Y,
-                  rectW + BORDER * 2, rectH + BORDER * 2, RADIUS);
+  // agora x é o lado direito da plaquinha
+  const leftX = x - rectW;
+
+  // sombra
+  drawRoundedRect(
+    c,
+    leftX + SHADOW_X,
+    y + SHADOW_Y,
+    rectW + BORDER * 2,
+    rectH + BORDER * 2,
+    RADIUS
+  );
   c.fillStyle = '#000';
   c.fill();
 
-  // caixa amarela
-  drawRoundedRect(c, x, y, rectW, rectH, RADIUS);
+  // caixa
+  drawRoundedRect(c, leftX, y, rectW, rectH, RADIUS);
   c.fillStyle = '#ffd400';
   c.fill();
 
-  // contorno
+  // borda
   c.lineWidth = BORDER;
   c.strokeStyle = '#000';
   c.stroke();
 
-  // texto centralizado verticalmente
+  // texto
   c.fillStyle = '#111';
   c.textAlign = 'left';
   c.textBaseline = 'alphabetic';
-  const textX = x + PADDING_X;
+
+  const textX = leftX + PADDING_X;
   const textY = y + (rectH - textH) / 2 + ascent;
   c.fillText(text, textX, textY);
 }
@@ -853,5 +862,6 @@ window.goToMenu = goToMenu;
 // Se você precisa expor explicitamente (dependendo do seu HTML), descomente:
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
+
 
 
