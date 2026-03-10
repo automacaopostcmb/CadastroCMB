@@ -346,7 +346,7 @@ if (logoImg) {
   ctx.fillStyle = '#000000';
   ctx.textAlign = 'center';
 
-const tituloX = canvas.width / 2, tituloYBase = 839;
+const tituloX = canvas.width / 2, tituloYBase = 824;
   const tituloMaxWidth = 815, tituloMaxLinhas = 2;
 const linhasTitulo = wrapText(titulo, tituloMaxWidth, ctx);
 const ultrapassouTitulo = linhasTitulo.length > tituloMaxLinhas;
@@ -834,6 +834,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
