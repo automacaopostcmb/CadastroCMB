@@ -175,7 +175,7 @@ function gerarPost() {
   if (fotoImg) {
     const scale = parseFloat(document.getElementById('imgScale').value || '1');
     const anchorPointX = canvas.width / 2;
-    const anchorPointY = canvas.height * 0.47;
+    const anchorPointY = canvas.height * 0.30;
     const offsetX = parseInt(document.getElementById('imgX').value || '0', 10);
     const offsetY = parseInt(document.getElementById('imgY').value || '0', 10);
     const w = fotoImg.width * scale, h = fotoImg.height * scale;
@@ -853,4 +853,5 @@ window.goToMenu = goToMenu;
 // Se você precisa expor explicitamente (dependendo do seu HTML), descomente:
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
+
 
