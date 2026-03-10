@@ -323,13 +323,18 @@ function gerarPost() {
   // logo
 if (logoImg) {
   const maxWidth = 500, maxHeight = 350;
+
   const s = Math.min(maxWidth / logoImg.width, maxHeight / logoImg.height);
-  const w = logoImg.width * s, h = logoImg.height * s;
+  const w = logoImg.width * s;
+  const h = logoImg.height * s;
 
-  const logoX = 657; // ajusta esquerda/direita
-  const logoY = 415; // ajusta cima/baixo
+  const logoCenterX = 657; // centro horizontal
+  const logoCenterY = 415; // centro vertical
 
-  ctx.drawImage(logoImg, logoX, logoY, w, h);
+  const drawX = logoCenterX - w / 2;
+  const drawY = logoCenterY - h / 2;
+
+  ctx.drawImage(logoImg, drawX, drawY, w, h);
 }
 
   // título
@@ -777,6 +782,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
