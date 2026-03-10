@@ -132,6 +132,22 @@
           </label>
         </div>
         <div id="categoriaError" class="inline-error"></div>
+
+<!-- ACCORDION 2: Ajuste imagem -->
+    <details class="acc" id="accImagem">
+      <summary class="acc__sum">Ajuste a imagem de apoio</summary>
+
+      <div class="acc__body">
+        <label class="title-label">Tamanho</label>
+        <input type="range" id="imgScale" min="0.1" max="2" step="0.01" value="1" />
+
+        <label class="title-label">Mover horizontalmente</label>
+        <input type="range" id="imgX" min="-500" max="500" value="0" />
+
+        <label class="title-label">Mover verticalmente</label>
+        <input type="range" id="imgY" min="-500" max="500" value="0" />
+      </div>
+    </details>
     
     <!-- Canvas preview continua aqui -->
     <canvas id="canvas" width="1080" height="1350"></canvas>
@@ -150,22 +166,6 @@
         <label class="title-label">Crie uma breve descrição*</label>
         <textarea id="descricao" rows="4"></textarea>
         <div class="hint" id="descCount"></div>
-      </div>
-    </details>
-
-    <!-- ACCORDION 2: Ajuste imagem -->
-    <details class="acc" id="accImagem">
-      <summary class="acc__sum">Ajuste da imagem de apoio</summary>
-
-      <div class="acc__body">
-        <label class="title-label">Tamanho</label>
-        <input type="range" id="imgScale" min="0.1" max="2" step="0.01" value="1" />
-
-        <label class="title-label">Mover horizontalmente</label>
-        <input type="range" id="imgX" min="-500" max="500" value="0" />
-
-        <label class="title-label">Mover verticalmente</label>
-        <input type="range" id="imgY" min="-500" max="500" value="0" />
       </div>
     </details>
 
@@ -269,6 +269,7 @@
 
 </body>
 </html>
+
 
 
 
