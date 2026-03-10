@@ -352,6 +352,7 @@ if (logoImg) {
   linhasTituloSlice.forEach((linha, i) => ctx.fillText(linha, tituloX, tituloYBase + i * 54 + offsetY));
 
   // descrição
+
 const descricao = (document.getElementById('descricao').value || '').trim();
 ctx.font = '28px "Comic Relief"';
 ctx.fillStyle = '#333';
@@ -391,7 +392,7 @@ validationFlags.overflow = (ultrapassouTitulo || ultrapassouDescricao);
 updateStep5Warning();
 if (typeof revalidateStepNav === 'function') revalidateStepNav();
 }
-   
+
 function wrapText(text, maxWidth, context) {
   const palavras = text.split(' ');
   const linhas = [];
@@ -803,6 +804,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
