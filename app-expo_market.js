@@ -266,13 +266,7 @@ async function selectCategoria(value) {
   categoriaSelecionada = value;
   tarjaCfg = { ...TARJAS[value] };
 
-  const catErr = document.getElementById('categoriaError');
   const catWrap = document.getElementById('categoriaWrap');
-
-  if (catErr) {
-    catErr.textContent = '';
-    catErr.style.display = 'none';
-  }
 
   if (catWrap) {
     catWrap.classList.remove('erro');
@@ -646,51 +640,41 @@ const STEP_VALIDATORS = {
   const d = (document.getElementById('descricao').value || '').trim();
 
   let ok = true;
-step5Messages.errors = [];
+  step5Messages.errors = [];
 
   const hasTitulo = t.length > 0;
   const hasDescricao = d.length > 0;
 
-if (hasTitulo && t.length < CHAR_LIMITS.titulo.min) {
-  step5Messages.errors.push('O título tem que ser maior');
-  ok = false;
-}
-
-if (t.length > CHAR_LIMITS.titulo.max || validationFlags.overflowTitulo) {
-  step5Messages.errors.push('O título tem que ser menor');
-  ok = false;
-}
-
-if (hasDescricao && validationFlags.overflowDescricao) {
-  step5Messages.errors.push('Sua descrição ultrapassou o limite, por favor ajuste!');
-  ok = false;
-}
-
-const selected = document.querySelector('input[name="categoria"]:checked');
-const catErr = document.getElementById('categoriaError');
-const catWrap = document.getElementById('categoriaWrap');
-
-if (!selected) {
-  ok = false;
-
-  if (catErr) {
-    catErr.textContent = 'Selecione a sua categoria.';
-    catErr.style.display = 'block';
+  if (hasTitulo && t.length < CHAR_LIMITS.titulo.min) {
+    step5Messages.errors.push('O título tem que ser maior');
+    ok = false;
   }
 
-  if (catWrap) {
-    catWrap.classList.add('erro');
-  }
-} else {
-  if (catErr) {
-    catErr.textContent = '';
-    catErr.style.display = 'none';
+  if (t.length > CHAR_LIMITS.titulo.max || validationFlags.overflowTitulo) {
+    step5Messages.errors.push('O título tem que ser menor');
+    ok = false;
   }
 
-  if (catWrap) {
-    catWrap.classList.remove('erro');
+  if (hasDescricao && validationFlags.overflowDescricao) {
+    step5Messages.errors.push('Sua descrição ultrapassou o limite, por favor ajuste!');
+    ok = false;
   }
-}
+
+  const selected = document.querySelector('input[name="categoria"]:checked');
+  const catWrap = document.getElementById('categoriaWrap');
+
+  if (!selected) {
+    ok = false;
+    step5Messages.errors.push('Selecione a sua categoria.');
+
+    if (catWrap) {
+      catWrap.classList.add('erro');
+    }
+  } else {
+    if (catWrap) {
+      catWrap.classList.remove('erro');
+    }
+  }
 
   updateStep5Warning();
   return ok;
@@ -850,6 +834,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
