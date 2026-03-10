@@ -768,6 +768,19 @@ body.is-index .page-center{
   opacity: 0.85;
 }
 
+/* erro na seleção de categoria */
+.categoria-wrap.erro {
+  border: 2px solid #e53935;
+  border-radius: 10px;
+  padding: 12px 16px;
+  background: #fff6f6;
+}
+
+/* deixa os radios mais visíveis */
+.categoria-wrap.erro label {
+  color: #b71c1c;
+  font-weight: 600;
+}
 
 
 
