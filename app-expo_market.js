@@ -154,10 +154,9 @@ function normalizeInstagram(raw) {
 
 function updateStep5Warning() {
   const aviso = document.getElementById('avisoTexto');
-  const msgs = [];
-  if (validationFlags.overflow) msgs.push('* Ups, seu texto ultrapassou da caixa. Por favor ajuste!');
-  if (step5Messages.charError) msgs.push(step5Messages.charError);
-  const text = msgs.join(' ');
+  if (!aviso) return;
+
+  const text = step5Messages.charError || '';
   aviso.textContent = text;
   aviso.style.display = text ? 'block' : 'none';
 }
@@ -631,28 +630,33 @@ const STEP_VALIDATORS = {
     return okSite && okInsta;
   },
   5: () => {
-    const t = (document.getElementById('titulo').value || '').trim();
-    const d = (document.getElementById('descricao').value || '').trim();
-    let ok = true;
-    step5Messages.charError = '';
+  const t = (document.getElementById('titulo').value || '').trim();
+  let ok = true;
+  step5Messages.charError = '';
 
-    if (t.length < CHAR_LIMITS.titulo.min || t.length > CHAR_LIMITS.titulo.max) {
-      step5Messages.charError = `* O título deve ter entre ${CHAR_LIMITS.titulo.min} e ${CHAR_LIMITS.titulo.max} caracteres.`;
-      ok = false;
-    } else if (d.length < CHAR_LIMITS.descricao.min || d.length > CHAR_LIMITS.descricao.max) {
-      step5Messages.charError = `* A descrição deve ter no mínimo ${CHAR_LIMITS.descricao.min} caracteres.`;
-      ok = false;
-    }
+  if (t.length < CHAR_LIMITS.titulo.min) {
+    step5Messages.charError = 'O título tem que ser maior';
+    ok = false;
+  } else if (t.length > CHAR_LIMITS.titulo.max) {
+    step5Messages.charError = 'O título tem que ser menor';
+    ok = false;
+  } else if (validationFlags.overflow) {
+    step5Messages.charError = 'Sua descrição ultrapassou o limite, por favor ajuste!';
+    ok = false;
+  }
 
-    const selected = document.querySelector('input[name="categoria"]:checked');
-    const catErr = document.getElementById('categoriaError');
-    if (!selected) { ok = false; catErr && (catErr.textContent = 'Selecione uma categoria para continuar.'); }
-    else { catErr && (catErr.textContent = ''); }
+  const selected = document.querySelector('input[name="categoria"]:checked');
+  const catErr = document.getElementById('categoriaError');
+  if (!selected) {
+    ok = false;
+    catErr && (catErr.textContent = 'Selecione uma categoria para continuar.');
+  } else {
+    catErr && (catErr.textContent = '');
+  }
 
-    updateStep5Warning();
-    if (validationFlags.overflow) ok = false;
-    return ok;
-  },
+  updateStep5Warning();
+  return ok;
+},
 8: () => { buildReview(); return true; }
 };
 
@@ -816,6 +820,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
