@@ -123,7 +123,7 @@ let canvas, ctx, frameImg, fotoImg;
 let fontsReady = false;
 
 // posição da plaquinha no canvas (1080x1350)
-let plaquinhaX = 1030;
+let plaquinhaX = 1057;
 let plaquinhaY = 955;
 let plaquinhaScale = 0.65; // 1 = 100%, 0.85 = 85%, 1.25 = 125%
 
@@ -862,6 +862,7 @@ window.goToMenu = goToMenu;
 // Se você precisa expor explicitamente (dependendo do seu HTML), descomente:
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
+
 
 
 
