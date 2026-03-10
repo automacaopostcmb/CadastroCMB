@@ -321,13 +321,16 @@ function gerarPost() {
   }
 
   // logo
-  if (logoImg) {
-    const maxWidth = 500, maxHeight = 350;
-    const s = Math.min(maxWidth / logoImg.width, maxHeight / logoImg.height);
-    const w = logoImg.width * s, h = logoImg.height * s;
-    const centerY = 450;
-    ctx.drawImage(logoImg, (canvas.width - w) / 2, centerY - h / 2, w, h);
-  }
+if (logoImg) {
+  const maxWidth = 500, maxHeight = 350;
+  const s = Math.min(maxWidth / logoImg.width, maxHeight / logoImg.height);
+  const w = logoImg.width * s, h = logoImg.height * s;
+
+  const logoX = 657; // ajusta esquerda/direita
+  const logoY = 415; // ajusta cima/baixo
+
+  ctx.drawImage(logoImg, logoX, logoY, w, h);
+}
 
   // título
   const titulo = (document.getElementById('titulo').value || '').trim();
@@ -774,6 +777,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
