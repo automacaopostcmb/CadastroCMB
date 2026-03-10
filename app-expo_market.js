@@ -340,25 +340,28 @@ if (logoImg) {
   ctx.drawImage(logoImg, drawX, drawY, w, h);
 }
 
-  // título
+// título
 const titulo = (document.getElementById('titulo').value || '').trim();
 ctx.font = 'bold 48px "Comic Relief"';
 ctx.fillStyle = '#000000';
 ctx.textAlign = 'center';
-   ctx.textBaseline = 'top';
+ctx.textBaseline = 'top';
 
 const tituloX = canvas.width / 2;
 const tituloY = 837;
 const tituloMaxWidth = 815;
 const tituloMaxLinhas = 2;
 const tituloLineHeight = 54;
+const tituloShiftDuasLinhas = -12; // sobe 12px quando tiver 2 linhas
 
 const linhasTitulo = wrapText(titulo, tituloMaxWidth, ctx);
 const ultrapassouTitulo = linhasTitulo.length > tituloMaxLinhas;
 const linhasTituloSlice = linhasTitulo.slice(0, tituloMaxLinhas);
 
+const tituloYOffset = (linhasTituloSlice.length === 2) ? tituloShiftDuasLinhas : 0;
+
 linhasTituloSlice.forEach((linha, i) => {
-  ctx.fillText(linha, tituloX, tituloY + i * tituloLineHeight);
+  ctx.fillText(linha, tituloX, tituloY + tituloYOffset + i * tituloLineHeight);
 });
   // descrição
 
@@ -840,6 +843,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
