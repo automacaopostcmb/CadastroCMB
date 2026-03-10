@@ -352,24 +352,42 @@ if (logoImg) {
   linhasTituloSlice.forEach((linha, i) => ctx.fillText(linha, tituloX, tituloYBase + i * 54 + offsetY));
 
   // descrição
-  const descricao = (document.getElementById('descricao').value || '').trim();
-  ctx.font = '28px "Comic Relief"';
-  ctx.fillStyle = '#333';
-  const descricaoX = 128, descricaoY = 1022;
-  const descricaoMaxWidth = 934, descricaoMaxLinhas = 4;
+const descricao = (document.getElementById('descricao').value || '').trim();
+ctx.font = '28px "Comic Relief"';
+ctx.fillStyle = '#333';
 
-  const linhasManuais = descricao.split('\n');
-  let todas = [];
-  linhasManuais.forEach((l) => todas.push(...wrapText(l, descricaoMaxWidth, ctx)));
+const descricaoX = 128;
+const descricaoMaxWidth = 934;
+const descricaoMaxLinhas = 4;
+const lineHeight = 40;
 
-  const ultrapassouDescricao = todas.length > descricaoMaxLinhas;
-  const linhasDescricao = todas.slice(0, descricaoMaxLinhas);
-  linhasDescricao.forEach((linha, i) => ctx.fillText(linha, descricaoX, descricaoY + i * 40));
+// centro vertical da área amarela
+const centroY = canvas.height - 280; // 1070
 
-  validationFlags.overflow = (ultrapassouTitulo || ultrapassouDescricao);
-  updateStep5Warning();
-  if (typeof revalidateStepNav === 'function') revalidateStepNav();
+const linhasManuais = descricao.split('\n');
+let todas = [];
+linhasManuais.forEach((l) => todas.push(...wrapText(l, descricaoMaxWidth, ctx)));
+
+const ultrapassouDescricao = todas.length > descricaoMaxLinhas;
+const linhasDescricao = todas.slice(0, descricaoMaxLinhas);
+
+// altura total do bloco de texto
+const textBlockHeight = linhasDescricao.length * lineHeight;
+
+// Y inicial para centralizar o bloco
+let descricaoY = centroY - (textBlockHeight / 2) + (lineHeight * 0.8);
+
+// limite máximo para manter o comportamento atual quando estiver cheio
+const maxTopY = 1018;
+if (linhasDescricao.length >= descricaoMaxLinhas && descricaoY > maxTopY) {
+  descricaoY = maxTopY;
 }
+
+linhasDescricao.forEach((linha, i) => {
+  ctx.fillText(linha, descricaoX, descricaoY + i * lineHeight);
+});
+
+validationFlags.overflow = (ultrapassouTitulo || ultrapassouDescricao);
 
 function wrapText(text, maxWidth, context) {
   const palavras = text.split(' ');
@@ -782,6 +800,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
