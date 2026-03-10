@@ -13,7 +13,9 @@ const TARJAS = {
   empresa: { src: 'assets/tarja-empresa.png', x: 28, y: 57, scale: 0.2 }
 };
 
-const CHAR_LIMITS = { titulo: { min: 5, max: 60 }, descricao: { min: 150, max: 250 } };
+const CHAR_LIMITS = {
+  titulo: { min: 5, max: 60 }
+};
 const PHONE_ALLOWED_LENGTHS = [10, 11];
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 
@@ -164,23 +166,6 @@ function updateStep5Warning() {
   aviso.style.display = text ? 'block' : 'none';
 }
 
-/* Contador dinâmico da descrição (faltam X até o mínimo) */
-function updateDescricaoCount() {
-  const el = document.getElementById('descricao');
-  const counter = document.getElementById('descCount');
-  if (!el || !counter) return;
-
-  const len = (el.value || '').length;
-  const min = CHAR_LIMITS.descricao.min;
-
-  if (len < min) {
-    counter.textContent = `Faltam ${min - len} caracteres.`;
-    counter.style.display = 'block';
-  } else {
-    counter.textContent = '';
-    counter.style.display = 'none';
-  }
-}
 
 function buildCaptionFromForm() {
   const empresa = (document.getElementById('empresa')?.value || '').trim();
@@ -733,7 +718,6 @@ function showStep(n) {
   currentStep = Math.max(1, Math.min(totalSteps, n));
   steps.forEach((el, idx) => el.classList.toggle('active', idx === currentStep - 1));
 
-   if (currentStep === 5) { updateDescricaoCount(); }
 if (currentStep === 6) { updateConfirmPreview(); }
 if (currentStep === 8) { buildReview(); }
 
@@ -794,12 +778,9 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
   steps = Array.from(document.querySelectorAll('.step'));
   totalSteps = steps.length;
 
-  // contador dinâmico da descrição
-  document.getElementById('descricao')?.addEventListener('input', () => {
-    updateDescricaoCount();
-    revalidateStepNav();
-  });
-  updateDescricaoCount();
+document.getElementById('descricao')?.addEventListener('input', () => {
+  revalidateStepNav();
+});
 
   updateWizardHeader();
 
@@ -825,6 +806,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
