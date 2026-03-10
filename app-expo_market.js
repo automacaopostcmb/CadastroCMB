@@ -322,7 +322,7 @@ function gerarPost() {
 
   // logo
 if (logoImg) {
-  const maxWidth = 500, maxHeight = 350;
+  const maxWidth = 445, maxHeight = 350;
 
   const s = Math.min(maxWidth / logoImg.width, maxHeight / logoImg.height);
   const w = logoImg.width * s;
@@ -782,3 +782,4 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
