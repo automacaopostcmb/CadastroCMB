@@ -789,34 +789,82 @@ body.is-index .page-center{
   line-height:1.4;
 }
 
+//acordeon
+
 .acc {
-  border: 2px solid transparent;
+  margin-top: 12px;
+  border: 1px solid #111;   /* contorno normal escuro */
   border-radius: 12px;
   background: #fff;
   overflow: hidden;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
-.acc.erro {
-  border-color: #d93025;
-}
-
-.acc .acc__sum {
-  background: #f4c200;
+.acc__sum {
+  list-style: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-weight: 800;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;         /* estado normal branco */
+  color: #111;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.acc[open] .acc__sum {
+.acc__sum::-webkit-details-marker {
+  display: none;
+}
+
+.acc__sum::after {
+  content: "▾";
+  font-size: 22px;
+  line-height: 1;
+  opacity: .8;
+}
+
+.acc[open] .acc__sum::after {
+  content: "▴";
+}
+
+.acc__body {
+  padding: 0 16px 14px;
+  background: #fff;
+}
+
+/* estado de erro: ainda não abriu */
+.acc.erro {
+  border: 2px solid #e53935;
+  background: #fff6f6;
+}
+
+.acc.erro .acc__sum {
+  background: #fff6f6;
+  color: #b3261e;
+}
+
+.acc.erro .acc__body {
+  background: #fff6f6;
+}
+
+/* depois que abriu ao menos uma vez */
+.acc.opened-once {
+  border: 1px solid #111;   /* volta para o contorno normal */
   background: #fff;
 }
 
 .acc.opened-once .acc__sum {
   background: #fff;
+  color: #111;
 }
 
-.acc.erro .acc__sum {
-  color: #b3261e;
+.acc.opened-once .acc__body {
+  background: #fff;
 }
+
+//termina o acordeon
 
 
 
