@@ -14,7 +14,7 @@ const TARJAS = {
 };
 
 const CHAR_LIMITS = {
-  titulo: { min: 5, max: 60 }
+  titulo: { min: 25, max: 60 }
 };
 const PHONE_ALLOWED_LENGTHS = [10, 11];
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
@@ -257,6 +257,12 @@ function bindCategoriaRadios() {
 async function selectCategoria(value) {
   categoriaSelecionada = value;
   tarjaCfg = { ...TARJAS[value] };
+const catErr = document.getElementById('categoriaError');
+if (catErr) {
+  catErr.textContent = '';
+  catErr.style.display = 'none';
+}
+   
   try {
     tarjaImg = await loadImage(tarjaCfg.src);
   } catch (e) {
@@ -640,13 +646,23 @@ const STEP_VALIDATORS = {
     ok = false;
   }
 
-  const selected = document.querySelector('input[name="categoria"]:checked');
-  const catErr = document.getElementById('categoriaError');
+ const selected = document.querySelector('input[name="categoria"]:checked');
+const catErr = document.getElementById('categoriaError');
 
-  if (!selected) {
-    ok = false;
+if (!selected) {
+  ok = false;
+
+  // só mostra erro quando a pessoa tenta avançar
+  if (catErr) {
+    catErr.textContent = 'Selecione a sua categoria.';
+    catErr.style.display = 'block';
   }
-  catErr && (catErr.textContent = '');
+} else {
+  if (catErr) {
+    catErr.textContent = '';
+    catErr.style.display = 'none';
+  }
+}
 
   updateStep5Warning();
   return ok;
@@ -806,6 +822,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
