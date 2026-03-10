@@ -619,30 +619,34 @@ const STEP_VALIDATORS = {
 
     return okSite && okInsta;
   },
- 5: () => {
+5: () => {
   const t = (document.getElementById('titulo').value || '').trim();
+  const d = (document.getElementById('descricao').value || '').trim();
+
   let ok = true;
   step5Messages.charError = '';
 
-  if (t.length < CHAR_LIMITS.titulo.min) {
+  const hasTitulo = t.length > 0;
+  const hasDescricao = d.length > 0;
+
+  if (hasTitulo && t.length < CHAR_LIMITS.titulo.min) {
     step5Messages.charError = 'O título tem que ser maior';
     ok = false;
   } else if (t.length > CHAR_LIMITS.titulo.max || validationFlags.overflowTitulo) {
     step5Messages.charError = 'O título tem que ser menor';
     ok = false;
-  } else if (validationFlags.overflowDescricao) {
+  } else if (hasDescricao && validationFlags.overflowDescricao) {
     step5Messages.charError = 'Sua descrição ultrapassou o limite, por favor ajuste!';
     ok = false;
   }
 
+  const selected = document.querySelector('input[name="categoria"]:checked');
+  const catErr = document.getElementById('categoriaError');
 
-const selected = document.querySelector('input[name="categoria"]:checked');
-const catErr = document.getElementById('categoriaError');
-
-if (!selected) {
-  ok = false;
-}
-catErr && (catErr.textContent = '');
+  if (!selected) {
+    ok = false;
+  }
+  catErr && (catErr.textContent = '');
 
   updateStep5Warning();
   return ok;
@@ -802,6 +806,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
