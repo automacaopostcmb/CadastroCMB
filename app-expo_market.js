@@ -351,7 +351,7 @@ const tituloMaxWidth = 815;
 const tituloMaxLinhas = 2;
 
 // AJUSTE AQUI
-const tituloYUmaLinha = 839;   // Y quando o título tiver 1 linha
+const tituloYUmaLinha = 846;   // Y quando o título tiver 1 linha
 const tituloYDuasLinhas = 815; // Y da primeira linha quando tiver 2 linhas
 const tituloLineHeight = 54;   // distância entre a 1ª e a 2ª linha
 
@@ -846,6 +846,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
