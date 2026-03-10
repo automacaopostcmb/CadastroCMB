@@ -388,7 +388,10 @@ linhasDescricao.forEach((linha, i) => {
 });
 
 validationFlags.overflow = (ultrapassouTitulo || ultrapassouDescricao);
-
+updateStep5Warning();
+if (typeof revalidateStepNav === 'function') revalidateStepNav();
+}
+   
 function wrapText(text, maxWidth, context) {
   const palavras = text.split(' ');
   const linhas = [];
@@ -800,6 +803,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
