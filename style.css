@@ -789,23 +789,33 @@ body.is-index .page-center{
   line-height:1.4;
 }
 
-.accordion-wrap {
+.acc {
   border: 2px solid transparent;
-  border-radius: 16px;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-.accordion-wrap.erro {
+.acc.erro {
   border-color: #d93025;
 }
 
-.accordion-wrap .accordion-toggle {
+.acc .acc__sum {
   background: #f4c200;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.accordion-wrap.opened-once .accordion-toggle {
+.acc[open] .acc__sum {
   background: #fff;
+}
+
+.acc.opened-once .acc__sum {
+  background: #fff;
+}
+
+.acc.erro .acc__sum {
+  color: #b3261e;
 }
 
 
