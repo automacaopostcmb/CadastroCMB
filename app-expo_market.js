@@ -346,11 +346,11 @@ if (logoImg) {
   ctx.fillStyle = '#000000';
   ctx.textAlign = 'center';
 
-const tituloX = canvas.width / 2, tituloYBase = 830;
+const tituloX = canvas.width / 2, tituloYBase = 839;
   const tituloMaxWidth = 815, tituloMaxLinhas = 2;
-  const linhasTitulo = wrapText(titulo, tituloMaxWidth, ctx);
-  const ultrapassouTitulo = linhasTitulo.length > tituloMaxLinhas;
-  const linhasTituloSlice = linhasTitulo.slice(0, tituloMaxLinhas);
+const linhasTitulo = wrapText(titulo, tituloMaxWidth, ctx);
+const ultrapassouTitulo = linhasTitulo.length > tituloMaxLinhas;
+const linhasTituloSlice = linhasTitulo.slice(0, tituloMaxLinhas);
   let offsetY = (linhasTituloSlice.length === 1) ? 30 : 0;
   linhasTituloSlice.forEach((linha, i) => ctx.fillText(linha, tituloX, tituloYBase + i * 54 + offsetY));
 
@@ -650,10 +650,10 @@ const STEP_VALIDATORS = {
     ok = false;
   }
 
-  if (t.length > CHAR_LIMITS.titulo.max || validationFlags.overflowTitulo) {
-    step5Messages.errors.push('O título tem que ser menor');
-    ok = false;
-  }
+if (validationFlags.overflowTitulo) {
+  step5Messages.errors.push('O título tem que ser menor');
+  ok = false;
+}
 
   if (hasDescricao && validationFlags.overflowDescricao) {
     step5Messages.errors.push('Sua descrição ultrapassou o limite, por favor ajuste!');
@@ -834,6 +834,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
