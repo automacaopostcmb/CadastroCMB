@@ -182,7 +182,7 @@ const sliderValue = parseFloat(document.getElementById('imgScale').value || '1')
 const scale = baseScale * sliderValue;
 
 const anchorPointX = canvas.width / 2;
-const anchorPointY = canvas.height * 0.40;
+const anchorPointY = canvas.height * 0.42;
 const offsetX = parseInt(document.getElementById('imgX').value || '0', 10);
 const offsetY = parseInt(document.getElementById('imgY').value || '0', 10);
 
@@ -219,7 +219,7 @@ function drawPlaquinhaCanvas(c, text, x, y, scale = plaquinhaScale) {
   const BORDER    = 5  * s;
   const RADIUS    = 6  * s;
   const SHADOW_X  = -7 * s;
-  const SHADOW_Y  = 2  * s;
+  const SHADOW_Y  = 5  * s;
   const MAX_WIDTH = 940 * s;
 
   let fontSize = 64 * s;
@@ -873,6 +873,7 @@ window.goToMenu = goToMenu;
 // Se você precisa expor explicitamente (dependendo do seu HTML), descomente:
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
+
 
 
 
