@@ -173,7 +173,7 @@ function gerarPost() {
 
   // foto base
   if (fotoImg) {
-const fitWidth = 850; // largura inicial desejada dentro do preview
+const fitWidth = 900; // largura inicial desejada dentro do preview
 const baseScale = fitWidth / fotoImg.width;
 
 const sliderValue = parseFloat(document.getElementById('imgScale').value || '1');
@@ -873,6 +873,7 @@ window.goToMenu = goToMenu;
 // Se você precisa expor explicitamente (dependendo do seu HTML), descomente:
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
+
 
 
 
