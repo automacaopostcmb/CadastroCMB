@@ -66,7 +66,10 @@ function stopOverlayMessages() {
 }
 
 const step5Messages = { charError: '' };
-const validationFlags = { overflow: false };
+const validationFlags = {
+  overflowTitulo: false,
+  overflowDescricao: false
+};
 
 function showAuthOverlay(message) {
   const overlay = document.getElementById('overlay');
@@ -399,7 +402,9 @@ if (linhasDescricao.length <= 2) {
 
 ctx.textAlign = 'left';
 
-validationFlags.overflow = (ultrapassouTitulo || ultrapassouDescricao);
+validationFlags.overflowTitulo = ultrapassouTitulo;
+validationFlags.overflowDescricao = ultrapassouDescricao;
+
 updateStep5Warning();
 if (typeof revalidateStepNav === 'function') revalidateStepNav();
 }
@@ -629,7 +634,7 @@ const STEP_VALIDATORS = {
 
     return okSite && okInsta;
   },
-  5: () => {
+ 5: () => {
   const t = (document.getElementById('titulo').value || '').trim();
   let ok = true;
   step5Messages.charError = '';
@@ -637,10 +642,10 @@ const STEP_VALIDATORS = {
   if (t.length < CHAR_LIMITS.titulo.min) {
     step5Messages.charError = 'O título tem que ser maior';
     ok = false;
-  } else if (t.length > CHAR_LIMITS.titulo.max) {
+  } else if (t.length > CHAR_LIMITS.titulo.max || validationFlags.overflowTitulo) {
     step5Messages.charError = 'O título tem que ser menor';
     ok = false;
-  } else if (validationFlags.overflow) {
+  } else if (validationFlags.overflowDescricao) {
     step5Messages.charError = 'Sua descrição ultrapassou o limite, por favor ajuste!';
     ok = false;
   }
@@ -820,6 +825,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
