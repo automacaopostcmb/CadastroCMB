@@ -205,10 +205,10 @@ function drawPlaquinhaCanvas(c, text, x, y, scale = plaquinhaScale) {
 
   const PADDING_X = 28 * s;
   const PADDING_Y = 18 * s;
-  const BORDER    = 6  * s;
+  const BORDER    = 5  * s;
   const RADIUS    = 6  * s;
   const SHADOW_X  = -7 * s;
-  const SHADOW_Y  = 3  * s;
+  const SHADOW_Y  = 2  * s;
   const MAX_WIDTH = 940 * s;
 
   let fontSize = 64 * s;
@@ -862,6 +862,7 @@ window.goToMenu = goToMenu;
 // Se você precisa expor explicitamente (dependendo do seu HTML), descomente:
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
+
 
 
 
