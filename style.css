@@ -782,6 +782,12 @@ body.is-index .page-center{
   font-weight: 600;
 }
 
+#avisoTexto{
+  margin-top:10px;
+  color:#c62828;
+  font-weight:600;
+  line-height:1.4;
+}
 
 
 
