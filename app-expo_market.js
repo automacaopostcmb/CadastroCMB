@@ -340,8 +340,8 @@ if (logoImg) {
   // título
   const titulo = (document.getElementById('titulo').value || '').trim();
   ctx.font = 'bold 48px "Comic Relief"';
-  ctx.fillStyle = '#FFFFFF';
-  ctx.textAlign = 'left';
+  ctx.fillStyle = '#000000';
+  ctx.textAlign = 'center';
 
   const tituloX = 400, tituloYBase = 880;
   const tituloMaxWidth = 600, tituloMaxLinhas = 2;
@@ -384,9 +384,21 @@ if (linhasDescricao.length >= descricaoMaxLinhas && descricaoY > maxTopY) {
   descricaoY = maxTopY;
 }
 
-linhasDescricao.forEach((linha, i) => {
-  ctx.fillText(linha, descricaoX, descricaoY + i * lineHeight);
-});
+const descricaoCenterX = descricaoX + (descricaoMaxWidth / 2);
+
+if (linhasDescricao.length <= 2) {
+  ctx.textAlign = 'center';
+  linhasDescricao.forEach((linha, i) => {
+    ctx.fillText(linha, descricaoCenterX, descricaoY + i * lineHeight);
+  });
+} else {
+  ctx.textAlign = 'left';
+  linhasDescricao.forEach((linha, i) => {
+    ctx.fillText(linha, descricaoX, descricaoY + i * lineHeight);
+  });
+}
+
+ctx.textAlign = 'left';
 
 validationFlags.overflow = (ultrapassouTitulo || ultrapassouDescricao);
 updateStep5Warning();
@@ -804,6 +816,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
