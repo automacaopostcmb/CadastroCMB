@@ -67,7 +67,7 @@ function stopOverlayMessages() {
   setOverlayText("Enviando...");
 }
 
-const step5Messages = { charError: '' };
+const step5Messages = { errors: [] };
 const validationFlags = {
   overflowTitulo: false,
   overflowDescricao: false
@@ -161,9 +161,17 @@ function updateStep5Warning() {
   const aviso = document.getElementById('avisoTexto');
   if (!aviso) return;
 
-  const text = step5Messages.charError || '';
-  aviso.textContent = text;
-  aviso.style.display = text ? 'block' : 'none';
+  if (!step5Messages.errors.length) {
+    aviso.innerHTML = '';
+    aviso.style.display = 'none';
+    return;
+  }
+
+  aviso.innerHTML = step5Messages.errors
+    .map(msg => `<div>• ${msg}</div>`)
+    .join('');
+
+  aviso.style.display = 'block';
 }
 
 
@@ -638,21 +646,25 @@ const STEP_VALIDATORS = {
   const d = (document.getElementById('descricao').value || '').trim();
 
   let ok = true;
-  step5Messages.charError = '';
+step5Messages.errors = [];
 
   const hasTitulo = t.length > 0;
   const hasDescricao = d.length > 0;
 
-  if (hasTitulo && t.length < CHAR_LIMITS.titulo.min) {
-    step5Messages.charError = 'O título tem que ser maior';
-    ok = false;
-  } else if (t.length > CHAR_LIMITS.titulo.max || validationFlags.overflowTitulo) {
-    step5Messages.charError = 'O título tem que ser menor';
-    ok = false;
-  } else if (hasDescricao && validationFlags.overflowDescricao) {
-    step5Messages.charError = 'Sua descrição ultrapassou o limite, por favor ajuste!';
-    ok = false;
-  }
+if (hasTitulo && t.length < CHAR_LIMITS.titulo.min) {
+  step5Messages.errors.push('O título tem que ser maior');
+  ok = false;
+}
+
+if (t.length > CHAR_LIMITS.titulo.max || validationFlags.overflowTitulo) {
+  step5Messages.errors.push('O título tem que ser menor');
+  ok = false;
+}
+
+if (hasDescricao && validationFlags.overflowDescricao) {
+  step5Messages.errors.push('Sua descrição ultrapassou o limite, por favor ajuste!');
+  ok = false;
+}
 
 const selected = document.querySelector('input[name="categoria"]:checked');
 const catErr = document.getElementById('categoriaError');
@@ -838,6 +850,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
