@@ -72,7 +72,10 @@ const validationFlags = {
   overflowTitulo: false,
   overflowDescricao: false
 };
-
+const accordionFlags = {
+  imagemAjustada: false,
+  textoAjustado: false
+};
 function showAuthOverlay(message) {
   const overlay = document.getElementById('overlay');
   if (!overlay) return;
@@ -173,7 +176,33 @@ function updateStep5Warning() {
 
   aviso.style.display = 'block';
 }
+function markAccordionAsOpened(type) {
+  if (type === 'imagem') {
+    accordionFlags.imagemAjustada = true;
+  }
 
+  if (type === 'texto') {
+    accordionFlags.textoAjustado = true;
+  }
+
+  updateAccordionErrorState();
+  revalidateStepNav();
+}
+
+function updateAccordionErrorState() {
+  const accordionImagem = document.getElementById('accordionImagemWrap');
+  const accordionTexto = document.getElementById('accordionTextoWrap');
+
+  if (accordionImagem) {
+    accordionImagem.classList.toggle('erro', !accordionFlags.imagemAjustada);
+    accordionImagem.classList.toggle('opened-once', accordionFlags.imagemAjustada);
+  }
+
+  if (accordionTexto) {
+    accordionTexto.classList.toggle('erro', !accordionFlags.textoAjustado);
+    accordionTexto.classList.toggle('opened-once', accordionFlags.textoAjustado);
+  }
+}
 
 function buildCaptionFromForm() {
   const empresa = (document.getElementById('empresa')?.value || '').trim();
@@ -659,10 +688,10 @@ const STEP_VALIDATORS = {
     ok = false;
   }
 
-if (validationFlags.overflowTitulo) {
-  step5Messages.errors.push('O título tem que ser menor');
-  ok = false;
-}
+  if (validationFlags.overflowTitulo) {
+    step5Messages.errors.push('O título tem que ser menor');
+    ok = false;
+  }
 
   if (hasDescricao && validationFlags.overflowDescricao) {
     step5Messages.errors.push('Sua descrição ultrapassou o limite, por favor ajuste!');
@@ -685,6 +714,17 @@ if (validationFlags.overflowTitulo) {
     }
   }
 
+  if (!accordionFlags.imagemAjustada) {
+    ok = false;
+    step5Messages.errors.push('Abra e revise o ajuste da imagem de apoio.');
+  }
+
+  if (!accordionFlags.textoAjustado) {
+    ok = false;
+    step5Messages.errors.push('Abra e revise o ajuste dos textos.');
+  }
+
+  updateAccordionErrorState();
   updateStep5Warning();
   return ok;
 },
@@ -759,8 +799,13 @@ function showStep(n) {
   currentStep = Math.max(1, Math.min(totalSteps, n));
   steps.forEach((el, idx) => el.classList.toggle('active', idx === currentStep - 1));
 
-if (currentStep === 6) { updateConfirmPreview(); }
-if (currentStep === 8) { buildReview(); }
+  if (currentStep === 5) {
+    updateAccordionErrorState();
+    updateStep5Warning();
+  }
+
+  if (currentStep === 6) { updateConfirmPreview(); }
+  if (currentStep === 8) { buildReview(); }
 
   updateWizardHeader();
   revalidateStepNav();
@@ -815,6 +860,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
    document.getElementById('btnAjustar')?.addEventListener('click', () => showStep(5));
 document.getElementById('btnConfirmar')?.addEventListener('click', () => showStep(7));
+
+   document.getElementById('accordionImagemToggle')?.addEventListener('click', () => {
+  markAccordionAsOpened('imagem');
+});
+
+document.getElementById('accordionTextoToggle')?.addEventListener('click', () => {
+  markAccordionAsOpened('texto');
+});
    
   steps = Array.from(document.querySelectorAll('.step'));
   totalSteps = steps.length;
@@ -843,6 +896,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
