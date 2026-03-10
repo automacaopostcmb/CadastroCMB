@@ -257,18 +257,26 @@ function bindCategoriaRadios() {
 async function selectCategoria(value) {
   categoriaSelecionada = value;
   tarjaCfg = { ...TARJAS[value] };
-const catErr = document.getElementById('categoriaError');
-if (catErr) {
-  catErr.textContent = '';
-  catErr.style.display = 'none';
-}
-   
+
+  const catErr = document.getElementById('categoriaError');
+  const catWrap = document.getElementById('categoriaWrap');
+
+  if (catErr) {
+    catErr.textContent = '';
+    catErr.style.display = 'none';
+  }
+
+  if (catWrap) {
+    catWrap.classList.remove('erro');
+  }
+
   try {
     tarjaImg = await loadImage(tarjaCfg.src);
   } catch (e) {
     console.error('Não foi possível carregar a tarja:', e);
     tarjaImg = null;
   }
+
   gerarPost();
   revalidateStepNav();
 }
@@ -646,21 +654,29 @@ const STEP_VALIDATORS = {
     ok = false;
   }
 
- const selected = document.querySelector('input[name="categoria"]:checked');
+const selected = document.querySelector('input[name="categoria"]:checked');
 const catErr = document.getElementById('categoriaError');
+const catWrap = document.getElementById('categoriaWrap');
 
 if (!selected) {
   ok = false;
 
-  // só mostra erro quando a pessoa tenta avançar
   if (catErr) {
     catErr.textContent = 'Selecione a sua categoria.';
     catErr.style.display = 'block';
+  }
+
+  if (catWrap) {
+    catWrap.classList.add('erro');
   }
 } else {
   if (catErr) {
     catErr.textContent = '';
     catErr.style.display = 'none';
+  }
+
+  if (catWrap) {
+    catWrap.classList.remove('erro');
   }
 }
 
@@ -822,6 +838,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
