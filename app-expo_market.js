@@ -355,7 +355,7 @@ if (logoImg) {
   const descricao = (document.getElementById('descricao').value || '').trim();
   ctx.font = '28px "Comic Relief"';
   ctx.fillStyle = '#333';
-  const descricaoX = 128, descricaoY = 1015;
+  const descricaoX = 128, descricaoY = 1022;
   const descricaoMaxWidth = 934, descricaoMaxLinhas = 4;
 
   const linhasManuais = descricao.split('\n');
@@ -782,6 +782,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
