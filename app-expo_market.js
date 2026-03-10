@@ -9,8 +9,8 @@ const FRAME_URL =
    scale = multiplicador do tamanho (1 = 100%)
 */
 const TARJAS = {
-  artista: { src: 'assets/tarja-artista.png', x: 90, y: 190, scale: 0.2 },
-  empresa: { src: 'assets/tarja-empresa.png', x: 90, y: 190, scale: 0.2 }
+  artista: { src: 'assets/tarja-artista.png', x: 28, y: 57, scale: 0.2 },
+  empresa: { src: 'assets/tarja-empresa.png', x: 28, y: 57, scale: 0.2 }
 };
 
 const CHAR_LIMITS = { titulo: { min: 5, max: 60 }, descricao: { min: 150, max: 250 } };
@@ -310,7 +310,7 @@ function gerarPost() {
     if (tarjaImg) {
       const w = tarjaImg.naturalWidth * tarjaCfg.scale;
       const h = tarjaImg.naturalHeight * tarjaCfg.scale;
-      ctx.drawImage(tarjaImg, tarjaCfg.x, tarjaCfg.y, w, h);
+      ctx.drawImage(tarjaImg, canvas.width - tarjaCfg.x - w, tarjaCfg.y, w, h);
     } else {
       ctx.fillStyle = '#ffd400';
       ctx.strokeStyle = '#000';
@@ -782,15 +782,3 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
-
-
-
-
-
-
-
-
-
-
-
-
