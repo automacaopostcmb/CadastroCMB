@@ -190,8 +190,8 @@ function markAccordionAsOpened(type) {
 }
 
 function updateAccordionErrorState() {
-  const accordionImagem = document.getElementById('accordionImagemWrap');
-  const accordionTexto = document.getElementById('accordionTextoWrap');
+  const accordionImagem = document.getElementById('accImagem');
+  const accordionTexto = document.getElementById('accTextos');
 
   if (accordionImagem) {
     accordionImagem.classList.toggle('erro', !accordionFlags.imagemAjustada);
@@ -861,12 +861,16 @@ document.addEventListener('DOMContentLoaded', () => {
    document.getElementById('btnAjustar')?.addEventListener('click', () => showStep(5));
 document.getElementById('btnConfirmar')?.addEventListener('click', () => showStep(7));
 
-   document.getElementById('accordionImagemToggle')?.addEventListener('click', () => {
-  markAccordionAsOpened('imagem');
+document.getElementById('accImagem')?.addEventListener('toggle', (e) => {
+  if (e.target.open) {
+    markAccordionAsOpened('imagem');
+  }
 });
 
-document.getElementById('accordionTextoToggle')?.addEventListener('click', () => {
-  markAccordionAsOpened('texto');
+document.getElementById('accTextos')?.addEventListener('toggle', (e) => {
+  if (e.target.open) {
+    markAccordionAsOpened('texto');
+  }
 });
    
   steps = Array.from(document.querySelectorAll('.step'));
@@ -896,6 +900,7 @@ document.getElementById('accordionTextoToggle')?.addEventListener('click', () =>
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
