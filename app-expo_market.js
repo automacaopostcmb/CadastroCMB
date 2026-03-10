@@ -345,6 +345,7 @@ const titulo = (document.getElementById('titulo').value || '').trim();
 ctx.font = 'bold 48px "Comic Relief"';
 ctx.fillStyle = '#000000';
 ctx.textAlign = 'center';
+   ctx.textBaseline = 'top';
 
 const tituloX = canvas.width / 2;
 const tituloY = 846;
@@ -839,6 +840,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
