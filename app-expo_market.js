@@ -341,19 +341,31 @@ if (logoImg) {
 }
 
   // título
-  const titulo = (document.getElementById('titulo').value || '').trim();
-  ctx.font = 'bold 48px "Comic Relief"';
-  ctx.fillStyle = '#000000';
-  ctx.textAlign = 'center';
+const titulo = (document.getElementById('titulo').value || '').trim();
+ctx.font = 'bold 48px "Comic Relief"';
+ctx.fillStyle = '#000000';
+ctx.textAlign = 'center';
 
-const tituloX = canvas.width / 2, tituloYBase = 824;
-  const tituloMaxWidth = 815, tituloMaxLinhas = 2;
+const tituloX = 540; // ou canvas.width / 2
+const tituloMaxWidth = 815;
+const tituloMaxLinhas = 2;
+
+// AJUSTE AQUI
+const tituloYUmaLinha = 839;   // Y quando o título tiver 1 linha
+const tituloYDuasLinhas = 815; // Y da primeira linha quando tiver 2 linhas
+const tituloLineHeight = 54;   // distância entre a 1ª e a 2ª linha
+
 const linhasTitulo = wrapText(titulo, tituloMaxWidth, ctx);
 const ultrapassouTitulo = linhasTitulo.length > tituloMaxLinhas;
 const linhasTituloSlice = linhasTitulo.slice(0, tituloMaxLinhas);
-  let offsetY = (linhasTituloSlice.length === 1) ? 30 : 0;
-  linhasTituloSlice.forEach((linha, i) => ctx.fillText(linha, tituloX, tituloYBase + i * 54 + offsetY));
 
+if (linhasTituloSlice.length === 1) {
+  ctx.fillText(linhasTituloSlice[0], tituloX, tituloYUmaLinha);
+} else {
+  linhasTituloSlice.forEach((linha, i) => {
+    ctx.fillText(linha, tituloX, tituloYDuasLinhas + i * tituloLineHeight);
+  });
+}
   // descrição
 
 const descricao = (document.getElementById('descricao').value || '').trim();
@@ -834,6 +846,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
