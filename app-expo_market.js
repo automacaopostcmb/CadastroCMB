@@ -291,7 +291,7 @@ function gerarPost() {
   // imagem de apoio
   if (lateralImg) {
     const scale = parseFloat(document.getElementById('imgScale').value || '1');
-    const anchorPointX = 150, anchorPointY = 1000;
+    const anchorPointX = 112, anchorPointY = 433;
     const offsetX = parseInt(document.getElementById('imgX').value || '0', 10);
     const offsetY = parseInt(document.getElementById('imgY').value || '0', 10);
     const w = lateralImg.width * scale, h = lateralImg.height * scale;
@@ -774,6 +774,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
