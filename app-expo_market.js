@@ -375,7 +375,7 @@ const descricaoMaxLinhas = 4;
 const lineHeight = 40;
 
 // centro vertical da área amarela
-const centroY = canvas.height - 259; // 1070
+const centroY = canvas.height - 301; // 1070
 
 const linhasManuais = descricao.split('\n');
 let todas = [];
@@ -843,6 +843,7 @@ document.getElementById('btnConfirmar')?.addEventListener('click', () => showSte
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
+
 
 
 
