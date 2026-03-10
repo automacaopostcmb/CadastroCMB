@@ -173,15 +173,26 @@ function gerarPost() {
 
   // foto base
   if (fotoImg) {
-    const scale = parseFloat(document.getElementById('imgScale').value || '1');
-    const anchorPointX = canvas.width / 2;
-    const anchorPointY = canvas.height * 0.42;
-    const offsetX = parseInt(document.getElementById('imgX').value || '0', 10);
-    const offsetY = parseInt(document.getElementById('imgY').value || '0', 10);
-    const w = fotoImg.width * scale, h = fotoImg.height * scale;
-    const drawX = anchorPointX + offsetX - w / 2;
-    const drawY = anchorPointY + offsetY - h / 2;
-    ctx.drawImage(fotoImg, drawX, drawY, w, h);
+const fitWidth = 850; // largura inicial desejada dentro do preview
+const baseScale = fitWidth / fotoImg.width;
+
+const sliderValue = parseFloat(document.getElementById('imgScale').value || '1');
+
+// mantém o centro do slider em 1
+const scale = baseScale * sliderValue;
+
+const anchorPointX = canvas.width / 2;
+const anchorPointY = canvas.height * 0.40;
+const offsetX = parseInt(document.getElementById('imgX').value || '0', 10);
+const offsetY = parseInt(document.getElementById('imgY').value || '0', 10);
+
+const w = fotoImg.width * scale;
+const h = fotoImg.height * scale;
+
+const drawX = anchorPointX + offsetX - w / 2;
+const drawY = anchorPointY + offsetY - h / 2;
+
+ctx.drawImage(fotoImg, drawX, drawY, w, h);
   }
 
   // frame
@@ -862,6 +873,7 @@ window.goToMenu = goToMenu;
 // Se você precisa expor explicitamente (dependendo do seu HTML), descomente:
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
+
 
 
 
