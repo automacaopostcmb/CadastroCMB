@@ -233,16 +233,16 @@ function drawPlaquinhaCanvas(c, text, x, y, scale = plaquinhaScale) {
   const leftX = x - rectW;
 
   // sombra
-  drawRoundedRect(
-    c,
-    leftX + SHADOW_X,
-    y + SHADOW_Y,
-    rectW + BORDER * 2,
-    rectH + BORDER * 2,
-    RADIUS
-  );
-  c.fillStyle = '#000';
-  c.fill();
+drawRoundedRect(
+  c,
+  leftX + SHADOW_X,
+  y + SHADOW_Y,
+  rectW,
+  rectH,
+  RADIUS
+);
+c.fillStyle = '#000';
+c.fill();
 
   // caixa
   drawRoundedRect(c, leftX, y, rectW, rectH, RADIUS);
@@ -862,6 +862,7 @@ window.goToMenu = goToMenu;
 // Se você precisa expor explicitamente (dependendo do seu HTML), descomente:
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
+
 
 
 
