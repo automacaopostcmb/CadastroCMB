@@ -57,6 +57,99 @@
       font-weight: 800;
       color: #111;
     }
+
+    .lesson-box-title--white {
+      color: #fff;
+    }
+
+    .lesson-inline-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: block;
+      text-align: left;
+    }
+
+    .lesson-select {
+      display: block;
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto;
+      text-align: center;
+      text-align-last: center;
+      border-radius: 18px;
+      padding: 14px 18px;
+      border: 1px solid #d5dbe7;
+      background: #fff;
+      font-size: 16px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      outline: none;
+    }
+
+    #step4 .step-box {
+      text-align: center;
+    }
+
+    #step4 .step-box .title-label,
+    #step4 .step-box .hint {
+      text-align: left;
+    }
+
+    .tarja-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 8px 0 16px;
+    }
+
+    .tarja-option {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .tarja-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .tarja-option span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 120px;
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 2px solid #c93b3b;
+      background: #fff5f5;
+      color: #b42323;
+      font-weight: 700;
+      transition: .2s ease;
+    }
+
+    .tarja-option input:checked + span {
+      background: #c93b3b;
+      color: #fff;
+      border-color: #c93b3b;
+    }
+
+    .tarja-group.erro .tarja-option span {
+      box-shadow: 0 0 0 2px rgba(201,59,59,.12);
+    }
+
+    #step6 input[type="range"] {
+      display: block;
+      width: 100%;
+      margin: 0 auto 14px;
+    }
+
+    #step6 .acc__body .title-label {
+      text-align: center;
+    }
   </style>
 </head>
 
@@ -124,6 +217,7 @@
   <section class="step" id="step3" data-title="Empresa e redes">
     <div class="step-box">
       <label class="title-label">Nome da empresa</label>
+      <div class="hint">Deixe vazio se não tiver.</div>
       <input type="text" id="empresa" />
 
       <label class="title-label">Site ou portfólio*</label>
@@ -145,75 +239,77 @@
 
   <!-- ETAPA 4 -->
   <section class="step" id="step4" data-title="Aulas">
-    <h3 class="lesson-box-title">Quantas aulas você ministrará?</h3>
     <div class="step-box">
-      <select id="quantidade_aulas">
+      <label class="title-label lesson-inline-title">Quantas aulas você ministrará?</label>
+      <select id="quantidade_aulas" class="lesson-select">
         <option value="">Selecione</option>
         <option value="1">1 aula</option>
         <option value="2">2 aulas</option>
       </select>
     </div>
 
-    <div class="step-separator"></div>
-
-    <h3 class="lesson-box-title">Aula 1</h3>
-    <div class="step-box">
-      <label class="title-label">Nome da aula 1*</label>
-      <input type="text" id="aula1_nome" />
-
-      <label class="title-label">Dia da aula 1*</label>
-      <select id="aula1_dia">
-        <option value="">Selecione</option>
-        <option value="sábado">Sábado</option>
-        <option value="domingo">Domingo</option>
-      </select>
-
-      <label class="title-label">Preferência de período aula 1*</label>
-      <select id="aula1_periodo">
-        <option value="">Selecione</option>
-        <option value="manhã">Manhã</option>
-        <option value="começo da tarde">Começo da tarde</option>
-        <option value="tarde">Tarde</option>
-      </select>
-
-      <label class="title-label">Descrição da aula 1*</label>
-      <textarea id="aula1_descricao" rows="5"></textarea>
-    </div>
-
-    <div id="wrapAula2" style="display:none;">
+    <div id="aulasContent" style="display:none;">
       <div class="step-separator"></div>
 
-      <h3 class="lesson-box-title">Aula 2</h3>
-      <div class="step-box" id="blocoAula2">
-        <label class="title-label">Nome da aula 2*</label>
-        <input type="text" id="aula2_nome" />
+      <h3 class="lesson-box-title lesson-box-title--white">Aula 1</h3>
+      <div class="step-box">
+        <label class="title-label">Nome da aula 1*</label>
+        <input type="text" id="aula1_nome" />
 
-        <label class="title-label">Dia da aula 2*</label>
-        <select id="aula2_dia">
+        <label class="title-label">Dia da aula 1*</label>
+        <select id="aula1_dia" class="lesson-select">
           <option value="">Selecione</option>
           <option value="sábado">Sábado</option>
           <option value="domingo">Domingo</option>
         </select>
 
-        <label class="title-label">Preferência de período aula 2*</label>
-        <select id="aula2_periodo">
+        <label class="title-label">Preferência de período aula 1*</label>
+        <select id="aula1_periodo" class="lesson-select">
           <option value="">Selecione</option>
           <option value="manhã">Manhã</option>
           <option value="começo da tarde">Começo da tarde</option>
           <option value="tarde">Tarde</option>
         </select>
 
-        <label class="title-label">Descrição da aula 2*</label>
-        <textarea id="aula2_descricao" rows="5"></textarea>
+        <label class="title-label">Descrição da aula 1*</label>
+        <textarea id="aula1_descricao" rows="5"></textarea>
       </div>
-    </div>
 
-    <div class="step-separator"></div>
+      <div id="wrapAula2" style="display:none;">
+        <div class="step-separator"></div>
 
-    <div class="step-box">
-      <label class="title-label">Alguma observação?</label>
-      <div class="hint">Ex.: "Não consigo domingo", "Não consigo sábado antes do meio-dia". O horário será definido em um segundo momento levando em consideração suas observações.</div>
-      <textarea id="observacoes_agenda" rows="5"></textarea>
+        <h3 class="lesson-box-title lesson-box-title--white">Aula 2</h3>
+        <div class="step-box" id="blocoAula2">
+          <label class="title-label">Nome da aula 2*</label>
+          <input type="text" id="aula2_nome" />
+
+          <label class="title-label">Dia da aula 2*</label>
+          <select id="aula2_dia" class="lesson-select">
+            <option value="">Selecione</option>
+            <option value="sábado">Sábado</option>
+            <option value="domingo">Domingo</option>
+          </select>
+
+          <label class="title-label">Preferência de período aula 2*</label>
+          <select id="aula2_periodo" class="lesson-select">
+            <option value="">Selecione</option>
+            <option value="manhã">Manhã</option>
+            <option value="começo da tarde">Começo da tarde</option>
+            <option value="tarde">Tarde</option>
+          </select>
+
+          <label class="title-label">Descrição da aula 2*</label>
+          <textarea id="aula2_descricao" rows="5"></textarea>
+        </div>
+      </div>
+
+      <div class="step-separator"></div>
+
+      <div class="step-box" id="observacoesBox">
+        <label class="title-label">Alguma observação?</label>
+        <div class="hint">Ex.: "Não consigo domingo", "Não consigo sábado antes do meio-dia". O horário será definido em um segundo momento levando em consideração suas observações.</div>
+        <textarea id="observacoes_agenda" rows="5"></textarea>
+      </div>
     </div>
 
     <div class="button-row">
@@ -227,7 +323,7 @@
   <!-- ETAPA 5 -->
   <section class="step" id="step5" data-title="Imagens">
     <div class="step-box">
-      <label class="title-label">Envie a sua imagem (rosto)*</label>
+      <label class="title-label">Envie uma foto sua*</label>
       <div class="hint">(Mínimo recomendado: 500x500px)</div>
       <input type="file" id="foto_rosto" accept="image/*" />
 
@@ -248,23 +344,25 @@
   <section class="step" id="step6" data-title="Ajustando a divulgação">
     <div class="step-box">
       <label class="title-label">Tarja de divulgação*</label>
-      <div class="radio-row" style="display:flex; gap:16px; flex-wrap:wrap; margin:8px 0 16px;">
-        <label style="display:flex; gap:8px; align-items:center;">
-          <input type="radio" name="tipoTarja" value="professor" checked />
-          Professor
+      <div id="tipoTarjaGroup" class="tarja-group">
+        <label class="tarja-option">
+          <input type="radio" name="tipoTarja" value="professor" />
+          <span>Professor</span>
         </label>
-        <label style="display:flex; gap:8px; align-items:center;">
+
+        <label class="tarja-option">
           <input type="radio" name="tipoTarja" value="professora" />
-          Professora
+          <span>Professora</span>
         </label>
-        <label style="display:flex; gap:8px; align-items:center;">
+
+        <label class="tarja-option">
           <input type="radio" name="tipoTarja" value="outro" />
-          Outro
+          <span>Outro</span>
         </label>
       </div>
 
       <details class="acc" id="accRosto">
-        <summary class="acc__sum">Ajuste a foto de rosto</summary>
+        <summary class="acc__sum">Ajuste sua foto principal</summary>
         <div class="acc__body">
           <label class="title-label">Tamanho</label>
           <input type="range" id="rostoScale" min="0.1" max="3.5" step="0.01" value="1" />
