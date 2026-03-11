@@ -7,6 +7,57 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Comic+Relief&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=15">
+
+  <style>
+    .step-heading {
+      margin: 0 0 10px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #111;
+    }
+
+    .step-separator {
+      height: 18px;
+    }
+
+    .review-group {
+      background: #fff;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);
+      margin-bottom: 16px;
+    }
+
+    .review-group h3 {
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+
+    .review-item + .review-item {
+      margin-top: 12px;
+    }
+
+    .review-label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #111;
+    }
+
+    .review-value {
+      color: #444;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .lesson-box-title {
+      margin: 0 0 10px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #111;
+    }
+  </style>
 </head>
 
 <body>
@@ -59,7 +110,19 @@
       <label class="title-label">Telefone*</label>
       <input type="tel" id="telefone" placeholder="(00) 00000-0000" inputmode="tel" />
       <div id="telefoneError" class="inline-error"></div>
+    </div>
 
+    <div class="button-row">
+      <button class="btn-nav btn-voltar" data-prev>Voltar</button>
+      <button class="btn-nav btn-proximo" data-next>Próximo</button>
+    </div>
+
+    <a class="btn-light-text" href="index.html?back=1">Menu</a>
+  </section>
+
+  <!-- ETAPA 3 -->
+  <section class="step" id="step3" data-title="Empresa e redes">
+    <div class="step-box">
       <label class="title-label">Nome da empresa</label>
       <input type="text" id="empresa" />
 
@@ -80,44 +143,48 @@
     <a class="btn-light-text" href="index.html?back=1">Menu</a>
   </section>
 
-  <!-- ETAPA 3 -->
-  <section class="step" id="step3" data-title="Aulas">
+  <!-- ETAPA 4 -->
+  <section class="step" id="step4" data-title="Aulas">
+    <h3 class="lesson-box-title">Quantas aulas você ministrará?</h3>
     <div class="step-box">
-      <label class="title-label">Quantas aulas você ministrará?*</label>
       <select id="quantidade_aulas">
         <option value="">Selecione</option>
         <option value="1">1 aula</option>
         <option value="2">2 aulas</option>
       </select>
+    </div>
 
-      <div class="lesson-block">
-        <h3 style="margin:20px 0 10px;">Aula 1</h3>
+    <div class="step-separator"></div>
 
-        <label class="title-label">Nome da aula 1*</label>
-        <input type="text" id="aula1_nome" />
+    <h3 class="lesson-box-title">Aula 1</h3>
+    <div class="step-box">
+      <label class="title-label">Nome da aula 1*</label>
+      <input type="text" id="aula1_nome" />
 
-        <label class="title-label">Dia da aula 1*</label>
-        <select id="aula1_dia">
-          <option value="">Selecione</option>
-          <option value="sábado">Sábado</option>
-          <option value="domingo">Domingo</option>
-        </select>
+      <label class="title-label">Dia da aula 1*</label>
+      <select id="aula1_dia">
+        <option value="">Selecione</option>
+        <option value="sábado">Sábado</option>
+        <option value="domingo">Domingo</option>
+      </select>
 
-        <label class="title-label">Preferência de período aula 1*</label>
-        <select id="aula1_periodo">
-          <option value="">Selecione</option>
-          <option value="manhã">Manhã</option>
-          <option value="começo da tarde">Começo da tarde</option>
-          <option value="tarde">Tarde</option>
-        </select>
+      <label class="title-label">Preferência de período aula 1*</label>
+      <select id="aula1_periodo">
+        <option value="">Selecione</option>
+        <option value="manhã">Manhã</option>
+        <option value="começo da tarde">Começo da tarde</option>
+        <option value="tarde">Tarde</option>
+      </select>
 
-        <label class="title-label">Descrição da aula 1*</label>
-        <textarea id="aula1_descricao" rows="5"></textarea>
-      </div>
+      <label class="title-label">Descrição da aula 1*</label>
+      <textarea id="aula1_descricao" rows="5"></textarea>
+    </div>
 
-      <div class="lesson-block" id="blocoAula2" style="display:none;">
-        <h3 style="margin:20px 0 10px;">Aula 2</h3>
+    <div id="wrapAula2" style="display:none;">
+      <div class="step-separator"></div>
 
+      <h3 class="lesson-box-title">Aula 2</h3>
+      <div class="step-box" id="blocoAula2">
         <label class="title-label">Nome da aula 2*</label>
         <input type="text" id="aula2_nome" />
 
@@ -139,7 +206,11 @@
         <label class="title-label">Descrição da aula 2*</label>
         <textarea id="aula2_descricao" rows="5"></textarea>
       </div>
+    </div>
 
+    <div class="step-separator"></div>
+
+    <div class="step-box">
       <label class="title-label">Alguma observação?</label>
       <div class="hint">Ex.: "Não consigo domingo", "Não consigo sábado antes do meio-dia". O horário será definido em um segundo momento levando em consideração suas observações.</div>
       <textarea id="observacoes_agenda" rows="5"></textarea>
@@ -153,8 +224,8 @@
     <a class="btn-light-text" href="index.html?back=1">Menu</a>
   </section>
 
-  <!-- ETAPA 4 -->
-  <section class="step" id="step4" data-title="Imagens">
+  <!-- ETAPA 5 -->
+  <section class="step" id="step5" data-title="Imagens">
     <div class="step-box">
       <label class="title-label">Envie a sua imagem (rosto)*</label>
       <div class="hint">(Mínimo recomendado: 500x500px)</div>
@@ -173,10 +244,9 @@
     <a class="btn-light-text" href="index.html?back=1">Menu</a>
   </section>
 
-  <!-- ETAPA 5 -->
-  <section class="step" id="step5" data-title="Ajustando a divulgação">
+  <!-- ETAPA 6 -->
+  <section class="step" id="step6" data-title="Ajustando a divulgação">
     <div class="step-box">
-
       <label class="title-label">Tarja de divulgação*</label>
       <div class="radio-row" style="display:flex; gap:16px; flex-wrap:wrap; margin:8px 0 16px;">
         <label style="display:flex; gap:8px; align-items:center;">
@@ -197,13 +267,13 @@
         <summary class="acc__sum">Ajuste a foto de rosto</summary>
         <div class="acc__body">
           <label class="title-label">Tamanho</label>
-          <input type="range" id="rostoScale" min="0.1" max="2.5" step="0.01" value="1" />
+          <input type="range" id="rostoScale" min="0.1" max="3.5" step="0.01" value="1" />
 
           <label class="title-label">Mover horizontalmente</label>
-          <input type="range" id="rostoX" min="-500" max="500" value="0" />
+          <input type="range" id="rostoX" min="-700" max="700" value="0" />
 
           <label class="title-label">Mover verticalmente</label>
-          <input type="range" id="rostoY" min="-500" max="500" value="0" />
+          <input type="range" id="rostoY" min="-700" max="700" value="0" />
         </div>
       </details>
 
@@ -211,35 +281,18 @@
         <summary class="acc__sum">Ajuste a imagem de apoio</summary>
         <div class="acc__body">
           <label class="title-label">Tamanho</label>
-          <input type="range" id="apoioScale" min="0.1" max="2.5" step="0.01" value="1" />
+          <input type="range" id="apoioScale" min="0.1" max="3.5" step="0.01" value="1" />
 
           <label class="title-label">Mover horizontalmente</label>
-          <input type="range" id="apoioX" min="-500" max="500" value="0" />
+          <input type="range" id="apoioX" min="-700" max="700" value="0" />
 
           <label class="title-label">Mover verticalmente</label>
-          <input type="range" id="apoioY" min="-500" max="500" value="0" />
+          <input type="range" id="apoioY" min="-700" max="700" value="0" />
         </div>
       </details>
 
       <canvas id="canvas" width="1080" height="1350"></canvas>
-
       <div id="avisoTexto"></div>
-
-      <details class="acc" id="accTextos">
-        <summary class="acc__sum">Escrever textos</summary>
-        <div class="acc__body">
-          <label class="title-label">Nome para divulgação*</label>
-          <input type="text" id="tituloDivulgacao" placeholder="Nome para divulgação" />
-
-          <label class="title-label">Rótulo*</label>
-          <input type="text" id="subtituloDivulgacao" placeholder="Ex.: Quadrinista, Editor, Ilustradora..." />
-
-          <label class="title-label">Texto curto*</label>
-          <div class="hint">(Resumo curto para compor a arte)</div>
-          <textarea id="descricaoDivulgacao" rows="4"></textarea>
-        </div>
-      </details>
-
     </div>
 
     <div class="button-row">
@@ -250,8 +303,8 @@
     <a class="btn-light-text" href="index.html?back=1">Menu</a>
   </section>
 
-  <!-- ETAPA 6 -->
-  <section class="step" id="step6" data-title="Confirmar imagem">
+  <!-- ETAPA 7 -->
+  <section class="step" id="step7" data-title="Confirmar imagem">
     <div class="step-box">
       <img id="confirmPreview" alt="Preview da divulgação"
         style="
@@ -274,8 +327,8 @@
     <a class="btn-light-text" href="index.html?back=1">Menu</a>
   </section>
 
-  <!-- ETAPA 7 -->
-  <section class="step" id="step7" data-title="Informações adicionais">
+  <!-- ETAPA 8 -->
+  <section class="step" id="step8" data-title="Informações adicionais">
     <div class="step-box">
       <label class="title-label">Texto complementar</label>
       <div class="hint">(Se quiser, envie uma descrição maior sobre você, sua trajetória ou sua aula)</div>
@@ -293,12 +346,10 @@
     <a class="btn-light-text" href="index.html?back=1">Menu</a>
   </section>
 
-  <!-- ETAPA 8 -->
-  <section class="step" id="step8" data-title="Revise seus dados">
-    <div class="step-box">
-      <div id="review-list" class="review-box" style="margin-top:0;"></div>
-      <div id="mensagem"></div>
-    </div>
+  <!-- ETAPA 9 -->
+  <section class="step" id="step9" data-title="Revise seus dados">
+    <div id="review-list"></div>
+    <div id="mensagem"></div>
 
     <div class="button-row">
       <button class="btn-nav btn-voltar" data-prev>Voltar</button>
@@ -331,7 +382,7 @@
   </div>
 </main>
 
-<script src="app-comic_learning.js?v=1"></script>
+<script src="app-comic_learning.js?v=2"></script>
 <script src="footer-loader.js"></script>
 
 </body>
