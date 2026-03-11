@@ -272,9 +272,11 @@ async function initCanvas() {
   await carregarTarja(getTipoTarjaSelecionada());
 
   frameImg = new Image();
-  frameImg.onload = gerarPost;
-  frameImg.onerror = () => console.error('Falha ao carregar frame:', FRAME_URL);
-  frameImg.src = FRAME_URL + '?v=' + Date.now();
+frameImg.crossOrigin = 'anonymous';
+frameImg.referrerPolicy = 'no-referrer';
+frameImg.onload = gerarPost;
+frameImg.onerror = () => console.error('Falha ao carregar frame:', FRAME_URL);
+frameImg.src = FRAME_URL + '?v=' + Date.now();
 
   const rostoInput = document.getElementById('foto_rosto');
   const apoioInput = document.getElementById('foto_apoio');
@@ -308,14 +310,15 @@ async function initCanvas() {
     document.getElementById(id)?.addEventListener('change', gerarPost);
   });
 
-  document.querySelectorAll('input[name="tipoTarja"]').forEach((radio) => {
-    radio.addEventListener('change', async () => {
-      const tipo = getTipoTarjaSelecionada();
-      await carregarTarja(tipo);
-      gerarPost();
-      revalidateStepNav();
-    });
+document.querySelectorAll('input[name="tipoTarja"]').forEach((radio) => {
+  radio.addEventListener('change', async () => {
+    currentTarjaType = getTipoTarjaSelecionada();
+    tarjaImg = null;
+    await carregarTarja(currentTarjaType);
+    gerarPost();
+    revalidateStepNav();
   });
+});
 
   document.fonts?.ready?.then(gerarPost);
 }
@@ -332,9 +335,11 @@ async function carregarTarja(tipo) {
 
   try {
     tarjaImg = await loadImage(cfg.src);
+    gerarPost();
   } catch (e) {
-    console.error('Não foi possível carregar a tarja:', e);
+    console.error('Não foi possível carregar a tarja:', tipo, cfg.src, e);
     tarjaImg = null;
+    gerarPost();
   }
 }
 
@@ -859,7 +864,11 @@ function updateConfirmPreview() {
   gerarPost();
 
   requestAnimationFrame(() => {
-    img.src = canvas.toDataURL('image/png');
+    try {
+      img.src = canvas.toDataURL('image/png');
+    } catch (err) {
+      console.error('Erro ao gerar preview:', err);
+    }
   });
 }
 
