@@ -305,11 +305,14 @@
 
       <div class="step-separator"></div>
 
-      <div class="step-box" id="observacoesBox">
-        <label class="title-label">Alguma observação?</label>
-        <div class="hint">Ex.: "Não consigo domingo", "Não consigo sábado antes do meio-dia". O horário será definido em um segundo momento levando em consideração suas observações.</div>
-        <textarea id="observacoes_agenda" rows="5"></textarea>
-      </div>
+  <div class="step-box" id="observacoesBox">
+  <label class="title-label">Alguma observação?</label>
+  <textarea id="observacoes_agenda" rows="5"></textarea>
+<div class="hint hint-warning">
+  Ex.: "Não consigo domingo", "Não consigo sábado antes do meio-dia".<br>
+  O horário será definido em um segundo momento levando em consideração suas observações.
+</div>
+</div>
     </div>
 
     <div class="button-row">
@@ -344,22 +347,20 @@
   <section class="step" id="step6" data-title="Ajustando a divulgação">
     <div class="step-box">
       <label class="title-label">Tarja de divulgação*</label>
-      <div id="tipoTarjaGroup" class="tarja-group">
-        <label class="tarja-option">
-          <input type="radio" name="tipoTarja" value="professor" />
-          <span>Professor</span>
-        </label>
-
-        <label class="tarja-option">
-          <input type="radio" name="tipoTarja" value="professora" />
-          <span>Professora</span>
-        </label>
-
-        <label class="tarja-option">
-          <input type="radio" name="tipoTarja" value="outro" />
-          <span>Outro</span>
-        </label>
-      </div>
+<div id="tipoTarjaGroup" class="radio-row" style="display:flex; gap:16px; flex-wrap:wrap; margin:8px 0 16px;">
+  <label style="display:flex; gap:8px; align-items:center;">
+    <input type="radio" name="tipoTarja" value="professor" />
+    Professor
+  </label>
+  <label style="display:flex; gap:8px; align-items:center;">
+    <input type="radio" name="tipoTarja" value="professora" />
+    Professora
+  </label>
+  <label style="display:flex; gap:8px; align-items:center;">
+    <input type="radio" name="tipoTarja" value="outro" />
+    Outro
+  </label>
+</div>
 
       <details class="acc" id="accRosto">
         <summary class="acc__sum">Ajuste sua foto principal</summary>
