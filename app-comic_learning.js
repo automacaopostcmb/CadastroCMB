@@ -152,7 +152,7 @@ function loadImage(src) {
 }
 
 function getTipoTarjaSelecionada() {
-  return document.querySelector('input[name="tipoTarja"]:checked')?.value || 'professor';
+  return document.querySelector('input[name="tipoTarja"]:checked')?.value || '';
 }
 
 function updateStep6Warning() {
@@ -192,11 +192,25 @@ function updateAccordionErrorState() {
   }
 }
 
+function updateTarjaErrorState() {
+  const group = document.getElementById('tipoTarjaGroup');
+  if (!group) return;
+  const hasSelected = !!getTipoTarjaSelecionada();
+  group.classList.toggle('erro', !hasSelected);
+}
+
 function toggleAula2() {
   const qtd = document.getElementById('quantidade_aulas')?.value;
-  const wrap = document.getElementById('wrapAula2');
-  if (!wrap) return;
-  wrap.style.display = qtd === '2' ? 'block' : 'none';
+  const wrapAula2 = document.getElementById('wrapAula2');
+  const aulasContent = document.getElementById('aulasContent');
+
+  if (aulasContent) {
+    aulasContent.style.display = qtd ? 'block' : 'none';
+  }
+
+  if (wrapAula2) {
+    wrapAula2.style.display = qtd === '2' ? 'block' : 'none';
+  }
 }
 
 function clearAula2IfHidden() {
@@ -259,7 +273,7 @@ function buildCaptionFromForm() {
    =========================== */
 let canvas, ctx, frameImg, rostoImg, apoioImg;
 let tarjaImg = null;
-let currentTarjaType = 'professor';
+let currentTarjaType = '';
 
 /* ===========================
    CANVAS
@@ -272,11 +286,11 @@ async function initCanvas() {
   await carregarTarja(getTipoTarjaSelecionada());
 
   frameImg = new Image();
-frameImg.crossOrigin = 'anonymous';
-frameImg.referrerPolicy = 'no-referrer';
-frameImg.onload = gerarPost;
-frameImg.onerror = () => console.error('Falha ao carregar frame:', FRAME_URL);
-frameImg.src = FRAME_URL + '?v=' + Date.now();
+  frameImg.crossOrigin = 'anonymous';
+  frameImg.referrerPolicy = 'no-referrer';
+  frameImg.onload = gerarPost;
+  frameImg.onerror = () => console.error('Falha ao carregar frame:', FRAME_URL);
+  frameImg.src = FRAME_URL + '?v=' + Date.now();
 
   const rostoInput = document.getElementById('foto_rosto');
   const apoioInput = document.getElementById('foto_apoio');
@@ -310,24 +324,25 @@ frameImg.src = FRAME_URL + '?v=' + Date.now();
     document.getElementById(id)?.addEventListener('change', gerarPost);
   });
 
-document.querySelectorAll('input[name="tipoTarja"]').forEach((radio) => {
-  radio.addEventListener('change', async () => {
-    currentTarjaType = getTipoTarjaSelecionada();
-    tarjaImg = null;
-    await carregarTarja(currentTarjaType);
-    gerarPost();
-    revalidateStepNav();
+  document.querySelectorAll('input[name="tipoTarja"]').forEach((radio) => {
+    radio.addEventListener('change', async () => {
+      currentTarjaType = getTipoTarjaSelecionada();
+      tarjaImg = null;
+      await carregarTarja(currentTarjaType);
+      updateTarjaErrorState();
+      gerarPost();
+      revalidateStepNav();
+    });
   });
-});
 
   document.fonts?.ready?.then(gerarPost);
 }
 
 async function carregarTarja(tipo) {
-  currentTarjaType = tipo;
+  currentTarjaType = tipo || '';
   tarjaImg = null;
 
-  const cfg = TARJAS[tipo];
+  const cfg = TARJAS[currentTarjaType];
   if (!cfg) {
     gerarPost();
     return;
@@ -337,7 +352,7 @@ async function carregarTarja(tipo) {
     tarjaImg = await loadImage(cfg.src);
     gerarPost();
   } catch (e) {
-    console.error('Não foi possível carregar a tarja:', tipo, cfg.src, e);
+    console.error('Não foi possível carregar a tarja:', currentTarjaType, cfg.src, e);
     tarjaImg = null;
     gerarPost();
   }
@@ -761,8 +776,13 @@ const STEP_VALIDATORS = {
     let ok = true;
     step6Messages.errors = [];
 
+    if (!getTipoTarjaSelecionada()) {
+      step6Messages.errors.push('Selecione a tarja de divulgação.');
+      ok = false;
+    }
+
     if (!accordionFlags.rostoAjustado) {
-      step6Messages.errors.push('Abra e ajuste a foto de rosto.');
+      step6Messages.errors.push('Abra e ajuste sua foto principal.');
       ok = false;
     }
 
@@ -787,6 +807,7 @@ const STEP_VALIDATORS = {
     }
 
     updateAccordionErrorState();
+    updateTarjaErrorState();
     updateStep6Warning();
     return ok;
   },
@@ -878,6 +899,7 @@ function showStep(n) {
 
   if (currentStep === 6) {
     updateAccordionErrorState();
+    updateTarjaErrorState();
     updateStep6Warning();
     gerarPost();
   }
@@ -895,17 +917,24 @@ function buildReview() {
   if (!box) return;
 
   const qtd = (document.getElementById('quantidade_aulas')?.value || '').trim();
+  const rotulo = (document.getElementById('rotulo')?.value || '').trim();
+  const textoComplementar = (document.getElementById('texto_complementar')?.value || '').trim();
+
+  const sobreVoceItens = [
+    ['Nome completo', document.getElementById('nome')?.value || '—'],
+    ['Nome para divulgação', document.getElementById('nome_div')?.value || '—'],
+    ['E-mail', document.getElementById('email')?.value || '—'],
+    ['Telefone', document.getElementById('telefone')?.value || '—']
+  ];
+
+  if (rotulo) {
+    sobreVoceItens.splice(2, 0, ['Rótulo', rotulo]);
+  }
 
   const grupos = [
     {
       titulo: 'Sobre você',
-      itens: [
-        ['Nome completo', document.getElementById('nome')?.value || '—'],
-        ['Nome para divulgação', document.getElementById('nome_div')?.value || '—'],
-        ['Rótulo', document.getElementById('rotulo')?.value || '—'],
-        ['E-mail', document.getElementById('email')?.value || '—'],
-        ['Telefone', document.getElementById('telefone')?.value || '—']
-      ]
+      itens: sobreVoceItens
     },
     {
       titulo: 'Empresa e redes',
@@ -938,20 +967,21 @@ function buildReview() {
     });
   }
 
-  grupos.push(
-    {
-      titulo: 'Observações',
-      itens: [
-        ['Observações de agenda', document.getElementById('observacoes_agenda')?.value || '—']
-      ]
-    },
-    {
+  grupos.push({
+    titulo: 'Observações',
+    itens: [
+      ['Observações de agenda', document.getElementById('observacoes_agenda')?.value || '—']
+    ]
+  });
+
+  if (textoComplementar) {
+    grupos.push({
       titulo: 'Informações adicionais',
       itens: [
-        ['Texto complementar', document.getElementById('texto_complementar')?.value || '—']
+        ['Texto complementar', textoComplementar]
       ]
-    }
-  );
+    });
+  }
 
   box.innerHTML = grupos.map((grupo) => `
     <div class="review-group">
