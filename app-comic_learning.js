@@ -10,38 +10,9 @@ const TARJAS = {
   outro: null
 };
 
-const CHAR_LIMITS = {
-  tituloDivulgacao: { min: 3, max: 60 }
-};
-
 const PHONE_ALLOWED_LENGTHS = [10, 11];
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 
-const REVIEW_FIELDS = [
-  { id: 'nome', label: 'Nome completo' },
-  { id: 'nome_div', label: 'Nome para divulgação' },
-  { id: 'rotulo', label: 'Rótulo' },
-  { id: 'email', label: 'E-mail' },
-  { id: 'telefone', label: 'Telefone' },
-  { id: 'empresa', label: 'Empresa' },
-  { id: 'site', label: 'Site/Portfólio', format: (v) => normalizeUrlMaybe(v) },
-  { id: 'insta', label: 'Instagram', format: (v) => normalizeInstagram(v).url },
-  { id: 'quantidade_aulas', label: 'Quantidade de aulas' },
-  { id: 'aula1_nome', label: 'Aula 1 - Nome' },
-  { id: 'aula1_dia', label: 'Aula 1 - Dia' },
-  { id: 'aula1_periodo', label: 'Aula 1 - Período' },
-  { id: 'aula1_descricao', label: 'Aula 1 - Descrição' },
-  { id: 'aula2_nome', label: 'Aula 2 - Nome' },
-  { id: 'aula2_dia', label: 'Aula 2 - Dia' },
-  { id: 'aula2_periodo', label: 'Aula 2 - Período' },
-  { id: 'aula2_descricao', label: 'Aula 2 - Descrição' },
-  { id: 'observacoes_agenda', label: 'Observações de agenda' },
-  { id: 'texto_complementar', label: 'Texto complementar' }
-];
-
-/* ===========================
-   OVERLAY: mensagens rotativas
-   =========================== */
 const OVERLAY_STEPS = [
   { after: 0,      msg: "Separando informações..." },
   { after: 6000,   msg: "Enviando informações..." },
@@ -79,16 +50,17 @@ function stopOverlayMessages() {
 /* ===========================
    ESTADO
    =========================== */
-const step5Messages = { errors: [] };
+const step6Messages = { errors: [] };
+
 const validationFlags = {
-  overflowTitulo: false,
-  overflowDescricao: false
+  overflowNome: false,
+  overflowRotulo: false,
+  overflowAulas: false
 };
 
 const accordionFlags = {
   rostoAjustado: false,
-  apoioAjustado: false,
-  textoAjustado: false
+  apoioAjustado: false
 };
 
 function showAuthOverlay(message) {
@@ -101,17 +73,6 @@ function showAuthOverlay(message) {
 
   const el = document.querySelector('#overlay .loader-text');
   if (el) el.textContent = message || 'Faça login primeiro.';
-}
-
-function hideAuthOverlay() {
-  const overlay = document.getElementById('overlay');
-  if (!overlay) return;
-
-  overlay.classList.remove('auth');
-  overlay.style.display = 'none';
-
-  const el = document.querySelector('#overlay .loader-text');
-  if (el) el.textContent = 'Enviando...';
 }
 
 function blockAndRedirect(message, url = 'index.html', delay = 1500) {
@@ -184,7 +145,6 @@ function loadImage(src) {
   const bust = (/\?/.test(src) ? '&' : '?') + 'v=' + Date.now();
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = 'anonymous';
     img.onload = () => resolve(img);
     img.onerror = reject;
     img.src = src + bust;
@@ -195,27 +155,23 @@ function getTipoTarjaSelecionada() {
   return document.querySelector('input[name="tipoTarja"]:checked')?.value || 'professor';
 }
 
-function updateStep5Warning() {
+function updateStep6Warning() {
   const aviso = document.getElementById('avisoTexto');
   if (!aviso) return;
 
-  if (!step5Messages.errors.length) {
+  if (!step6Messages.errors.length) {
     aviso.innerHTML = '';
     aviso.style.display = 'none';
     return;
   }
 
-  aviso.innerHTML = step5Messages.errors
-    .map(msg => `<div>• ${msg}</div>`)
-    .join('');
-
+  aviso.innerHTML = step6Messages.errors.map(msg => `<div>• ${msg}</div>`).join('');
   aviso.style.display = 'block';
 }
 
 function markAccordionAsOpened(type) {
   if (type === 'rosto') accordionFlags.rostoAjustado = true;
   if (type === 'apoio') accordionFlags.apoioAjustado = true;
-  if (type === 'texto') accordionFlags.textoAjustado = true;
 
   updateAccordionErrorState();
   revalidateStepNav();
@@ -224,7 +180,6 @@ function markAccordionAsOpened(type) {
 function updateAccordionErrorState() {
   const accordionRosto = document.getElementById('accRosto');
   const accordionApoio = document.getElementById('accApoio');
-  const accordionTexto = document.getElementById('accTextos');
 
   if (accordionRosto) {
     accordionRosto.classList.toggle('erro', !accordionFlags.rostoAjustado);
@@ -235,59 +190,13 @@ function updateAccordionErrorState() {
     accordionApoio.classList.toggle('erro', !accordionFlags.apoioAjustado);
     accordionApoio.classList.toggle('opened-once', accordionFlags.apoioAjustado);
   }
-
-  if (accordionTexto) {
-    accordionTexto.classList.toggle('erro', !accordionFlags.textoAjustado);
-    accordionTexto.classList.toggle('opened-once', accordionFlags.textoAjustado);
-  }
-}
-
-function syncStep5TextFields() {
-  const nomeDiv = document.getElementById('nome_div');
-  const rotulo = document.getElementById('rotulo');
-  const aula1Desc = document.getElementById('aula1_descricao');
-
-  const tituloEl = document.getElementById('tituloDivulgacao');
-  const subtituloEl = document.getElementById('subtituloDivulgacao');
-  const descricaoEl = document.getElementById('descricaoDivulgacao');
-
-  if (tituloEl && !tituloEl.value.trim()) tituloEl.value = nomeDiv?.value || '';
-  if (subtituloEl && !subtituloEl.value.trim()) subtituloEl.value = rotulo?.value || '';
-  if (descricaoEl && !descricaoEl.value.trim()) descricaoEl.value = aula1Desc?.value || '';
-}
-
-function buildCaptionFromForm() {
-  const nomeDiv = (document.getElementById('nome_div')?.value || '').trim();
-  const rotulo = (document.getElementById('rotulo')?.value || '').trim();
-  const aula1 = (document.getElementById('aula1_nome')?.value || '').trim();
-  const aula2 = (document.getElementById('aula2_nome')?.value || '').trim();
-  const qtd = (document.getElementById('quantidade_aulas')?.value || '').trim();
-
-  const { handle } = normalizeInstagram(document.getElementById('insta')?.value || '');
-  const instaHandle = handle ? '@' + handle : '';
-
-  const textoComp = (document.getElementById('texto_complementar')?.value || '').trim();
-  const textoCurto = (document.getElementById('descricaoDivulgacao')?.value || '').trim();
-  const descricao = textoComp || textoCurto || '';
-
-  const aulas = [];
-  if (aula1) aulas.push(aula1);
-  if (qtd === '2' && aula2) aulas.push(aula2);
-
-  const head = `${nomeDiv || 'Professor(a) confirmado(a)'} ${instaHandle || ''} no Comic Learning @comicmarketbrasil`;
-  const role = rotulo ? rotulo : '';
-  const aulasTexto = aulas.length ? `Aulas: ${aulas.join(' | ')}` : '';
-  const tags =
-    '#ComicLearning #ComicMarketBrasil #QuadrinhosNacionais #QuadrinhosBrasileiros #hqbr #mangabr #historiaemquadrinhos #fapcom';
-
-  return [head, role, aulasTexto, '', descricao, '', tags].filter(Boolean).join('\n');
 }
 
 function toggleAula2() {
   const qtd = document.getElementById('quantidade_aulas')?.value;
-  const bloco = document.getElementById('blocoAula2');
-  if (!bloco) return;
-  bloco.style.display = qtd === '2' ? 'block' : 'none';
+  const wrap = document.getElementById('wrapAula2');
+  if (!wrap) return;
+  wrap.style.display = qtd === '2' ? 'block' : 'none';
 }
 
 function clearAula2IfHidden() {
@@ -297,10 +206,52 @@ function clearAula2IfHidden() {
   ['aula2_nome', 'aula2_dia', 'aula2_periodo', 'aula2_descricao'].forEach((id) => {
     const el = document.getElementById(id);
     if (!el) return;
-    if (el.tagName === 'SELECT') el.value = '';
-    else el.value = '';
+    el.value = '';
     el.classList.remove('invalid');
   });
+}
+
+/* ===========================
+   LEGENDA / DADOS DE DIVULGAÇÃO
+   =========================== */
+function getNomeDivulgacao() {
+  return (document.getElementById('nome_div')?.value || '').trim();
+}
+
+function getRotuloDivulgacao() {
+  return (document.getElementById('rotulo')?.value || '').trim();
+}
+
+function getAulasPreviewText() {
+  const qtd = (document.getElementById('quantidade_aulas')?.value || '').trim();
+  const aula1 = (document.getElementById('aula1_nome')?.value || '').trim();
+  const aula2 = (document.getElementById('aula2_nome')?.value || '').trim();
+
+  const aulas = [];
+  if (aula1) aulas.push(aula1);
+  if (qtd === '2' && aula2) aulas.push(aula2);
+
+  return aulas.join(' • ');
+}
+
+function buildCaptionFromForm() {
+  const nomeDiv = getNomeDivulgacao();
+  const rotulo = getRotuloDivulgacao();
+  const aulas = getAulasPreviewText();
+
+  const { handle } = normalizeInstagram(document.getElementById('insta')?.value || '');
+  const instaHandle = handle ? '@' + handle : '';
+
+  const textoComp = (document.getElementById('texto_complementar')?.value || '').trim();
+  const descAula1 = (document.getElementById('aula1_descricao')?.value || '').trim();
+  const descricao = textoComp || descAula1 || '';
+
+  const head = `${nomeDiv || 'Professor(a) confirmado(a)'} ${instaHandle || ''} no Comic Learning @comicmarketbrasil`;
+  const role = rotulo || '';
+  const aulasTexto = aulas ? `Aulas: ${aulas}` : '';
+  const tags = '#ComicLearning #ComicMarketBrasil #QuadrinhosNacionais #QuadrinhosBrasileiros #hqbr #mangabr #historiaemquadrinhos #fapcom';
+
+  return [head, role, aulasTexto, '', descricao, '', tags].filter(Boolean).join('\n');
 }
 
 /* ===========================
@@ -321,8 +272,6 @@ async function initCanvas() {
   await carregarTarja(getTipoTarjaSelecionada());
 
   frameImg = new Image();
-  frameImg.crossOrigin = 'anonymous';
-  frameImg.referrerPolicy = 'no-referrer';
   frameImg.onload = gerarPost;
   frameImg.onerror = () => console.error('Falha ao carregar frame:', FRAME_URL);
   frameImg.src = FRAME_URL + '?v=' + Date.now();
@@ -353,14 +302,16 @@ async function initCanvas() {
   [
     'rostoScale', 'rostoX', 'rostoY',
     'apoioScale', 'apoioX', 'apoioY',
-    'tituloDivulgacao', 'subtituloDivulgacao', 'descricaoDivulgacao'
+    'nome_div', 'rotulo', 'aula1_nome', 'aula2_nome', 'quantidade_aulas'
   ].forEach((id) => {
     document.getElementById(id)?.addEventListener('input', gerarPost);
+    document.getElementById(id)?.addEventListener('change', gerarPost);
   });
 
   document.querySelectorAll('input[name="tipoTarja"]').forEach((radio) => {
     radio.addEventListener('change', async () => {
-      await carregarTarja(getTipoTarjaSelecionada());
+      const tipo = getTipoTarjaSelecionada();
+      await carregarTarja(tipo);
       gerarPost();
       revalidateStepNav();
     });
@@ -375,7 +326,7 @@ async function carregarTarja(tipo) {
 
   const cfg = TARJAS[tipo];
   if (!cfg) {
-    tarjaImg = null;
+    gerarPost();
     return;
   }
 
@@ -387,48 +338,36 @@ async function carregarTarja(tipo) {
   }
 }
 
-function drawCoverImage(img, anchorX, anchorY, scale, offsetX, offsetY, maxW = null, maxH = null) {
+function drawCoverImage(img, anchorX, anchorY, scale, offsetX, offsetY) {
   if (!img) return;
 
-  let w = img.width * scale;
-  let h = img.height * scale;
-
-  if (maxW && maxH) {
-    const s = Math.min(maxW / w, maxH / h);
-    w *= s;
-    h *= s;
-  }
-
+  const w = img.width * scale;
+  const h = img.height * scale;
   const drawX = anchorX + offsetX - w / 2;
   const drawY = anchorY + offsetY - h / 2;
+
   ctx.drawImage(img, drawX, drawY, w, h);
 }
 
 function gerarPost() {
   if (!ctx || !canvas) return;
 
-  syncStep5TextFields();
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  /* Imagem de apoio ao fundo */
   if (apoioImg) {
-    const scale = parseFloat(document.getElementById('apoioScale').value || '1');
-    const offsetX = parseInt(document.getElementById('apoioX').value || '0', 10);
-    const offsetY = parseInt(document.getElementById('apoioY').value || '0', 10);
-
+    const scale = parseFloat(document.getElementById('apoioScale')?.value || '1');
+    const offsetX = parseInt(document.getElementById('apoioX')?.value || '0', 10);
+    const offsetY = parseInt(document.getElementById('apoioY')?.value || '0', 10);
     drawCoverImage(apoioImg, 220, 430, scale, offsetX, offsetY);
   }
 
-  /* Foto principal */
   if (rostoImg) {
-    const scale = parseFloat(document.getElementById('rostoScale').value || '1');
-    const offsetX = parseInt(document.getElementById('rostoX').value || '0', 10);
-    const offsetY = parseInt(document.getElementById('rostoY').value || '0', 10);
-
-    drawCoverImage(rostoImg, 820, 420, scale, offsetX, offsetY, 430, 430);
+    const scale = parseFloat(document.getElementById('rostoScale')?.value || '1');
+    const offsetX = parseInt(document.getElementById('rostoX')?.value || '0', 10);
+    const offsetY = parseInt(document.getElementById('rostoY')?.value || '0', 10);
+    drawCoverImage(rostoImg, 820, 420, scale, offsetX, offsetY);
   }
 
   if (frameImg?.complete && frameImg.naturalWidth) {
@@ -442,76 +381,73 @@ function gerarPost() {
     ctx.drawImage(tarjaImg, canvas.width - tarjaCfg.x - w, tarjaCfg.y, w, h);
   }
 
-  const titulo = (document.getElementById('tituloDivulgacao')?.value || '').trim();
-  const subtitulo = (document.getElementById('subtituloDivulgacao')?.value || '').trim();
-  const descricao = (document.getElementById('descricaoDivulgacao')?.value || '').trim();
+  const nome = getNomeDivulgacao();
+  const rotulo = getRotuloDivulgacao();
+  const aulasTexto = getAulasPreviewText();
 
-  /* Nome */
-  ctx.font = 'bold 52px "Comic Relief"';
-  ctx.fillStyle = '#000';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
 
-  const tituloX = canvas.width / 2;
-  const tituloY = 825;
-  const tituloMaxWidth = 860;
-  const tituloMaxLinhas = 2;
-  const tituloLineHeight = 58;
+  ctx.font = 'bold 52px "Comic Relief"';
+  ctx.fillStyle = '#000';
 
-  const linhasTitulo = wrapText(titulo, tituloMaxWidth, ctx);
-  const ultrapassouTitulo = linhasTitulo.length > tituloMaxLinhas;
-  const tituloSlice = linhasTitulo.slice(0, tituloMaxLinhas);
+  const nomeX = canvas.width / 2;
+  const nomeY = 825;
+  const nomeMaxWidth = 860;
+  const nomeMaxLinhas = 2;
+  const nomeLineHeight = 58;
 
-  tituloSlice.forEach((linha, i) => {
-    ctx.fillText(linha, tituloX, tituloY + i * tituloLineHeight);
+  const linhasNome = wrapText(nome, nomeMaxWidth, ctx);
+  const overflowNome = linhasNome.length > nomeMaxLinhas;
+  const nomeSlice = linhasNome.slice(0, nomeMaxLinhas);
+
+  nomeSlice.forEach((linha, i) => {
+    ctx.fillText(linha, nomeX, nomeY + i * nomeLineHeight);
   });
 
-  /* Rótulo */
   ctx.font = '32px "Comic Relief"';
   ctx.fillStyle = '#111';
-  const subtituloY = tituloY + (tituloSlice.length * tituloLineHeight) + 14;
-  const linhasSubtitulo = wrapText(subtitulo, 860, ctx).slice(0, 2);
-  linhasSubtitulo.forEach((linha, i) => {
-    ctx.fillText(linha, tituloX, subtituloY + i * 38);
+
+  const rotuloY = nomeY + (nomeSlice.length * nomeLineHeight) + 14;
+  const linhasRotulo = wrapText(rotulo, 860, ctx);
+  const overflowRotulo = linhasRotulo.length > 2;
+  linhasRotulo.slice(0, 2).forEach((linha, i) => {
+    ctx.fillText(linha, nomeX, rotuloY + i * 38);
   });
 
-  /* Descrição */
   ctx.font = '28px "Comic Relief"';
   ctx.fillStyle = '#333';
 
-  const descricaoX = 120;
-  const descricaoMaxWidth = 940;
-  const descricaoMaxLinhas = 4;
-  const lineHeight = 38;
+  const aulasX = 120;
+  const aulasMaxWidth = 940;
+  const aulasMaxLinhas = 3;
+  const aulasLineHeight = 38;
+  const aulasY = 1080;
+  const aulasCenterX = aulasX + (aulasMaxWidth / 2);
 
-  const linhasManuais = descricao.split('\n');
-  let todas = [];
-  linhasManuais.forEach((l) => todas.push(...wrapText(l, descricaoMaxWidth, ctx)));
+  const linhasAulas = wrapText(aulasTexto, aulasMaxWidth, ctx);
+  const overflowAulas = linhasAulas.length > aulasMaxLinhas;
+  const aulasSlice = linhasAulas.slice(0, aulasMaxLinhas);
 
-  const ultrapassouDescricao = todas.length > descricaoMaxLinhas;
-  const linhasDescricao = todas.slice(0, descricaoMaxLinhas);
-
-  let descricaoY = 1080;
-  const descricaoCenterX = descricaoX + (descricaoMaxWidth / 2);
-
-  if (linhasDescricao.length <= 2) {
+  if (aulasSlice.length <= 2) {
     ctx.textAlign = 'center';
-    linhasDescricao.forEach((linha, i) => {
-      ctx.fillText(linha, descricaoCenterX, descricaoY + i * lineHeight);
+    aulasSlice.forEach((linha, i) => {
+      ctx.fillText(linha, aulasCenterX, aulasY + i * aulasLineHeight);
     });
   } else {
     ctx.textAlign = 'left';
-    linhasDescricao.forEach((linha, i) => {
-      ctx.fillText(linha, descricaoX, descricaoY + i * lineHeight);
+    aulasSlice.forEach((linha, i) => {
+      ctx.fillText(linha, aulasX, aulasY + i * aulasLineHeight);
     });
   }
 
   ctx.textAlign = 'left';
 
-  validationFlags.overflowTitulo = ultrapassouTitulo;
-  validationFlags.overflowDescricao = ultrapassouDescricao;
+  validationFlags.overflowNome = overflowNome;
+  validationFlags.overflowRotulo = overflowRotulo;
+  validationFlags.overflowAulas = overflowAulas;
 
-  updateStep5Warning();
+  updateStep6Warning();
   if (typeof revalidateStepNav === 'function') revalidateStepNav();
 }
 
@@ -529,7 +465,7 @@ function wrapText(text, maxWidth, context) {
       linha = palavra + ' ';
     } else if (context.measureText(palavra).width > maxWidth) {
       let parte = '';
-      for (let char of palavra) {
+      for (const char of palavra) {
         const testeParte = parte + char;
         if (context.measureText(testeParte).width > maxWidth) {
           linhas.push(parte);
@@ -560,11 +496,11 @@ function baixarImagem() {
    =========================== */
 async function enviarParaGoogle() {
   const obrig = [
-    'nome', 'nome_div', 'rotulo', 'email', 'telefone', 'site', 'insta',
+    'nome', 'nome_div', 'rotulo', 'email', 'telefone',
+    'site', 'insta',
     'quantidade_aulas',
     'aula1_nome', 'aula1_dia', 'aula1_periodo', 'aula1_descricao',
-    'foto_rosto', 'foto_apoio',
-    'tituloDivulgacao', 'subtituloDivulgacao', 'descricaoDivulgacao'
+    'foto_rosto', 'foto_apoio'
   ];
 
   if ((document.getElementById('quantidade_aulas')?.value || '') === '2') {
@@ -641,10 +577,6 @@ async function enviarParaGoogle() {
     aula2_descricao: qtd === '2' ? document.getElementById('aula2_descricao').value : '',
 
     observacoes_agenda: document.getElementById('observacoes_agenda').value,
-
-    titulo_divulgacao: document.getElementById('tituloDivulgacao').value,
-    subtitulo_divulgacao: document.getElementById('subtituloDivulgacao').value,
-    descricao_divulgacao: document.getElementById('descricaoDivulgacao').value,
     texto_complementar: document.getElementById('texto_complementar').value,
 
     tipo_tarja: getTipoTarjaSelecionada(),
@@ -661,7 +593,6 @@ async function enviarParaGoogle() {
   const overlay = document.getElementById('overlay');
   overlay.classList.remove('auth');
   overlay.classList.add('active');
-
   startOverlayMessages();
 
   try {
@@ -678,8 +609,8 @@ async function enviarParaGoogle() {
       msg.textContent = '✅ Enviado com sucesso!';
       msg.style.color = 'green';
 
-      const step8 = document.getElementById('step8');
-      if (step8) step8.style.display = 'none';
+      const step9 = document.getElementById('step9');
+      if (step9) step9.style.display = 'none';
 
       const stepTitle = document.getElementById('wizardStepTitle');
       if (stepTitle) stepTitle.style.display = 'none';
@@ -720,7 +651,6 @@ async function enviarParaGoogle() {
 const API_URL =
   'https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec';
 
-/* Está usando o nome que você indicou como liberado */
 const PAGINA = 'cadastro_masterclass';
 
 async function checkAuth() {
@@ -750,13 +680,14 @@ async function checkAuth() {
    =========================== */
 const REQUIRED_BY_STEP = {
   1: [],
-  2: ['nome', 'nome_div', 'rotulo', 'email', 'telefone', 'site', 'insta'],
-  3: ['quantidade_aulas', 'aula1_nome', 'aula1_dia', 'aula1_periodo', 'aula1_descricao'],
-  4: ['foto_rosto', 'foto_apoio'],
-  5: ['tituloDivulgacao', 'subtituloDivulgacao', 'descricaoDivulgacao'],
+  2: ['nome', 'nome_div', 'rotulo', 'email', 'telefone'],
+  3: ['site', 'insta'],
+  4: ['quantidade_aulas', 'aula1_nome', 'aula1_dia', 'aula1_periodo', 'aula1_descricao'],
+  5: ['foto_rosto', 'foto_apoio'],
   6: [],
   7: [],
-  8: []
+  8: [],
+  9: []
 };
 
 const GLOBAL_VALIDATORS = [];
@@ -771,6 +702,10 @@ const STEP_VALIDATORS = {
     const okTel = PHONE_ALLOWED_LENGTHS.includes(raw.length);
     showFieldError('telefone', okTel ? '' : 'Telefone com DDD (10 ou 11 dígitos).');
 
+    return okEmail && okTel;
+  },
+
+  3: () => {
     const siteInput = document.getElementById('site');
     let url = normalizeUrlMaybe(siteInput.value);
     let okSite = false;
@@ -791,10 +726,10 @@ const STEP_VALIDATORS = {
     showFieldError('insta', okInsta ? '' : 'Informe um Instagram válido (link ou @usuario).');
     if (okInsta) instaInput.value = parsed.url;
 
-    return okEmail && okTel && okSite && okInsta;
+    return okSite && okInsta;
   },
 
-  3: () => {
+  4: () => {
     const qtd = document.getElementById('quantidade_aulas').value;
     let ok = !!qtd;
 
@@ -817,65 +752,41 @@ const STEP_VALIDATORS = {
     return ok;
   },
 
-  5: () => {
-    const t = (document.getElementById('tituloDivulgacao').value || '').trim();
-    const s = (document.getElementById('subtituloDivulgacao').value || '').trim();
-    const d = (document.getElementById('descricaoDivulgacao').value || '').trim();
-
+  6: () => {
     let ok = true;
-    step5Messages.errors = [];
-
-    if (!t) {
-      step5Messages.errors.push('Preencha o nome para divulgação.');
-      ok = false;
-    }
-
-    if (!s) {
-      step5Messages.errors.push('Preencha o rótulo.');
-      ok = false;
-    }
-
-    if (!d) {
-      step5Messages.errors.push('Preencha o texto curto.');
-      ok = false;
-    }
-
-    if (t && t.length < CHAR_LIMITS.tituloDivulgacao.min) {
-      step5Messages.errors.push('O nome para divulgação está muito curto.');
-      ok = false;
-    }
-
-    if (validationFlags.overflowTitulo) {
-      step5Messages.errors.push('O nome para divulgação ultrapassou o limite da arte.');
-      ok = false;
-    }
-
-    if (validationFlags.overflowDescricao) {
-      step5Messages.errors.push('O texto curto ultrapassou o limite da arte.');
-      ok = false;
-    }
+    step6Messages.errors = [];
 
     if (!accordionFlags.rostoAjustado) {
-      step5Messages.errors.push('Abra e ajuste a foto de rosto.');
+      step6Messages.errors.push('Abra e ajuste a foto de rosto.');
       ok = false;
     }
 
     if (!accordionFlags.apoioAjustado) {
-      step5Messages.errors.push('Abra e ajuste a imagem de apoio.');
+      step6Messages.errors.push('Abra e ajuste a imagem de apoio.');
       ok = false;
     }
 
-    if (!accordionFlags.textoAjustado) {
-      step5Messages.errors.push('Abra e ajuste os textos.');
+    if (validationFlags.overflowNome) {
+      step6Messages.errors.push('O nome para divulgação ultrapassou o limite da arte.');
+      ok = false;
+    }
+
+    if (validationFlags.overflowRotulo) {
+      step6Messages.errors.push('O rótulo ultrapassou o limite da arte.');
+      ok = false;
+    }
+
+    if (validationFlags.overflowAulas) {
+      step6Messages.errors.push('O nome da aula ultrapassou o limite da arte.');
       ok = false;
     }
 
     updateAccordionErrorState();
-    updateStep5Warning();
+    updateStep6Warning();
     return ok;
   },
 
-  8: () => {
+  9: () => {
     buildReview();
     return true;
   }
@@ -900,7 +811,7 @@ function markValidity(ids = []) {
 function validateStep(stepNumber) {
   const required = [...(REQUIRED_BY_STEP[stepNumber] || [])];
 
-  if (stepNumber === 3 && (document.getElementById('quantidade_aulas')?.value || '') === '2') {
+  if (stepNumber === 4 && (document.getElementById('quantidade_aulas')?.value || '') === '2') {
     required.push('aula2_nome', 'aula2_dia', 'aula2_periodo', 'aula2_descricao');
   }
 
@@ -956,15 +867,14 @@ function showStep(n) {
   currentStep = Math.max(1, Math.min(totalSteps, n));
   steps.forEach((el, idx) => el.classList.toggle('active', idx === currentStep - 1));
 
-  if (currentStep === 5) {
-    syncStep5TextFields();
+  if (currentStep === 6) {
     updateAccordionErrorState();
-    updateStep5Warning();
+    updateStep6Warning();
     gerarPost();
   }
 
-  if (currentStep === 6) updateConfirmPreview();
-  if (currentStep === 8) buildReview();
+  if (currentStep === 7) updateConfirmPreview();
+  if (currentStep === 9) buildReview();
 
   updateWizardHeader();
   revalidateStepNav();
@@ -975,36 +885,76 @@ function buildReview() {
   const box = document.getElementById('review-list');
   if (!box) return;
 
-  const tipoTarja = getTipoTarjaSelecionada();
+  const qtd = (document.getElementById('quantidade_aulas')?.value || '').trim();
 
-  const parts = REVIEW_FIELDS.map(({ id, label, format }) => {
-    const el = document.getElementById(id);
-    let val = '';
-
-    if (el) {
-      if (el.type === 'file') val = (el.files && el.files[0]) ? el.files[0].name : '—';
-      else val = (el.value || '').trim();
+  const grupos = [
+    {
+      titulo: 'Sobre você',
+      itens: [
+        ['Nome completo', document.getElementById('nome')?.value || '—'],
+        ['Nome para divulgação', document.getElementById('nome_div')?.value || '—'],
+        ['Rótulo', document.getElementById('rotulo')?.value || '—'],
+        ['E-mail', document.getElementById('email')?.value || '—'],
+        ['Telefone', document.getElementById('telefone')?.value || '—']
+      ]
+    },
+    {
+      titulo: 'Empresa e redes',
+      itens: [
+        ['Empresa', document.getElementById('empresa')?.value || '—'],
+        ['Site/Portfólio', normalizeUrlMaybe(document.getElementById('site')?.value || '') || '—'],
+        ['Instagram', normalizeInstagram(document.getElementById('insta')?.value || '').url || '—']
+      ]
+    },
+    {
+      titulo: 'Aula 1',
+      itens: [
+        ['Nome da aula 1', document.getElementById('aula1_nome')?.value || '—'],
+        ['Dia da aula 1', document.getElementById('aula1_dia')?.value || '—'],
+        ['Período aula 1', document.getElementById('aula1_periodo')?.value || '—'],
+        ['Descrição da aula 1', document.getElementById('aula1_descricao')?.value || '—']
+      ]
     }
+  ];
 
-    if (typeof format === 'function') val = format(val);
-    if (!val) val = '—';
+  if (qtd === '2') {
+    grupos.push({
+      titulo: 'Aula 2',
+      itens: [
+        ['Nome da aula 2', document.getElementById('aula2_nome')?.value || '—'],
+        ['Dia da aula 2', document.getElementById('aula2_dia')?.value || '—'],
+        ['Período aula 2', document.getElementById('aula2_periodo')?.value || '—'],
+        ['Descrição da aula 2', document.getElementById('aula2_descricao')?.value || '—']
+      ]
+    });
+  }
 
-    return `
-      <div class="review-item">
-        <span class="review-label">${label}:</span>
-        <div class="review-value">${escapeHtml(val)}</div>
-      </div>
-    `;
-  });
+  grupos.push(
+    {
+      titulo: 'Observações',
+      itens: [
+        ['Observações de agenda', document.getElementById('observacoes_agenda')?.value || '—']
+      ]
+    },
+    {
+      titulo: 'Informações adicionais',
+      itens: [
+        ['Texto complementar', document.getElementById('texto_complementar')?.value || '—']
+      ]
+    }
+  );
 
-  parts.push(`
-    <div class="review-item">
-      <span class="review-label">Tarja de divulgação:</span>
-      <div class="review-value">${escapeHtml(tipoTarja)}</div>
+  box.innerHTML = grupos.map((grupo) => `
+    <div class="review-group">
+      <h3>${escapeHtml(grupo.titulo)}</h3>
+      ${grupo.itens.map(([label, value]) => `
+        <div class="review-item">
+          <span class="review-label">${escapeHtml(label)}:</span>
+          <div class="review-value">${escapeHtml(value || '—')}</div>
+        </div>
+      `).join('')}
     </div>
-  `);
-
-  box.innerHTML = parts.join('');
+  `).join('');
 }
 
 /* ===========================
@@ -1031,18 +981,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('quantidade_aulas')?.addEventListener('change', () => {
     toggleAula2();
     revalidateStepNav();
+    gerarPost();
   });
 
-  document.getElementById('nome_div')?.addEventListener('input', syncStep5TextFields);
-  document.getElementById('rotulo')?.addEventListener('input', syncStep5TextFields);
-  document.getElementById('aula1_descricao')?.addEventListener('input', syncStep5TextFields);
+  ['nome_div', 'rotulo', 'aula1_nome', 'aula2_nome'].forEach((id) => {
+    document.getElementById(id)?.addEventListener('input', gerarPost);
+  });
 
   initCanvas();
   checkAuth();
   toggleAula2();
 
-  document.getElementById('btnAjustar')?.addEventListener('click', () => showStep(5));
-  document.getElementById('btnConfirmar')?.addEventListener('click', () => showStep(7));
+  document.getElementById('btnAjustar')?.addEventListener('click', () => showStep(6));
+  document.getElementById('btnConfirmar')?.addEventListener('click', () => showStep(8));
 
   document.getElementById('accRosto')?.addEventListener('toggle', (e) => {
     if (e.target.open) markAccordionAsOpened('rosto');
@@ -1050,10 +1001,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('accApoio')?.addEventListener('toggle', (e) => {
     if (e.target.open) markAccordionAsOpened('apoio');
-  });
-
-  document.getElementById('accTextos')?.addEventListener('toggle', (e) => {
-    if (e.target.open) markAccordionAsOpened('texto');
   });
 
   steps = Array.from(document.querySelectorAll('.step'));
