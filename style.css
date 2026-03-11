@@ -15,40 +15,27 @@ html { height: 100%; overflow-x: hidden; }
    2) VARIÁVEIS GLOBAIS
    ========================= */
 :root{
-  /* espaçamento lateral responsivo */
   --gutter: clamp(12px, 4vw, 20px);
-
-  /* alturas fixas (usadas pra calcular o “miolo” central) */
-  --topbar-h: 56px;     /* header fixo */
-  --footer-h: 64px;     /* footer fixo */
+  --topbar-h: 56px;
+  --footer-h: 64px;
 }
 
 /* =========================
    3) BODY / FUNDO / LAYOUT GERAL
-   - Mantém a página em coluna e garante 100vh
-   - Reserva espaço pro header (top) e footer (bottom)
    ========================= */
 body{
   font-family: Arial, sans-serif;
   margin: 0;
-
-  /* gutter lateral */
   padding-inline: var(--gutter);
-
-  /* reserva o espaço do header e footer fixos */
   padding-top: calc(var(--topbar-h) + 14px);
   padding-bottom: calc(var(--footer-h) + 14px);
-
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-
-  /* fundo */
   background: linear-gradient(180deg, #0286ff 0%, #22a6ff 35%, #94d8ff 75%, #eaf4ff 100%);
   background-attachment: fixed;
 }
 
-/* Safe-area (iPhone notch / home bar) */
 @supports (padding: env(safe-area-inset-top)) {
   body{
     padding-top: calc(var(--topbar-h) + env(safe-area-inset-top) + 14px);
@@ -61,13 +48,22 @@ h1, h2, h3 { text-align: center; margin: 0 0 14px 0; }
 /* =========================
    4) COMPONENTES (INPUTS / CANVAS)
    ========================= */
-input, textarea, button {
+input, textarea, select, button {
   width: 100%;
   max-width: 420px;
   margin: 10px auto;
   padding: 12px;
   font-size: 16px;
   display: block;
+}
+
+.step-box input,
+.step-box textarea,
+.step-box select {
+  width: 100%;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 input[type="range"] {
@@ -87,26 +83,42 @@ canvas {
   background: #fff;
 }
 
-/* Ajustes desktop */
 @media (min-width:768px){
-  input, textarea, button, .link-voltar{ max-width:520px; }
-  canvas{ max-width:640px; }
+  input, textarea, select, button, .link-voltar { max-width:520px; }
+  canvas { max-width:640px; }
 }
 
 /* =========================
    5) UI PEQUENA (HINTS / MENSAGENS)
    ========================= */
-.hint { font-size: 13px; color: #444; margin-bottom: 10px; text-align: center; }
-
-#mensagem{ margin-top:10px; font-weight:bold; text-align:center; }
-
-/* aviso de limite de texto */
-#avisoTexto{
-  color:#d93025; font-size:13px; margin:10px auto; text-align:center;
-  display:none; max-width:600px;
+.hint {
+  font-size: 13px;
+  color: #444;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
-/* erro inline (validações) */
+#observacoesBox .hint {
+  max-width: 520px;
+  margin: 0 auto 10px;
+  text-align: center;
+}
+
+#mensagem{
+  margin-top:10px;
+  font-weight:bold;
+  text-align:center;
+}
+
+#avisoTexto{
+  color:#d93025;
+  font-size:13px;
+  margin:10px auto;
+  text-align:center;
+  display:none;
+  max-width:600px;
+}
+
 .inline-error{
   color:#d93025;
   font-size:13px;
@@ -117,7 +129,7 @@ canvas {
 }
 
 /* =========================
-   6) FAIXA FULL-BLEED (se usada)
+   6) FAIXA FULL-BLEED
    ========================= */
 .faixa-secao{
   margin: 16px calc(var(--gutter) * -1);
@@ -128,7 +140,7 @@ canvas {
 .faixa-secao span{ color: #fff; font-size: 22px; font-weight: bold; }
 
 /* =========================
-   7) LINKS “VOLTAR” (genérico / menu-under)
+   7) LINKS “VOLTAR”
    ========================= */
 .link-voltar{
   display:block;
@@ -142,7 +154,6 @@ canvas {
 }
 .link-voltar:hover{ text-decoration:underline; }
 
-/* link centralizado abaixo dos botões */
 .menu-under{
   display:block;
   width:100%;
@@ -153,7 +164,7 @@ canvas {
   font-size:14px;
   text-decoration: underline;
   opacity: .95;
-   cursor: pointer;
+  cursor: pointer;
 }
 .menu-under:hover{ opacity: 1; }
 
@@ -169,7 +180,6 @@ canvas {
   margin:16px auto 6px;
 }
 
-/* selo “plaquinha” (fora do canvas, se usado) */
 .plaquinha {
   display:inline-block;
   padding:.3em .8em;
@@ -181,8 +191,6 @@ canvas {
   box-shadow:-7px 7px 0 #000;
   position:relative;
   z-index:1;
-
-  /* manter numa linha só */
   white-space: nowrap;
   text-align: left;
 }
@@ -194,7 +202,6 @@ canvas {
 .step.active{ display:block; }
 #wizard-indicator{ text-align:center; font-size:14px; margin:8px 0 0; color:#333; }
 
-/* caixa branca padrão de cada etapa */
 .step-box{
   width: 100%;
   max-width: 720px;
@@ -202,23 +209,20 @@ canvas {
   background:#fff;
   border:1px solid #d9e7ff;
   border-radius:12px;
-  padding: 13px 18px 18px 18px; /* menos espaço em cima */
+  padding: 13px 18px 18px 18px;
   box-shadow:0 6px 14px rgba(0,0,0,.04);
 }
 
-/* quando review-box estiver dentro do step-box, evita “dobrar” borda/sombra */
 .step-box .review-box{
   border: none;
   box-shadow: none;
   padding: 0;
 }
 
-/* remove a margem de cima APENAS do PRIMEIRO label dentro do box */
 .step-box > .title-label:first-child{
-  margin-top: 0;     /* era 16px */
+  margin-top: 0;
 }
 
-/* (opcional) se em alguma etapa o primeiro elemento for um h2/h3 */
 .step-box > h1:first-child,
 .step-box > h2:first-child,
 .step-box > h3:first-child{
@@ -233,7 +237,6 @@ canvas {
   justify-content:center;
   align-items:center;
   gap:16px;
-
   margin:16px auto 0;
   width:100%;
   max-width:520px;
@@ -274,14 +277,12 @@ canvas {
   margin:20px auto;
 }
 
-/* campo inválido (validação) */
 .invalid{
   outline:2px solid #ff4d4f;
   border-color:#ff4d4f !important;
   background:#fff7f7;
 }
 
-/* intro box (se usado) */
 .intro-box{
   max-width:720px;
   margin:24px auto 0;
@@ -294,7 +295,6 @@ canvas {
 .intro-box h2{ margin-top:4px; }
 .intro-box p{ line-height:1.5; margin:10px 0; color:#333; font-size:15px; text-align:left; }
 
-/* revisão */
 .review-box{
   max-width:720px;
   margin:12px auto 0;
@@ -309,7 +309,6 @@ canvas {
 .review-label{ font-weight:700; display:block; margin-bottom:4px; }
 .review-value{ white-space:pre-wrap; color:#333; }
 
-/* tela final */
 .final-screen{ display:none; }
 .final-card{
   max-width:720px;
@@ -334,14 +333,11 @@ canvas {
   margin:10px auto 0;
 }
 
-/* placeholders observação */
 #observacao::placeholder { color:#777; }
 #observacao:focus::placeholder { opacity:0; }
 
 /* =========================
    12) OVERLAYS (LOADING)
-   - #overlay: envio do wizard
-   - #loading: loading do index
    ========================= */
 #overlay{
   position: fixed;
@@ -349,18 +345,15 @@ canvas {
   width: 100svw;
   height: 100svh;
   max-width: none !important;
-
   display: none;
   place-items: center;
   z-index: 2147483647;
-
   background: rgba(0,0,0,0.45);
   backdrop-filter: blur(8px) saturate(120%);
   -webkit-backdrop-filter: blur(8px) saturate(120%);
   will-change: backdrop-filter;
 }
 
-/* Reaproveita o overlay com blur para bloqueio de login */
 #overlay.auth .loader-gif{ display:none; }
 #overlay.auth .loader{ padding: 18px 20px; min-width: 320px; }
 
@@ -386,18 +379,15 @@ canvas {
   color:#000;
 }
 
-/* loading do index */
 #loading{
   position: fixed;
   inset: 0;
   width: 100svw;
   height: 100svh;
   max-width: none !important;
-
   display: none;
   place-items: center;
   z-index: 2147483647;
-
   background: rgba(0,0,0,0.45);
   backdrop-filter: blur(8px) saturate(120%);
   -webkit-backdrop-filter: blur(8px) saturate(120%);
@@ -414,25 +404,18 @@ canvas {
 
 /* =========================
    13) ESTRUTURA (PAGE-CENTER)
-   - Conteúdo SEMPRE centralizado no espaço entre header e footer
    ========================= */
 .page-center{
   flex: 1;
   display: flex;
   flex-direction: column;
-
-  /* centraliza no “miolo” */
   align-items: center;
   justify-content: center;
-
-  /* garante centralização entre header e footer */
   min-height: calc(100dvh - var(--topbar-h) - var(--footer-h));
-
   gap: 12px;
   padding: 24px 0;
 }
 
-/* logo (se usado) */
 .header-logo{
   display:block;
   width:clamp(160px, 50vw, 280px);
@@ -440,7 +423,6 @@ canvas {
   margin:0 auto 8px;
 }
 
-/* largura de blocos no index */
 #login-area, #menu{ width:100%; max-width:420px; }
 
 /* =========================
@@ -476,7 +458,6 @@ canvas {
   text-transform: uppercase;
 }
 
-/* safe-area do topo */
 @supports (padding: env(safe-area-inset-top)) {
   .wizard-topbar__inner{
     padding-top: env(safe-area-inset-top);
@@ -484,7 +465,6 @@ canvas {
   }
 }
 
-/* título de etapa (abaixo do header fixo) */
 .wizard-step-title{
   text-align: center;
   font-size: 22px;
@@ -495,8 +475,6 @@ canvas {
 
 /* =========================
    15) FOOTER FIXO
-   - fica sempre colado embaixo
-   - o body já reserva espaço via padding-bottom
    ========================= */
 .site-footer{
   position: fixed;
@@ -504,13 +482,10 @@ canvas {
   right: 0;
   bottom: 0;
   z-index: 9990;
-
   height: var(--footer-h);
   margin: 0;
-
   background:#083a63;
   color:#fff;
-
   display: flex;
   align-items: center;
 }
@@ -557,12 +532,10 @@ canvas {
 .acc[open] .acc__sum::after{ content:"▴"; }
 .acc__body{ padding: 0 16px 14px; }
 
-/* oculta o menu-under na tela final */
 #final-screen .menu-under{ display:none; }
 
 /* =========================
    17) LOGIN “AMIGÁVEL” (INDEX)
-   - Só aplica se o body tiver class .is-index
    ========================= */
 .auth-card{
   width: 100%;
@@ -570,14 +543,11 @@ canvas {
   margin: 10px auto 0;
   padding: 18px;
   border-radius: 14px;
-
   background: rgba(255,255,255,0.88);
   border: 1px solid rgba(255,255,255,0.55);
-
   box-shadow:
     0 18px 40px rgba(0,0,0,0.12),
     0 6px 14px rgba(0,0,0,0.10);
-
   backdrop-filter: blur(8px) saturate(120%);
   -webkit-backdrop-filter: blur(8px) saturate(120%);
 }
@@ -587,14 +557,11 @@ canvas {
   max-width: none;
   margin: 10px 0;
   padding: 14px 14px;
-
   border-radius: 12px;
   border: 1px solid rgba(0,0,0,0.08);
   background: #eaf3ff;
-
   font-size: 16px;
   outline: none;
-
   box-shadow: 0 1px 0 rgba(0,0,0,0.04) inset;
 }
 .auth-input::placeholder{ color: rgba(0,0,0,0.55); }
@@ -611,15 +578,12 @@ canvas {
   max-width: none;
   margin: 12px 0 0;
   padding: 14px 14px;
-
   border: 0;
   border-radius: 12px;
-
   background: #f2c300;
   color: #111;
   font-weight: 800;
   font-size: 16px;
-
   cursor: pointer;
   box-shadow: 0 10px 18px rgba(0,0,0,0.14);
   transition: transform .08s ease, filter .15s ease, opacity .15s ease;
@@ -633,20 +597,16 @@ canvas {
   box-shadow: none;
 }
 
-/* botões do menu gerados via JS */
 #botoes button{
   width: 100%;
   max-width: none;
   margin: 10px 0 0;
   padding: 14px 14px;
-
   border-radius: 12px;
   border: 1px solid rgba(0,0,0,0.08);
   background: #ffffff;
-
   font-weight: 800;
   cursor: pointer;
-
   box-shadow: 0 10px 18px rgba(0,0,0,0.10);
   transition: transform .08s ease, filter .15s ease;
 }
@@ -659,18 +619,15 @@ canvas {
   margin: 8px 0 6px;
 }
 
-/* index não deve herdar padding-top do wizard */
 body.is-index{
   padding-top: 0 !important;
-  padding-bottom: 0 !important; /* opcional: se index não usa footer fixo */
+  padding-bottom: 0 !important;
 }
 
-/* no index, centraliza o card no meio */
 body.is-index .page-center{
   min-height: 100dvh;
 }
 
-/* remove “respiro” extra no topo do card */
 .auth-card > :first-child{ margin-top: 0 !important; }
 .auth-card input,
 .auth-card button{
@@ -679,7 +636,6 @@ body.is-index .page-center{
   margin-right: 0;
 }
 
-/* links do index */
 .login-links{
   margin-top: 14px;
   text-align: center;
@@ -689,10 +645,8 @@ body.is-index .page-center{
 .login-links a{ text-decoration: none; }
 .login-links a:hover{ text-decoration: underline; }
 
-/* utilitário */
 .hidden{ display: none !important; }
 
-/* botões menu com hover/active “normal” */
 #botoes button.menu-btn{
   width: 100%;
   border: 0;
@@ -714,7 +668,6 @@ body.is-index .page-center{
   box-shadow: 0 6px 14px rgba(0,0,0,.10);
 }
 
-/* “Sair” fora do box */
 .logout-outside{
   display: none;
   margin-top: 14px;
@@ -728,7 +681,6 @@ body.is-index .page-center{
 }
 .logout-outside:hover{ opacity: .92; }
 
-/* texto de ajuda no menu */
 .menu-hint{
   margin: 10px 0 14px;
   text-align: center;
@@ -738,29 +690,24 @@ body.is-index .page-center{
 }
 
 .btn-light-text{
-  display: block;            
-  margin: 14px auto 0;       
+  display: block;
+  margin: 14px auto 0;
   text-align: center;
-
   font-weight: 800;
   color: #fff;
- cursor: pointer;             
+  cursor: pointer;
   user-select: none;
   text-decoration: none;
   text-shadow: 0 2px 10px rgba(0,0,0,.25);
-
   transition: opacity .2s ease;
 }
 
-/* Links individuais */
 .btn-light-text a{
-  display: block;              /* quebra linha */
-  margin: 6px 0;               /* espaço entre eles */
-
-  color: #ffffff;              /* força branco */
-  text-decoration: none;       /* remove sublinhado */
-
-  cursor: pointer;             /* cursor só no link */
+  display: block;
+  margin: 6px 0;
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
   transition: opacity .2s ease;
 }
 
@@ -768,7 +715,6 @@ body.is-index .page-center{
   opacity: 0.85;
 }
 
-/* erro na seleção de categoria */
 .categoria-wrap.erro {
   border: 2px solid #e53935;
   border-radius: 10px;
@@ -776,7 +722,6 @@ body.is-index .page-center{
   background: #fff6f6;
 }
 
-/* deixa os radios mais visíveis */
 .categoria-wrap.erro label {
   color: #b71c1c;
   font-weight: 600;
@@ -789,11 +734,9 @@ body.is-index .page-center{
   line-height:1.4;
 }
 
-
-
 .acc {
   margin-top: 12px;
-  border: 1px solid #111;   /* contorno normal escuro */
+  border: 1px solid #111;
   border-radius: 12px;
   background: #fff;
   overflow: hidden;
@@ -809,7 +752,7 @@ body.is-index .page-center{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;         /* estado normal branco */
+  background: #fff;
   color: #111;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
@@ -834,7 +777,6 @@ body.is-index .page-center{
   background: #fff;
 }
 
-/* estado de erro: ainda não abriu */
 .acc.erro {
   border: 2px solid #e53935;
   background: #fff6f6;
@@ -849,9 +791,8 @@ body.is-index .page-center{
   background: #fff6f6;
 }
 
-/* depois que abriu ao menos uma vez */
 .acc.opened-once {
-  border: 1px solid #111;   /* volta para o contorno normal */
+  border: 1px solid #111;
   background: #fff;
 }
 
@@ -863,8 +804,6 @@ body.is-index .page-center{
 .acc.opened-once .acc__body {
   background: #fff;
 }
-
-
 
 .lesson-box-title--white {
   color: #fff;
@@ -896,6 +835,7 @@ body.is-index .page-center{
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+  box-sizing: border-box;
 }
 
 #step4 .step-box {
@@ -906,10 +846,10 @@ body.is-index .page-center{
 #step4 .step-box .hint {
   text-align: center;
 }
+
 #step4 select.lesson-select {
   box-sizing: border-box;
 }
-
 
 #step6 input[type="range"] {
   display: block;
@@ -920,16 +860,14 @@ body.is-index .page-center{
 #step6 .acc__body .title-label {
   text-align: center;
 }
+
 .hint-warning {
-  margin-top: 12px;
+  max-width: 520px;
+  margin: 12px auto 0;
   padding: 12px 14px;
   border-radius: 12px;
   background: #fff7cc;
   color: #5f4b00;
   line-height: 1.45;
+  text-align: center;
 }
-
-
-
-
-
