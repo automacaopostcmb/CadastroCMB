@@ -8,7 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Comic+Relief&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=15">
 
-  
   <style>
     .step-heading {
       margin: 0 0 10px;
@@ -71,31 +70,30 @@
       text-align: left;
     }
 
-.lesson-select {
-  display: block;
-  width: 100%;
-  margin: 0;
-  border-radius: 14px;
-  padding: 14px 44px 14px 16px;
-  border: 1px solid #d5dbe7;
-  background-color: #fff;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  background-size: 18px;
-  font-size: 16px;
-  color: #111;
-  outline: none;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  box-sizing: border-box;
-}
+    .lesson-select {
+      display: block;
+      width: 100%;
+      margin: 0;
+      border-radius: 14px;
+      padding: 14px 44px 14px 16px;
+      border: 1px solid #d5dbe7;
+      background-color: #fff;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 18px;
+      font-size: 16px;
+      color: #111;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      box-sizing: border-box;
+    }
 
     #step4 .step-box {
       text-align: center;
     }
-
 
     #step6 input[type="range"] {
       display: block;
@@ -261,14 +259,16 @@
 
       <div class="step-separator"></div>
 
-  <div class="step-box" id="observacoesBox">
-  <label class="title-label">Alguma observação?</label>
-  <textarea id="observacoes_agenda" rows="5"></textarea>
-<div class="hint hint-warning">
-  Ex.: "Não consigo domingo", "Não consigo sábado antes do meio-dia".<br>
-  O horário será definido em um segundo momento levando em consideração suas observações.
-</div>
-</div>
+      <div class="step-box" id="observacoesBox">
+        <label class="title-label">Alguma observação?</label>
+        <div class="hint">
+          Ex.: "Não consigo domingo", "Não consigo sábado antes do meio-dia".
+        </div>
+        <textarea id="observacoes_agenda" rows="5"></textarea>
+        <div class="hint-warning">
+          O horário será definido em um segundo momento levando em consideração suas observações.
+        </div>
+      </div>
     </div>
 
     <div class="button-row">
@@ -303,26 +303,26 @@
   <section class="step" id="step6" data-title="Ajustando a divulgação">
     <div class="step-box">
       <label class="title-label">Tarja de divulgação*</label>
-<div id="tipoTarjaGroup" class="radio-row" style="display:flex; gap:16px; flex-wrap:wrap; margin:8px 0 16px;">
-  <label style="display:flex; gap:8px; align-items:center;">
-    <input type="radio" name="tipoTarja" value="professor" />
-    Professor
-  </label>
-  <label style="display:flex; gap:8px; align-items:center;">
-    <input type="radio" name="tipoTarja" value="professora" />
-    Professora
-  </label>
-  <label style="display:flex; gap:8px; align-items:center;">
-    <input type="radio" name="tipoTarja" value="outro" />
-    Outro
-  </label>
-</div>
+      <div id="tipoTarjaGroup" class="radio-row" style="display:flex; gap:16px; flex-wrap:wrap; margin:8px 0 16px;">
+        <label style="display:flex; gap:8px; align-items:center;">
+          <input type="radio" name="tipoTarja" value="professor" />
+          Professor
+        </label>
+        <label style="display:flex; gap:8px; align-items:center;">
+          <input type="radio" name="tipoTarja" value="professora" />
+          Professora
+        </label>
+        <label style="display:flex; gap:8px; align-items:center;">
+          <input type="radio" name="tipoTarja" value="outro" />
+          Outro
+        </label>
+      </div>
 
       <details class="acc" id="accRosto">
         <summary class="acc__sum">Ajuste sua foto principal</summary>
         <div class="acc__body">
           <label class="title-label">Tamanho</label>
-          <input type="range" id="rostoScale" min="0.1" max="3.5" step="0.01" value="1" />
+          <input type="range" id="rostoScale" min="0.1" max="3.5" step="0.01" value="1.8" />
 
           <label class="title-label">Mover horizontalmente</label>
           <input type="range" id="rostoX" min="-700" max="700" value="0" />
@@ -336,7 +336,7 @@
         <summary class="acc__sum">Ajuste a imagem de apoio</summary>
         <div class="acc__body">
           <label class="title-label">Tamanho</label>
-          <input type="range" id="apoioScale" min="0.1" max="3.5" step="0.01" value="1" />
+          <input type="range" id="apoioScale" min="0.1" max="3.5" step="0.01" value="1.8" />
 
           <label class="title-label">Mover horizontalmente</label>
           <input type="range" id="apoioX" min="-700" max="700" value="0" />
