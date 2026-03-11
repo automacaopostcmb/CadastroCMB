@@ -916,20 +916,15 @@ function buildReview() {
   const box = document.getElementById('review-list');
   if (!box) return;
 
-  const qtd = (document.getElementById('quantidade_aulas')?.value || '').trim();
-  const rotulo = (document.getElementById('rotulo')?.value || '').trim();
-  const textoComplementar = (document.getElementById('texto_complementar')?.value || '').trim();
+const qtd = (document.getElementById('quantidade_aulas')?.value || '').trim();
+const textoComplementar = (document.getElementById('texto_complementar')?.value || '').trim();
 
-  const sobreVoceItens = [
-    ['Nome completo', document.getElementById('nome')?.value || '—'],
-    ['Nome para divulgação', document.getElementById('nome_div')?.value || '—'],
-    ['E-mail', document.getElementById('email')?.value || '—'],
-    ['Telefone', document.getElementById('telefone')?.value || '—']
-  ];
-
-  if (rotulo) {
-    sobreVoceItens.splice(2, 0, ['Rótulo', rotulo]);
-  }
+const sobreVoceItens = [
+  ['Nome completo', document.getElementById('nome')?.value || '—'],
+  ['Nome para divulgação', document.getElementById('nome_div')?.value || '—'],
+  ['E-mail', document.getElementById('email')?.value || '—'],
+  ['Telefone', document.getElementById('telefone')?.value || '—']
+];
 
   const grupos = [
     {
