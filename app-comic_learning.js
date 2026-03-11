@@ -9,7 +9,7 @@ const TARJAS = {
   professora: { src: 'assets/learning_professoraa.png', x: 28, y: 57, scale: 0.2 },
   outro: null
 };
-
+ 
 const PHONE_ALLOWED_LENGTHS = [10, 11];
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 
