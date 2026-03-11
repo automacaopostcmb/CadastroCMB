@@ -881,19 +881,21 @@ body.is-index .page-center{
 .lesson-select {
   display: block;
   width: 100%;
-  max-width: 360px;
-  margin: 0 auto;
-  text-align: center;
-  text-align-last: center;
-  border-radius: 18px;
-  padding: 14px 18px;
+  margin: 0;
+  border-radius: 14px;
+  padding: 14px 44px 14px 16px;
   border: 1px solid #d5dbe7;
-  background: #fff;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 18px;
   font-size: 16px;
+  color: #111;
+  outline: none;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  outline: none;
 }
 
 #step4 .step-box {
@@ -902,52 +904,12 @@ body.is-index .page-center{
 
 #step4 .step-box .title-label,
 #step4 .step-box .hint {
-  text-align: left;
+  text-align: center;
+}
+#step4 select.lesson-select {
+  box-sizing: border-box;
 }
 
-.tarja-group {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin: 8px 0 16px;
-}
-
-.tarja-option {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.tarja-option input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.tarja-option span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 120px;
-  padding: 12px 18px;
-  border-radius: 14px;
-  border: 2px solid #c93b3b;
-  background: #fff5f5;
-  color: #b42323;
-  font-weight: 700;
-  transition: .2s ease;
-}
-
-.tarja-option input:checked + span {
-  background: #c93b3b;
-  color: #fff;
-  border-color: #c93b3b;
-}
-
-.tarja-group.erro .tarja-option span {
-  box-shadow: 0 0 0 2px rgba(201,59,59,.12);
-}
 
 #step6 input[type="range"] {
   display: block;
@@ -957,6 +919,14 @@ body.is-index .page-center{
 
 #step6 .acc__body .title-label {
   text-align: center;
+}
+.hint-warning {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #fff7cc;
+  color: #5f4b00;
+  line-height: 1.45;
 }
 
 
