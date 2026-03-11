@@ -377,14 +377,14 @@ function gerarPost() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   if (apoioImg) {
-    const scale = parseFloat(document.getElementById('apoioScale')?.value || '1');
+    const scale = parseFloat(document.getElementById('apoioScale')?.value || '1.8');
     const offsetX = parseInt(document.getElementById('apoioX')?.value || '0', 10);
     const offsetY = parseInt(document.getElementById('apoioY')?.value || '0', 10);
     drawCoverImage(apoioImg, 220, 430, scale, offsetX, offsetY);
   }
 
   if (rostoImg) {
-    const scale = parseFloat(document.getElementById('rostoScale')?.value || '1');
+    const scale = parseFloat(document.getElementById('rostoScale')?.value || '1.8');
     const offsetX = parseInt(document.getElementById('rostoX')?.value || '0', 10);
     const offsetY = parseInt(document.getElementById('rostoY')?.value || '0', 10);
     drawCoverImage(rostoImg, 820, 420, scale, offsetX, offsetY);
@@ -916,15 +916,15 @@ function buildReview() {
   const box = document.getElementById('review-list');
   if (!box) return;
 
-const qtd = (document.getElementById('quantidade_aulas')?.value || '').trim();
-const textoComplementar = (document.getElementById('texto_complementar')?.value || '').trim();
+  const qtd = (document.getElementById('quantidade_aulas')?.value || '').trim();
+  const textoComplementar = (document.getElementById('texto_complementar')?.value || '').trim();
 
-const sobreVoceItens = [
-  ['Nome completo', document.getElementById('nome')?.value || '—'],
-  ['Nome para divulgação', document.getElementById('nome_div')?.value || '—'],
-  ['E-mail', document.getElementById('email')?.value || '—'],
-  ['Telefone', document.getElementById('telefone')?.value || '—']
-];
+  const sobreVoceItens = [
+    ['Nome completo', document.getElementById('nome')?.value || '—'],
+    ['Nome para divulgação', document.getElementById('nome_div')?.value || '—'],
+    ['E-mail', document.getElementById('email')?.value || '—'],
+    ['Telefone', document.getElementById('telefone')?.value || '—']
+  ];
 
   const grupos = [
     {
