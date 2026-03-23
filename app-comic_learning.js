@@ -532,22 +532,6 @@ if (nomeDivulgacao) {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
 
-  ctx.font = 'bold 52px "Comic Relief"';
-  ctx.fillStyle = '#000';
-
-  const nomeX = canvas.width / 2;
-  const nomeY = 825;
-  const nomeMaxWidth = 860;
-  const nomeMaxLinhas = 2;
-  const nomeLineHeight = 58;
-
-  const linhasNome = wrapText(nome, nomeMaxWidth, ctx);
-  const overflowNome = linhasNome.length > nomeMaxLinhas;
-  const nomeSlice = linhasNome.slice(0, nomeMaxLinhas);
-
-  nomeSlice.forEach((linha, i) => {
-    ctx.fillText(linha, nomeX, nomeY + i * nomeLineHeight);
-  });
 
   ctx.font = '32px "Comic Relief"';
   ctx.fillStyle = '#111';
@@ -587,7 +571,7 @@ if (nomeDivulgacao) {
 
   ctx.textAlign = 'left';
 
-  validationFlags.overflowNome = overflowNome;
+  validationFlags.overflowNome = false;
   validationFlags.overflowRotulo = overflowRotulo;
   validationFlags.overflowAulas = overflowAulas;
 
