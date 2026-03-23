@@ -406,10 +406,13 @@ if (apoioImg) {
 
 // === FOTO PRINCIPAL (COM MÁSCARA)
 if (rostoImg) {
-  const scale = parseFloat(document.getElementById('rostoScale')?.value || '1.8');
+  const baseScale = 2.2; // tamanho inicial padrão
+  const sliderScale = parseFloat(document.getElementById('rostoScale')?.value || '1');
+  const scale = baseScale * sliderScale;
+
   const offsetX = parseInt(document.getElementById('rostoX')?.value || '0', 10);
   const offsetY = parseInt(document.getElementById('rostoY')?.value || '0', 10);
-
+   
  drawCoverImageMasked(
   rostoImg,
   656, 454,
