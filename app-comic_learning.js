@@ -536,7 +536,6 @@ const rotulo = getRotuloDivulgacao();
 }
 const aulasTexto = getAulasPreviewText();
    
-});
 
   ctx.font = '28px "Comic Relief"';
   ctx.fillStyle = '#333';
