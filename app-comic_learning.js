@@ -278,10 +278,12 @@ let currentTarjaType = '';
 /* ===========================
    CANVAS
    =========================== */
-function drawTarja(c, text, x, y, scale = 1, bgColor = '#ffd400') {
+function drawTarja(c, text, x, y, scale = 1, bgColor = '#ffd400', uppercase = true) {
   if (!text) return;
 
-  text = text.toLocaleUpperCase('pt-BR');
+  if (uppercase) {
+    text = text.toLocaleUpperCase('pt-BR');
+  }
 
   const s = scale;
 
@@ -289,8 +291,6 @@ function drawTarja(c, text, x, y, scale = 1, bgColor = '#ffd400') {
   const PADDING_Y = 12 * s;
   const BORDER    = 4  * s;
   const RADIUS    = 4  * s;
-  const SHADOW_X  = -5 * s;
-  const SHADOW_Y  = 5  * s;
   const MAX_WIDTH = 500 * s;
 
   let fontSize = 34 * s;
@@ -317,7 +317,7 @@ function drawTarja(c, text, x, y, scale = 1, bgColor = '#ffd400') {
   c.fillStyle = '#000';
   c.fill();
 
-  // caixa colorida
+  // caixa
   drawRoundedRect(c, x, y, rectW, rectH, RADIUS);
   c.fillStyle = bgColor;
   c.fill();
@@ -526,13 +526,13 @@ if (tarjaCfg && tarjaImg) {
 const nomeDivulgacao = getNomeDivulgacao();
 
 if (nomeDivulgacao) {
-drawTarja(ctx, nomeDivulgacao, 150, 760, 1, '#ffd400');
+drawTarja(ctx, nomeDivulgacao, 77, 750, 1, '#ffd400', true);
 }
 
 // ===== TEXTO ABAIXO =====
 const rotulo = getRotuloDivulgacao();
    if (rotulo) {
-  drawTarja(ctx, rotulo, 118, 783, 0.8, '#4ec3ff');
+  drawTarja(ctx, rotulo, 146, 794, 0.8, '#4ec3ff', false);
 }
 const aulasTexto = getAulasPreviewText();
    
