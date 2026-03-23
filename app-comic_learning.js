@@ -510,38 +510,48 @@ if (rostoImg) {
 );
 }
 
-  if (frameImg?.complete && frameImg.naturalWidth) {
-    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-  }
+if (frameImg?.complete && frameImg.naturalWidth) {
+  ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+}
 
-  const tarjaCfg = TARJAS[currentTarjaType];
-  if (tarjaCfg && tarjaImg) {
-    const w = tarjaImg.naturalWidth * tarjaCfg.scale;
-    const h = tarjaImg.naturalHeight * tarjaCfg.scale;
-    ctx.drawImage(tarjaImg, canvas.width - tarjaCfg.x - w, tarjaCfg.y, w, h);
-  }
+const tarjaCfg = TARJAS[currentTarjaType];
+if (tarjaCfg && tarjaImg) {
+  const w = tarjaImg.naturalWidth * tarjaCfg.scale;
+  const h = tarjaImg.naturalHeight * tarjaCfg.scale;
+  ctx.drawImage(tarjaImg, canvas.width - tarjaCfg.x - w, tarjaCfg.y, w, h);
+}
 
+// ===== NOME NA TARJA AMARELA =====
 const nomeDivulgacao = getNomeDivulgacao();
 
 if (nomeDivulgacao) {
   drawNomeDivulgacaoTarja(ctx, nomeDivulgacao, 150, 760, 1);
 }
-  const rotulo = getRotuloDivulgacao();
-  const aulasTexto = getAulasPreviewText();
+
+// ===== TEXTO ABAIXO =====
+const rotulo = getRotuloDivulgacao();
+const aulasTexto = getAulasPreviewText();
+   
 
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
 
+ctx.font = '32px "Comic Relief"';
+ctx.fillStyle = '#111';
+ctx.textAlign = 'center';
+ctx.textBaseline = 'top';
 
-  ctx.font = '32px "Comic Relief"';
-  ctx.fillStyle = '#111';
+const rotuloX = canvas.width / 2;
+const rotuloY = 845; // ajuste fino depois
+const rotuloMaxWidth = 860;
+const rotuloLineHeight = 38;
 
-  const rotuloY = nomeY + (nomeSlice.length * nomeLineHeight) + 14;
-  const linhasRotulo = wrapText(rotulo, 860, ctx);
-  const overflowRotulo = linhasRotulo.length > 2;
-  linhasRotulo.slice(0, 2).forEach((linha, i) => {
-    ctx.fillText(linha, nomeX, rotuloY + i * 38);
-  });
+const linhasRotulo = wrapText(rotulo, rotuloMaxWidth, ctx);
+const overflowRotulo = linhasRotulo.length > 2;
+
+linhasRotulo.slice(0, 2).forEach((linha, i) => {
+  ctx.fillText(linha, rotuloX, rotuloY + i * rotuloLineHeight);
+});
 
   ctx.font = '28px "Comic Relief"';
   ctx.fillStyle = '#333';
