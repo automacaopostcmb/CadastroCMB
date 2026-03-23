@@ -280,7 +280,7 @@ let currentTarjaType = '';
    =========================== */
 function drawNomeDivulgacaoTarja(c, text, x, y, scale = 1) {
   if (!text) return;
-
+text = text.toLocaleUpperCase('pt-BR');
   const s = scale;
 
   const PADDING_X = 22 * s;
@@ -524,7 +524,7 @@ if (tarjaCfg && tarjaImg) {
 const nomeDivulgacao = getNomeDivulgacao();
 
 if (nomeDivulgacao) {
-  drawNomeDivulgacaoTarja(ctx, nomeDivulgacao, 150, 760, 1);
+  drawNomeDivulgacaoTarja(ctx, nomeDivulgacao, 70, 736, 1);
 }
 
 // ===== TEXTO ABAIXO =====
