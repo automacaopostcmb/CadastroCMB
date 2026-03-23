@@ -369,6 +369,25 @@ function drawCoverImage(img, anchorX, anchorY, scale, offsetX, offsetY) {
   ctx.drawImage(img, drawX, drawY, w, h);
 }
 
+// NOVA FUNÇÃO COM MÁSCARA
+function drawCoverImageMasked(img, anchorX, anchorY, scale, offsetX, offsetY, mask) {
+  if (!img || !mask) return;
+
+  const w = img.width * scale;
+  const h = img.height * scale;
+  const drawX = anchorX + offsetX - w / 2;
+  const drawY = anchorY + offsetY - h / 2;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(mask.x, mask.y, mask.w, mask.h);
+  ctx.clip();
+
+  ctx.drawImage(img, drawX, drawY, w, h);
+
+  ctx.restore();
+}
+
 function gerarPost() {
   if (!ctx || !canvas) return;
 
@@ -376,19 +395,30 @@ function gerarPost() {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  if (apoioImg) {
-    const scale = parseFloat(document.getElementById('apoioScale')?.value || '1.8');
-    const offsetX = parseInt(document.getElementById('apoioX')?.value || '0', 10);
-    const offsetY = parseInt(document.getElementById('apoioY')?.value || '0', 10);
-    drawCoverImage(apoioImg, 220, 430, scale, offsetX, offsetY);
-  }
+ // === IMAGEM DE APOIO (SEM MÁSCARA)
+if (apoioImg) {
+  const scale = parseFloat(document.getElementById('apoioScale')?.value || '1.8');
+  const offsetX = parseInt(document.getElementById('apoioX')?.value || '0', 10);
+  const offsetY = parseInt(document.getElementById('apoioY')?.value || '0', 10);
 
-  if (rostoImg) {
-    const scale = parseFloat(document.getElementById('rostoScale')?.value || '1.8');
-    const offsetX = parseInt(document.getElementById('rostoX')?.value || '0', 10);
-    const offsetY = parseInt(document.getElementById('rostoY')?.value || '0', 10);
-    drawCoverImage(rostoImg, 820, 420, scale, offsetX, offsetY);
-  }
+  drawCoverImage(apoioImg, 220, 430, scale, offsetX, offsetY);
+}
+
+// === FOTO PRINCIPAL (COM MÁSCARA)
+if (rostoImg) {
+  const scale = parseFloat(document.getElementById('rostoScale')?.value || '1.8');
+  const offsetX = parseInt(document.getElementById('rostoX')?.value || '0', 10);
+  const offsetY = parseInt(document.getElementById('rostoY')?.value || '0', 10);
+
+  drawCoverImageMasked(
+    rostoImg,
+    820, 420,
+    scale,
+    offsetX,
+    offsetY,
+    { x: 250, y: 0, w: 830, h: 900 } // área permitida da foto
+  );
+}
 
   if (frameImg?.complete && frameImg.naturalWidth) {
     ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
