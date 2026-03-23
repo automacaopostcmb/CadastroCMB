@@ -395,13 +395,24 @@ function gerarPost() {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
- // === IMAGEM DE APOIO (SEM MÁSCARA)
+
+// === IMAGEM DE APOIO (COM MÁSCARA)
 if (apoioImg) {
-  const scale = parseFloat(document.getElementById('apoioScale')?.value || '1.8');
+  const baseScale = 1;
+  const sliderScale = parseFloat(document.getElementById('apoioScale')?.value || '1');
+  const scale = baseScale * sliderScale;
+
   const offsetX = parseInt(document.getElementById('apoioX')?.value || '0', 10);
   const offsetY = parseInt(document.getElementById('apoioY')?.value || '0', 10);
 
-  drawCoverImage(apoioImg, 220, 430, scale, offsetX, offsetY);
+  drawCoverImageMasked(
+    apoioImg,
+    120, 430, // centro da imagem esquerda (ajuste fino depois)
+    scale,
+    offsetX,
+    offsetY,
+    { x: 0, y: 0, w: 223, h: canvas.height }
+  );
 }
 
 // === FOTO PRINCIPAL (COM MÁSCARA)
