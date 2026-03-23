@@ -410,14 +410,14 @@ if (rostoImg) {
   const offsetX = parseInt(document.getElementById('rostoX')?.value || '0', 10);
   const offsetY = parseInt(document.getElementById('rostoY')?.value || '0', 10);
 
-  drawCoverImageMasked(
-    rostoImg,
-    656, 454,
-    scale,
-    offsetX,
-    offsetY,
-    { x: 212, y: 0, w: 830, h: 900 } // área permitida da foto
-  );
+ drawCoverImageMasked(
+  rostoImg,
+  656, 454,
+  scale,
+  offsetX,
+  offsetY,
+  { x: 212, y: 0, w: canvas.width - 212, h: canvas.height }
+);
 }
 
   if (frameImg?.complete && frameImg.naturalWidth) {
