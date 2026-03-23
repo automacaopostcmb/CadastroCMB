@@ -533,9 +533,6 @@ const rotulo = getRotuloDivulgacao();
 const aulasTexto = getAulasPreviewText();
    
 
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'top';
-
 ctx.font = '32px "Comic Relief"';
 ctx.fillStyle = '#111';
 ctx.textAlign = 'center';
