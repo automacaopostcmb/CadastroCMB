@@ -521,7 +521,7 @@ if (rostoImg) {
     ctx.drawImage(tarjaImg, canvas.width - tarjaCfg.x - w, tarjaCfg.y, w, h);
   }
 
-const nomeDivulgacao = (document.getElementById('nomeDivulgacao')?.value || '').trim();
+const nomeDivulgacao = getNomeDivulgacao();
 
 if (nomeDivulgacao) {
   drawNomeDivulgacaoTarja(ctx, nomeDivulgacao, 150, 760, 1);
