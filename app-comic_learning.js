@@ -412,11 +412,11 @@ if (rostoImg) {
 
   drawCoverImageMasked(
     rostoImg,
-    820, 420,
+    656, 454,
     scale,
     offsetX,
     offsetY,
-    { x: 250, y: 0, w: 830, h: 900 } // área permitida da foto
+    { x: 212, y: 0, w: 830, h: 900 } // área permitida da foto
   );
 }
 
