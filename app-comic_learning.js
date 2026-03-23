@@ -278,9 +278,11 @@ let currentTarjaType = '';
 /* ===========================
    CANVAS
    =========================== */
-function drawNomeDivulgacaoTarja(c, text, x, y, scale = 1) {
+function drawTarja(c, text, x, y, scale = 1, bgColor = '#ffd400') {
   if (!text) return;
-text = text.toLocaleUpperCase('pt-BR');
+
+  text = text.toLocaleUpperCase('pt-BR');
+
   const s = scale;
 
   const PADDING_X = 22 * s;
@@ -292,12 +294,12 @@ text = text.toLocaleUpperCase('pt-BR');
   const MAX_WIDTH = 500 * s;
 
   let fontSize = 34 * s;
-  c.font = `700 ${fontSize}px "Comic Relief", Arial, sans-serif`;
+  c.font = `900 ${fontSize}px "Comic Relief", Arial, sans-serif`;
 
   let metrics = c.measureText(text);
   while (metrics.width > MAX_WIDTH && fontSize > 14 * s) {
     fontSize -= 1;
-    c.font = `700 ${fontSize}px "Comic Relief", Arial, sans-serif`;
+    c.font = `900 ${fontSize}px "Comic Relief", Arial, sans-serif`;
     metrics = c.measureText(text);
   }
 
@@ -311,13 +313,13 @@ text = text.toLocaleUpperCase('pt-BR');
   c.save();
 
   // sombra
-  drawRoundedRect(c, x + SHADOW_X, y + SHADOW_Y, rectW, rectH, RADIUS);
+  drawRoundedRect(c, x - 5 * s, y + 5 * s, rectW, rectH, RADIUS);
   c.fillStyle = '#000';
   c.fill();
 
-  // caixa amarela
+  // caixa colorida
   drawRoundedRect(c, x, y, rectW, rectH, RADIUS);
-  c.fillStyle = '#ffd400';
+  c.fillStyle = bgColor;
   c.fill();
 
   // borda
@@ -524,29 +526,16 @@ if (tarjaCfg && tarjaImg) {
 const nomeDivulgacao = getNomeDivulgacao();
 
 if (nomeDivulgacao) {
-  drawNomeDivulgacaoTarja(ctx, nomeDivulgacao, 70, 736, 1);
+drawTarja(ctx, nomeDivulgacao, 150, 760, 1, '#ffd400');
 }
 
 // ===== TEXTO ABAIXO =====
 const rotulo = getRotuloDivulgacao();
+   if (rotulo) {
+  drawTarja(ctx, rotulo, 118, 783, 0.8, '#4ec3ff');
+}
 const aulasTexto = getAulasPreviewText();
    
-
-ctx.font = '32px "Comic Relief"';
-ctx.fillStyle = '#111';
-ctx.textAlign = 'center';
-ctx.textBaseline = 'top';
-
-const rotuloX = canvas.width / 2;
-const rotuloY = 845; // ajuste fino depois
-const rotuloMaxWidth = 860;
-const rotuloLineHeight = 38;
-
-const linhasRotulo = wrapText(rotulo, rotuloMaxWidth, ctx);
-const overflowRotulo = linhasRotulo.length > 2;
-
-linhasRotulo.slice(0, 2).forEach((linha, i) => {
-  ctx.fillText(linha, rotuloX, rotuloY + i * rotuloLineHeight);
 });
 
   ctx.font = '28px "Comic Relief"';
