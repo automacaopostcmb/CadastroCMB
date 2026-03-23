@@ -278,6 +278,82 @@ let currentTarjaType = '';
 /* ===========================
    CANVAS
    =========================== */
+
+function drawNomeDivulgacaoTarja(c, text, x, y, scale = 1) {
+  if (!text) return;
+
+  const s = scale;
+
+  const PADDING_X = 22 * s;
+  const PADDING_Y = 12 * s;
+  const BORDER    = 4  * s;
+  const RADIUS    = 4  * s;
+  const SHADOW_X  = -5 * s;
+  const SHADOW_Y  = 5  * s;
+  const MAX_WIDTH = 500 * s;
+
+  let fontSize = 34 * s;
+  c.font = `700 ${fontSize}px "Comic Relief", Arial, sans-serif`;
+
+  let metrics = c.measureText(text);
+  while (metrics.width > MAX_WIDTH && fontSize > 14 * s) {
+    fontSize -= 1;
+    c.font = `700 ${fontSize}px "Comic Relief", Arial, sans-serif`;
+    metrics = c.measureText(text);
+  }
+
+  const ascent  = metrics.actualBoundingBoxAscent ?? fontSize * 0.8;
+  const descent = metrics.actualBoundingBoxDescent ?? fontSize * 0.2;
+  const textH   = ascent + descent;
+
+  const rectW = Math.ceil(metrics.width + PADDING_X * 2);
+  const rectH = Math.ceil(textH + PADDING_Y * 2);
+
+  c.save();
+
+  // sombra
+  drawRoundedRect(c, x + SHADOW_X, y + SHADOW_Y, rectW, rectH, RADIUS);
+  c.fillStyle = '#000';
+  c.fill();
+
+  // caixa amarela
+  drawRoundedRect(c, x, y, rectW, rectH, RADIUS);
+  c.fillStyle = '#ffd400';
+  c.fill();
+
+  // borda
+  c.lineWidth = BORDER;
+  c.strokeStyle = '#000';
+  c.stroke();
+
+  // texto
+  c.fillStyle = '#111';
+  c.textAlign = 'left';
+  c.textBaseline = 'alphabetic';
+
+  const textX = x + PADDING_X;
+  const textY = y + (rectH - textH) / 2 + ascent;
+  c.fillText(text, textX, textY);
+
+  c.restore();
+}
+
+function drawRoundedRect(c, x, y, w, h, r) {
+  const rr = Math.min(r, w / 2, h / 2);
+  c.beginPath();
+  c.moveTo(x + rr, y);
+  c.lineTo(x + w - rr, y);
+  c.quadraticCurveTo(x + w, y, x + w, y + rr);
+  c.lineTo(x + w, y + h - rr);
+  c.quadraticCurveTo(x + w, y + h, x + w - rr, y + h);
+  c.lineTo(x + rr, y + h);
+  c.quadraticCurveTo(x, y + h, x, y + h - rr);
+  c.lineTo(x, y + rr);
+  c.quadraticCurveTo(x, y, x + rr, y);
+  c.closePath();
+}
+
+
 async function initCanvas() {
   canvas = document.getElementById('canvas');
   if (!canvas) return;
@@ -445,7 +521,11 @@ if (rostoImg) {
     ctx.drawImage(tarjaImg, canvas.width - tarjaCfg.x - w, tarjaCfg.y, w, h);
   }
 
-  const nome = getNomeDivulgacao();
+const nomeDivulgacao = (document.getElementById('nomeDivulgacao')?.value || '').trim();
+
+if (nomeDivulgacao) {
+  drawNomeDivulgacaoTarja(ctx, nomeDivulgacao, 150, 760, 1);
+}
   const rotulo = getRotuloDivulgacao();
   const aulasTexto = getAulasPreviewText();
 
