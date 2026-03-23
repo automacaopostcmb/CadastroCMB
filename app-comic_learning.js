@@ -278,7 +278,6 @@ let currentTarjaType = '';
 /* ===========================
    CANVAS
    =========================== */
-
 function drawNomeDivulgacaoTarja(c, text, x, y, scale = 1) {
   if (!text) return;
 
@@ -329,10 +328,10 @@ function drawNomeDivulgacaoTarja(c, text, x, y, scale = 1) {
   // texto
   c.fillStyle = '#111';
   c.textAlign = 'left';
-  c.textBaseline = 'alphabetic';
+  c.textBaseline = 'middle';
 
   const textX = x + PADDING_X;
-  const textY = y + (rectH - textH) / 2 + ascent;
+  const textY = y + rectH / 2 + 2 * s;
   c.fillText(text, textX, textY);
 
   c.restore();
