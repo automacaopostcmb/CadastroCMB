@@ -566,7 +566,7 @@ const aulasTexto = getAulasPreviewText();
   ctx.textAlign = 'left';
 
   validationFlags.overflowNome = false;
-  validationFlags.overflowRotulo = overflowRotulo;
+  validationFlags.overflowRotulo = false;
   validationFlags.overflowAulas = overflowAulas;
 
   updateStep6Warning();
