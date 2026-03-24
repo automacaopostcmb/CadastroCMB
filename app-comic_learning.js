@@ -472,7 +472,7 @@ function drawCoverImageMasked(img, anchorX, anchorY, scale, offsetX, offsetY, ma
 const AULAS_PREVIEW_CONFIG = {
   font: '700 28px "Montserrat", Arial, sans-serif',
   color: '#ffffff',
-  maxWidth: 760,
+  maxWidth: 985,
   lineHeight: 36,
   maxLinesPerLesson: 2,
 
