@@ -470,25 +470,25 @@ function drawCoverImageMasked(img, anchorX, anchorY, scale, offsetX, offsetY, ma
 }
 
 const AULAS_PREVIEW_CONFIG = {
-  font: '28px "Comic Relief"',
-  color: '#333',
+  font: '700 28px "Montserrat", Arial, sans-serif',
+  color: '#ffffff',
   maxWidth: 760,
   lineHeight: 36,
   maxLinesPerLesson: 2,
 
   umaAula: {
-    x: 540,   // centro
-    y: 1022   // posição fixa quando só existe 1 aula
+    x: 540,
+    y: 1022
   },
 
   duasAulas: {
     aula1: {
-      x: 540, // centro
-      y: 964 // posição fixa da aula 1 quando existem 2
+      x: 540,
+      y: 964
     },
     aula2: {
-      x: 540, // centro
-      y: 1054 // posição fixa da aula 2
+      x: 540,
+      y: 1054
     }
   }
 };
