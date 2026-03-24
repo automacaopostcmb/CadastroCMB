@@ -478,17 +478,17 @@ const AULAS_PREVIEW_CONFIG = {
 
   umaAula: {
     x: 540,   // centro
-    y: 1088   // posição fixa quando só existe 1 aula
+    y: 1022   // posição fixa quando só existe 1 aula
   },
 
   duasAulas: {
     aula1: {
       x: 540, // centro
-      y: 1050 // posição fixa da aula 1 quando existem 2
+      y: 964 // posição fixa da aula 1 quando existem 2
     },
     aula2: {
       x: 540, // centro
-      y: 1110 // posição fixa da aula 2
+      y: 1054 // posição fixa da aula 2
     }
   }
 };
