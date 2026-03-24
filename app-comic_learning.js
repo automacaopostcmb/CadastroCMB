@@ -484,7 +484,7 @@ const AULAS_PREVIEW_CONFIG = {
     aula1: {
       x: 540,
       y: 1003,
-      maxWidth: 1034,
+      maxWidth: 920,
       lineHeight: 36,
       maxLines: 2,
       anchor: 'top',
