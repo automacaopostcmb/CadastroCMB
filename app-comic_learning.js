@@ -484,7 +484,7 @@ const AULAS_PREVIEW_CONFIG = {
     aula1: {
       x: 540,
       y: 1003,
-      maxWidth: 985,
+      maxWidth: 1034,
       lineHeight: 36,
       maxLines: 2,
       anchor: 'top',
@@ -503,7 +503,7 @@ const AULAS_PREVIEW_CONFIG = {
     aula1: {
       x: 540,
       y: 972,
-      maxWidth: 985,
+      maxWidth: 1034,
       lineHeight: 36,
       maxLines: 2,
       anchor: 'top',
@@ -519,7 +519,7 @@ const AULAS_PREVIEW_CONFIG = {
     aula2: {
       x: 540,
       y: 1036,
-      maxWidth: 985,
+      maxWidth: 1034,
       lineHeight: 36,
       maxLines: 2,
       anchor: 'top',
