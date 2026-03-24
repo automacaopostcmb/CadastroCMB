@@ -637,49 +637,6 @@ if (aulasList.length >= 2) {
   overflowAulas = r1.overflow || r2.overflow;
 }
 
-ctx.font = AULAS_PREVIEW_CONFIG.font;
-ctx.fillStyle = AULAS_PREVIEW_CONFIG.color;
-
-let overflowAulas = false;
-
-if (aulasList.length === 1) {
-  const r1 = drawCenteredWrappedText(
-    ctx,
-    aulasList[0],
-    AULAS_PREVIEW_CONFIG.umaAula.x,
-    AULAS_PREVIEW_CONFIG.umaAula.y,
-    AULAS_PREVIEW_CONFIG.maxWidth,
-    AULAS_PREVIEW_CONFIG.lineHeight,
-    AULAS_PREVIEW_CONFIG.maxLinesPerLesson
-  );
-
-  overflowAulas = r1.overflow;
-}
-
-if (aulasList.length >= 2) {
-  const r1 = drawCenteredWrappedText(
-    ctx,
-    aulasList[0],
-    AULAS_PREVIEW_CONFIG.duasAulas.aula1.x,
-    AULAS_PREVIEW_CONFIG.duasAulas.aula1.y,
-    AULAS_PREVIEW_CONFIG.maxWidth,
-    AULAS_PREVIEW_CONFIG.lineHeight,
-    AULAS_PREVIEW_CONFIG.maxLinesPerLesson
-  );
-
-  const r2 = drawCenteredWrappedText(
-    ctx,
-    aulasList[1],
-    AULAS_PREVIEW_CONFIG.duasAulas.aula2.x,
-    AULAS_PREVIEW_CONFIG.duasAulas.aula2.y,
-    AULAS_PREVIEW_CONFIG.maxWidth,
-    AULAS_PREVIEW_CONFIG.lineHeight,
-    AULAS_PREVIEW_CONFIG.maxLinesPerLesson
-  );
-
-  overflowAulas = r1.overflow || r2.overflow;
-}
-
   validationFlags.overflowNome = false;
   validationFlags.overflowRotulo = false;
   validationFlags.overflowAulas = overflowAulas;
