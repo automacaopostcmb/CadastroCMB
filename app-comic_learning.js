@@ -236,7 +236,7 @@ function getRotuloDivulgacao() {
   return (document.getElementById('rotulo')?.value || '').trim();
 }
 
-function getAulasPreviewText() {
+function getAulasPreviewList() {
   const qtd = (document.getElementById('quantidade_aulas')?.value || '').trim();
   const aula1 = (document.getElementById('aula1_nome')?.value || '').trim();
   const aula2 = (document.getElementById('aula2_nome')?.value || '').trim();
@@ -245,7 +245,11 @@ function getAulasPreviewText() {
   if (aula1) aulas.push(aula1);
   if (qtd === '2' && aula2) aulas.push(aula2);
 
-  return aulas.join(' • ');
+  return aulas;
+}
+
+function getAulasPreviewText() {
+  return getAulasPreviewList().join(' • ');
 }
 
 function buildCaptionFromForm() {
@@ -465,6 +469,46 @@ function drawCoverImageMasked(img, anchorX, anchorY, scale, offsetX, offsetY, ma
   ctx.restore();
 }
 
+const AULAS_PREVIEW_CONFIG = {
+  font: '28px "Comic Relief"',
+  color: '#333',
+  maxWidth: 760,
+  lineHeight: 36,
+  maxLinesPerLesson: 2,
+
+  umaAula: {
+    x: 540,   // centro
+    y: 1088   // posição fixa quando só existe 1 aula
+  },
+
+  duasAulas: {
+    aula1: {
+      x: 540, // centro
+      y: 1050 // posição fixa da aula 1 quando existem 2
+    },
+    aula2: {
+      x: 540, // centro
+      y: 1110 // posição fixa da aula 2
+    }
+  }
+};
+
+function drawCenteredWrappedText(c, text, centerX, startY, maxWidth, lineHeight, maxLines = 2) {
+  if (!text) return { overflow: false, lines: [] };
+
+  const linhas = wrapText(text, maxWidth, c);
+  const overflow = linhas.length > maxLines;
+  const linhasFinais = linhas.slice(0, maxLines);
+
+  c.textAlign = 'center';
+  linhasFinais.forEach((linha, i) => {
+    c.fillText(linha, centerX, startY + i * lineHeight);
+  });
+  c.textAlign = 'left';
+
+  return { overflow, lines: linhasFinais };
+}
+
 function gerarPost() {
   if (!ctx || !canvas) return;
 
@@ -534,36 +578,50 @@ const rotulo = getRotuloDivulgacao();
    if (rotulo) {
   drawTarja(ctx, rotulo, 146, 794, 0.8, '#4ec3ff', false);
 }
-const aulasTexto = getAulasPreviewText();
-   
+const aulasList = getAulasPreviewList();
 
-  ctx.font = '28px "Comic Relief"';
-  ctx.fillStyle = '#333';
+ctx.font = AULAS_PREVIEW_CONFIG.font;
+ctx.fillStyle = AULAS_PREVIEW_CONFIG.color;
 
-  const aulasX = 120;
-  const aulasMaxWidth = 940;
-  const aulasMaxLinhas = 3;
-  const aulasLineHeight = 38;
-  const aulasY = 1080;
-  const aulasCenterX = aulasX + (aulasMaxWidth / 2);
+let overflowAulas = false;
 
-  const linhasAulas = wrapText(aulasTexto, aulasMaxWidth, ctx);
-  const overflowAulas = linhasAulas.length > aulasMaxLinhas;
-  const aulasSlice = linhasAulas.slice(0, aulasMaxLinhas);
+if (aulasList.length === 1) {
+  const r1 = drawCenteredWrappedText(
+    ctx,
+    aulasList[0],
+    AULAS_PREVIEW_CONFIG.umaAula.x,
+    AULAS_PREVIEW_CONFIG.umaAula.y,
+    AULAS_PREVIEW_CONFIG.maxWidth,
+    AULAS_PREVIEW_CONFIG.lineHeight,
+    AULAS_PREVIEW_CONFIG.maxLinesPerLesson
+  );
 
-  if (aulasSlice.length <= 2) {
-    ctx.textAlign = 'center';
-    aulasSlice.forEach((linha, i) => {
-      ctx.fillText(linha, aulasCenterX, aulasY + i * aulasLineHeight);
-    });
-  } else {
-    ctx.textAlign = 'left';
-    aulasSlice.forEach((linha, i) => {
-      ctx.fillText(linha, aulasX, aulasY + i * aulasLineHeight);
-    });
-  }
+  overflowAulas = r1.overflow;
+}
 
-  ctx.textAlign = 'left';
+if (aulasList.length >= 2) {
+  const r1 = drawCenteredWrappedText(
+    ctx,
+    aulasList[0],
+    AULAS_PREVIEW_CONFIG.duasAulas.aula1.x,
+    AULAS_PREVIEW_CONFIG.duasAulas.aula1.y,
+    AULAS_PREVIEW_CONFIG.maxWidth,
+    AULAS_PREVIEW_CONFIG.lineHeight,
+    AULAS_PREVIEW_CONFIG.maxLinesPerLesson
+  );
+
+  const r2 = drawCenteredWrappedText(
+    ctx,
+    aulasList[1],
+    AULAS_PREVIEW_CONFIG.duasAulas.aula2.x,
+    AULAS_PREVIEW_CONFIG.duasAulas.aula2.y,
+    AULAS_PREVIEW_CONFIG.maxWidth,
+    AULAS_PREVIEW_CONFIG.lineHeight,
+    AULAS_PREVIEW_CONFIG.maxLinesPerLesson
+  );
+
+  overflowAulas = r1.overflow || r2.overflow;
+}
 
   validationFlags.overflowNome = false;
   validationFlags.overflowRotulo = false;
