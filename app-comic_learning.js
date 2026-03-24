@@ -5,8 +5,8 @@ const FRAME_URL =
   'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_learning.png';
 
 const TARJAS = {
-  professor: { src: 'assets/learning_professor.png', x: 28, y: 57, scale: 0.2 },
-  professora: { src: 'assets/learning_professoraa.png', x: 28, y: 57, scale: 0.2 },
+  professor: { src: 'assets/learning_professor.png', x: 28, y: 37, scale: 0.2 },
+  professora: { src: 'assets/learning_professoraa.png', x: 28, y: 37, scale: 0.2 },
   outro: null
 };
  
