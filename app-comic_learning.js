@@ -472,39 +472,65 @@ function drawCoverImageMasked(img, anchorX, anchorY, scale, offsetX, offsetY, ma
 const AULAS_PREVIEW_CONFIG = {
   font: '700 28px "Montserrat", Arial, sans-serif',
   color: '#ffffff',
-  maxWidth: 985,
-  lineHeight: 36,
-  maxLinesPerLesson: 2,
 
   umaAula: {
-    x: 540,
-    y: 1022
+    aula1: {
+      x: 540,
+      y: 1041,
+      maxWidth: 985,
+      lineHeight: 36,
+      maxLines: 2,
+      anchor: 'center'
+    }
   },
 
   duasAulas: {
     aula1: {
       x: 540,
-      y: 964
+      y: 1028,
+      maxWidth: 985,
+      lineHeight: 36,
+      maxLines: 2,
+      anchor: 'center'
     },
     aula2: {
       x: 540,
-      y: 1054
+      y: 1144,
+      maxWidth: 985,
+      lineHeight: 36,
+      maxLines: 2,
+      anchor: 'center'
     }
   }
 };
 
-function drawCenteredWrappedText(c, text, centerX, startY, maxWidth, lineHeight, maxLines = 2) {
+function drawCenteredWrappedText(c, text, cfg) {
   if (!text) return { overflow: false, lines: [] };
 
-  const linhas = wrapText(text, maxWidth, c);
-  const overflow = linhas.length > maxLines;
-  const linhasFinais = linhas.slice(0, maxLines);
+  const linhas = wrapText(text, cfg.maxWidth, c);
+  const overflow = linhas.length > cfg.maxLines;
+  const linhasFinais = linhas.slice(0, cfg.maxLines);
 
+  const totalHeight = (linhasFinais.length - 1) * cfg.lineHeight;
+
+  let startY = cfg.y;
+
+  if (cfg.anchor === 'center') {
+    startY = cfg.y - totalHeight / 2;
+  } else if (cfg.anchor === 'bottom') {
+    startY = cfg.y - totalHeight;
+  }
+  // se for "top", mantém cfg.y como início
+
+  c.save();
   c.textAlign = 'center';
+  c.textBaseline = 'middle';
+
   linhasFinais.forEach((linha, i) => {
-    c.fillText(linha, centerX, startY + i * lineHeight);
+    c.fillText(linha, cfg.x, startY + i * cfg.lineHeight);
   });
-  c.textAlign = 'left';
+
+  c.restore();
 
   return { overflow, lines: linhasFinais };
 }
@@ -579,6 +605,37 @@ const rotulo = getRotuloDivulgacao();
   drawTarja(ctx, rotulo, 146, 794, 0.8, '#4ec3ff', false);
 }
 const aulasList = getAulasPreviewList();
+
+ctx.font = AULAS_PREVIEW_CONFIG.font;
+ctx.fillStyle = AULAS_PREVIEW_CONFIG.color;
+
+let overflowAulas = false;
+
+if (aulasList.length === 1) {
+  const r1 = drawCenteredWrappedText(
+    ctx,
+    aulasList[0],
+    AULAS_PREVIEW_CONFIG.umaAula.aula1
+  );
+
+  overflowAulas = r1.overflow;
+}
+
+if (aulasList.length >= 2) {
+  const r1 = drawCenteredWrappedText(
+    ctx,
+    aulasList[0],
+    AULAS_PREVIEW_CONFIG.duasAulas.aula1
+  );
+
+  const r2 = drawCenteredWrappedText(
+    ctx,
+    aulasList[1],
+    AULAS_PREVIEW_CONFIG.duasAulas.aula2
+  );
+
+  overflowAulas = r1.overflow || r2.overflow;
+}
 
 ctx.font = AULAS_PREVIEW_CONFIG.font;
 ctx.fillStyle = AULAS_PREVIEW_CONFIG.color;
