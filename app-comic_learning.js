@@ -488,6 +488,7 @@ const AULAS_PREVIEW_CONFIG = {
       lineHeight: 36,
       maxLines: 2,
       anchor: 'top',
+      multilineOffsetY: 25,   // AQUI
       color: '#ffffff',
       uppercase: true,
       prefix: '•',
@@ -548,14 +549,19 @@ function drawCenteredWrappedText(c, text, cfg) {
   const linhasFinais = linhas.slice(0, cfg.maxLines);
 
   let startY = cfg.y;
+const totalHeight = (linhasFinais.length - 1) * cfg.lineHeight;
 
-  if (cfg.anchor === 'center') {
-    const totalHeight = (linhasFinais.length - 1) * cfg.lineHeight;
-    startY = cfg.y - totalHeight / 2;
-  } else if (cfg.anchor === 'bottom') {
-    const totalHeight = (linhasFinais.length - 1) * cfg.lineHeight;
-    startY = cfg.y - totalHeight;
+if (cfg.anchor === 'center') {
+  startY = cfg.y - totalHeight / 2;
+} else if (cfg.anchor === 'bottom') {
+  startY = cfg.y - totalHeight;
+} else if (cfg.anchor === 'top') {
+  startY = cfg.y;
+
+  if (linhasFinais.length > 1 && cfg.multilineOffsetY) {
+    startY = cfg.y - cfg.multilineOffsetY;
   }
+}
 
   c.save();
   c.textAlign = 'center';
@@ -671,6 +677,7 @@ if (aulasList.length === 1) {
     ctx,
     aulasList[0],
     AULAS_PREVIEW_CONFIG.umaAula.aula1
+     
   );
 
   overflowAulas = r1.overflow;
