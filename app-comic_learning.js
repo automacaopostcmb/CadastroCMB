@@ -476,34 +476,33 @@ const AULAS_PREVIEW_CONFIG = {
   umaAula: {
     aula1: {
       x: 540,
-      y: 1041,
+      y: 1003,
       maxWidth: 985,
       lineHeight: 36,
       maxLines: 2,
-      anchor: 'center'
+      anchor: 'top'
     }
   },
 
   duasAulas: {
     aula1: {
       x: 540,
-      y: 1028,
+      y: 972,
       maxWidth: 985,
       lineHeight: 36,
       maxLines: 2,
-      anchor: 'center'
+      anchor: 'top'
     },
     aula2: {
       x: 540,
-      y: 1144,
+      y: 1036,
       maxWidth: 985,
       lineHeight: 36,
       maxLines: 2,
-      anchor: 'center'
+      anchor: 'top'
     }
   }
 };
-
 function drawCenteredWrappedText(c, text, cfg) {
   if (!text) return { overflow: false, lines: [] };
 
@@ -511,20 +510,19 @@ function drawCenteredWrappedText(c, text, cfg) {
   const overflow = linhas.length > cfg.maxLines;
   const linhasFinais = linhas.slice(0, cfg.maxLines);
 
-  const totalHeight = (linhasFinais.length - 1) * cfg.lineHeight;
-
   let startY = cfg.y;
 
   if (cfg.anchor === 'center') {
+    const totalHeight = (linhasFinais.length - 1) * cfg.lineHeight;
     startY = cfg.y - totalHeight / 2;
   } else if (cfg.anchor === 'bottom') {
+    const totalHeight = (linhasFinais.length - 1) * cfg.lineHeight;
     startY = cfg.y - totalHeight;
   }
-  // se for "top", mantém cfg.y como início
 
   c.save();
   c.textAlign = 'center';
-  c.textBaseline = 'middle';
+  c.textBaseline = 'top';
 
   linhasFinais.forEach((linha, i) => {
     c.fillText(linha, cfg.x, startY + i * cfg.lineHeight);
