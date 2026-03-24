@@ -652,13 +652,13 @@ if (tarjaCfg && tarjaImg) {
 const nomeDivulgacao = getNomeDivulgacao();
 
 if (nomeDivulgacao) {
-drawTarja(ctx, nomeDivulgacao, 77, 750, 1, '#ffd400', true);
+drawTarja(ctx, nomeDivulgacao, 43, 750, 1, '#ffd400', true);
 }
 
 // ===== TEXTO ABAIXO =====
 const rotulo = getRotuloDivulgacao();
    if (rotulo) {
-  drawTarja(ctx, rotulo, 146, 794, 0.8, '#4ec3ff', false);
+  drawTarja(ctx, rotulo, 103, 794, 0.8, '#4ec3ff', false);
 }
 const aulasList = getAulasPreviewList();
 
