@@ -662,11 +662,37 @@ const rotulo = getRotuloDivulgacao();
 }
 const aulasList = getAulasPreviewList();
 
-ctx.font = AULAS_PREVIEW_CONFIG.font;
-
 let overflowAulas = false;
 
 if (aulasList.length === 1) {
+  ctx.font = '700 38px "Montserrat", Arial, sans-serif';
+
+  const r1 = drawCenteredWrappedText(
+    ctx,
+    aulasList[0],
+    AULAS_PREVIEW_CONFIG.umaAula.aula1
+  );
+
+  overflowAulas = r1.overflow;
+}
+
+if (aulasList.length >= 2) {
+  ctx.font = '700 28px "Montserrat", Arial, sans-serif';
+
+  const r1 = drawCenteredWrappedText(
+    ctx,
+    aulasList[0],
+    AULAS_PREVIEW_CONFIG.duasAulas.aula1
+  );
+
+  const r2 = drawCenteredWrappedText(
+    ctx,
+    aulasList[1],
+    AULAS_PREVIEW_CONFIG.duasAulas.aula2
+  );
+
+  overflowAulas = r1.overflow || r2.overflow;
+}
   const r1 = drawCenteredWrappedText(
     ctx,
     aulasList[0],
