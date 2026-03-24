@@ -472,6 +472,13 @@ function drawCoverImageMasked(img, anchorX, anchorY, scale, offsetX, offsetY, ma
 const AULAS_PREVIEW_CONFIG = {
   font: '700 28px "Montserrat", Arial, sans-serif',
   color: '#ffffff',
+  uppercase: true,
+  prefix: '•',
+  strokeColor: '#000000',
+  strokeWidth: 2,
+  shadowColor: '#000000',
+  shadowOffsetX: 0,
+  shadowOffsetY: 3,
 
   umaAula: {
     aula1: {
@@ -480,7 +487,15 @@ const AULAS_PREVIEW_CONFIG = {
       maxWidth: 985,
       lineHeight: 36,
       maxLines: 2,
-      anchor: 'top'
+      anchor: 'top',
+      color: '#ffffff',
+      uppercase: true,
+      prefix: '•',
+      strokeColor: '#000000',
+      strokeWidth: 2,
+      shadowColor: '#000000',
+      shadowOffsetX: 0,
+      shadowOffsetY: 3
     }
   },
 
@@ -491,7 +506,15 @@ const AULAS_PREVIEW_CONFIG = {
       maxWidth: 985,
       lineHeight: 36,
       maxLines: 2,
-      anchor: 'top'
+      anchor: 'top',
+      color: '#ffffff',
+      uppercase: true,
+      prefix: '•',
+      strokeColor: '#000000',
+      strokeWidth: 2,
+      shadowColor: '#000000',
+      shadowOffsetX: 0,
+      shadowOffsetY: 3
     },
     aula2: {
       x: 540,
@@ -499,14 +522,28 @@ const AULAS_PREVIEW_CONFIG = {
       maxWidth: 985,
       lineHeight: 36,
       maxLines: 2,
-      anchor: 'top'
+      anchor: 'top',
+      color: '#ffffff',
+      uppercase: true,
+      prefix: '•',
+      strokeColor: '#000000',
+      strokeWidth: 2,
+      shadowColor: '#000000',
+      shadowOffsetX: 0,
+      shadowOffsetY: 3
     }
   }
 };
 function drawCenteredWrappedText(c, text, cfg) {
   if (!text) return { overflow: false, lines: [] };
 
-  const linhas = wrapText(text, cfg.maxWidth, c);
+  const textoFinal = cfg.uppercase
+    ? text.toLocaleUpperCase('pt-BR')
+    : text;
+
+  const textoComPrefixo = cfg.prefix ? `${cfg.prefix} ${textoFinal}` : textoFinal;
+
+  const linhas = wrapText(textoComPrefixo, cfg.maxWidth, c);
   const overflow = linhas.length > cfg.maxLines;
   const linhasFinais = linhas.slice(0, cfg.maxLines);
 
@@ -525,7 +562,28 @@ function drawCenteredWrappedText(c, text, cfg) {
   c.textBaseline = 'top';
 
   linhasFinais.forEach((linha, i) => {
-    c.fillText(linha, cfg.x, startY + i * cfg.lineHeight);
+    const drawY = startY + i * cfg.lineHeight;
+
+    // sombra / puxado pra baixo
+    if (cfg.shadowColor) {
+      c.fillStyle = cfg.shadowColor;
+      c.fillText(
+        linha,
+        cfg.x + (cfg.shadowOffsetX || 0),
+        drawY + (cfg.shadowOffsetY || 0)
+      );
+    }
+
+    // contorno
+    if (cfg.strokeColor && cfg.strokeWidth > 0) {
+      c.lineWidth = cfg.strokeWidth;
+      c.strokeStyle = cfg.strokeColor;
+      c.strokeText(linha, cfg.x, drawY);
+    }
+
+    // texto principal
+    c.fillStyle = cfg.color;
+    c.fillText(linha, cfg.x, drawY);
   });
 
   c.restore();
@@ -605,7 +663,6 @@ const rotulo = getRotuloDivulgacao();
 const aulasList = getAulasPreviewList();
 
 ctx.font = AULAS_PREVIEW_CONFIG.font;
-ctx.fillStyle = AULAS_PREVIEW_CONFIG.color;
 
 let overflowAulas = false;
 
