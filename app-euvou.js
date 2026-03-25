@@ -14,6 +14,16 @@ let userImgLoaded = false;
 
 const frameImg = new Image();
 let frameLoaded = false;
+
+frameImg.onload = () => {
+  frameLoaded = true;
+  gerarPost();
+};
+
+frameImg.onerror = () => {
+  console.error('Erro ao carregar o frame.');
+};
+
 frameImg.src = 'assets/euvou2026.png';
 
 const state = {
@@ -176,10 +186,10 @@ function validateStepSilently(step) {
 function initCanvas() {
   if (!canvas || !ctx) return;
 
-  frameImg.onload = () => {
-    frameLoaded = true;
-    gerarPost();
-  };
+if (frameImg.complete && frameImg.naturalWidth > 0) {
+  frameLoaded = true;
+  gerarPost();
+}
 
   const fotoInput = qs('fotoDivulgacao');
   if (fotoInput) {
