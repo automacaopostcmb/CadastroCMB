@@ -80,6 +80,8 @@ async function checkAuth() {
     if (!data.permitido) {
       blockAndRedirect('Você não tem permissão para acessar esta página.', 'index.html');
     }
+       await registrarLogPagina(PAGINA_LOG);
+
   } catch (e) {
     blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html');
   }
