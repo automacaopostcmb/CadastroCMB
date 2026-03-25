@@ -9,6 +9,63 @@
   <link rel="stylesheet" href="style.css?v=16">
 
   <style>
+
+        #overlay{
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(18, 96, 145, 0.60);
+      backdrop-filter: blur(3px);
+      z-index: 9999;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+    #overlay .loader{
+      width: min(220px, 90vw);
+      background: #fff;
+      border-radius: 18px;
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: 0 18px 50px rgba(0,0,0,.20);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .loader-gif{
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .loader-text{
+      font-size: 28px;
+      font-weight: 800;
+      color: #111;
+      line-height: 1.1;
+      text-align: center;
+    }
+
+        .btn-proximo{
+      background: #39b54a;
+      color: #fff;
+      border: none;
+      transition: opacity .2s ease, transform .2s ease, background .2s ease;
+    }
+
+    .btn-proximo:disabled{
+      background: #bfc6cc;
+      color: #f7f7f7;
+      cursor: not-allowed;
+      opacity: 1;
+    }
     .preview-wrap{
       position:relative;
       display:inline-block;
