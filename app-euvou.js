@@ -484,6 +484,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  ['nomeArtistico', 'biografia'].forEach(id => {
+    const el = qs(id);
+    if (!el) return;
+
+    el.addEventListener('input', () => {
+      showFieldError(id, '');
+      refreshStepButtons(currentStep);
+    });
+
+    el.addEventListener('blur', () => {
+      refreshStepButtons(currentStep);
+    });
+  });
+
+  const fotoInput = qs('fotoDivulgacao');
+  if (fotoInput) {
+    fotoInput.addEventListener('change', () => {
+      showFieldError('fotoDivulgacao', '');
+      refreshStepButtons(currentStep);
+    });
+  }
+
   const btnCopy = qs('btnCopyCaption');
   if (btnCopy) {
     btnCopy.addEventListener('click', async () => {
@@ -506,23 +528,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnShare = qs('btnShareNative');
   if (btnShare) btnShare.addEventListener('click', shareNative);
 
-  refreshStepButtons(1);
   showStep(1);
 });
-
-  ['nomeArtistico', 'biografia'].forEach(id => {
-    const el = qs(id);
-    if (!el) return;
-
-    el.addEventListener('input', () => {
-      showFieldError(id, '');
-      refreshStepButtons(currentStep);
-    });
-
-    el.addEventListener('blur', () => {
-      refreshStepButtons(currentStep);
-    });
-  });
 
   const fotoInput = qs('fotoDivulgacao');
   if (fotoInput) {
