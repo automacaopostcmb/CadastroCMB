@@ -926,7 +926,7 @@ async function checkAuth() {
       blockAndRedirect('Você não tem permissão para acessar esta página.', 'index.html', 2200);
       return;
     }
-
+    await registrarLogPagina(PAGINA_LOG);
   } catch (e) {
     blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html', 2500);
   }
