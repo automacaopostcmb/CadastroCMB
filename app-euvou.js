@@ -531,14 +531,6 @@ document.addEventListener('DOMContentLoaded', () => {
   showStep(1);
 });
 
-  const fotoInput = qs('fotoDivulgacao');
-  if (fotoInput) {
-    fotoInput.addEventListener('change', () => {
-      showFieldError('fotoDivulgacao', '');
-      refreshStepButtons(currentStep);
-    });
-  }
-
 window.goToMenu = goToMenu;
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
