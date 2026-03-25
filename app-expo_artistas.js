@@ -1,7 +1,7 @@
 /* =========================================================
    CONFIG – ARTISTAS (IDs, URLs e moldes)
    ========================================================= */
-const PAGINA_LOG = 'artistas.html';
+
 const FRAME_URL = 'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/areaartista.png';
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyAIRNSN5yaoSIKzxgf5rnme1ryxveWHmePMC6qRDtrkso3pZtQ-7iMW4pi94LbW1uS/exec";
 
@@ -513,6 +513,7 @@ async function enviarParaGoogle() {
    AUTENTICAÇÃO
    =========================== */
 const PAGINA = 'expo_artistas';
+const PAGINA_LOG = 'artistas.html';
 
 async function checkAuth() {
   const chave = (localStorage.getItem('chave') || '').trim();
