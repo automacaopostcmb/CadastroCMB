@@ -1,3 +1,4 @@
+const PAGINA_LOG = 'euvou.html';
 const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbw9g5VGrXZAcTVPcfl0sIIRhPMOlzTI8_hx053Nv2YPwRtJLAhBwBgN3GCBCtRA9dMC/exec';
 const PAGINA = 'euvou';
 
