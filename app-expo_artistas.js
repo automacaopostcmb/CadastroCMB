@@ -512,7 +512,7 @@ async function enviarParaGoogle() {
 /* ===========================
    AUTENTICAÇÃO
    =========================== */
-const PAGINA = 'area_artista';
+const PAGINA = 'expo_artistas';
 
 async function checkAuth() {
   const chave = (localStorage.getItem('chave') || '').trim();
