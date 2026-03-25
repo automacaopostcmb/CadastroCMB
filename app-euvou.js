@@ -244,25 +244,26 @@ function buildReview() {
 function buildCaptionFromForm() {
   const nomeArtistico = (qs('nomeArtistico')?.value || '').trim();
   const biografia = (qs('biografia')?.value || '').trim();
+  
+const head = `Eu vou para o CMB 2026!!! @comicmarketbrasil!`;
 
-  const head = `Eu vou para o CMB 2026 @comicmarketbrasil!`;
-  const body = nomeArtistico
-    ? `${nomeArtistico} estará presente no Comic Market Brasil 2026! ${biografia}`
-    : biografia;
+const body = nomeArtistico
+  ? `${nomeArtistico} estará presente no Comic Market Brasil 2026!\n\n${biografia}`
+  : biografia;
 
-  return [
-    head,
-    '',
-    body,
-    '',
-    '📍 FAPCOM – Vila Mariana, São Paulo',
-    '📅 Dias 15 e 16 de agosto de 2026',
-    '',
-    '🎟️ Mais informações e ingressos:',
-    'comicmarketbrasil.com.br',
-    '',
-    '#ComicMarketBrasil #QuadrinhosNacionais #QuadrinhosBrasileiros #hqbr #mangabr #historiaemquadrinhos #desenhistabrasileiro #ilustradorbrasileiro #fapcom'
-  ].join('\n');
+return [
+  head,
+  '',
+  body,
+  '',
+  '📍 FAPCOM – Vila Mariana, São Paulo',
+  '📅 Dias 15 e 16 de agosto de 2026',
+  '',
+  '🎟️ Mais informações e ingressos:',
+  'comicmarketbrasil.com.br',
+  '',
+  '#ComicMarketBrasil #CMB #QuadrinhosBrasileiros #quadrinhos #evento'
+].join('\n');
 }
 
 function getCanvasBlob() {
