@@ -1,1 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Eu vou CMB 2026!</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Relief&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=16">
+
+  <style>
+    .preview-wrap{
+      position:relative;
+      display:inline-block;
+      width:100%;
+      text-align:center;
+    }
+
+    .preview-wrap canvas{
+      width:100%;
+      max-width:420px;
+      height:auto;
+      display:block;
+      margin:0 auto;
+      border-radius:16px;
+      background:#eee;
+      box-shadow:0 8px 24px rgba(0,0,0,.12);
+    }
+
+    .caption-wrap{
+      max-width:720px;
+      margin:16px auto 0;
+      display:none;
+      background:#fff;
+      border:1px solid #d9e7ff;
+      border-radius:12px;
+      padding:16px;
+      box-shadow:0 6px 14px rgba(0,0,0,.04);
+    }
+
+    .caption-wrap h3{
+      margin:0 0 8px;
+      font-size:18px;
+      text-align:center;
+    }
+
+    .caption-wrap textarea{
+      width:100%;
+      min-height:160px;
+      font-size:15px;
+      padding:10px;
+      border:1px solid #cfd8e3;
+      border-radius:8px;
+      resize:vertical;
+    }
+
+    .btn-copy{
+      margin-top:10px;
+      min-width:180px;
+      padding:10px 14px;
+      border:none;
+      border-radius:8px;
+      background:#4dafff;
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+    }
+
+    .final-screen{
+      display:none;
+      text-align:center;
+      padding-bottom:32px;
+    }
+
+    .final-card{
+      width:min(100%, 860px);
+      margin:0 auto;
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 8px 28px rgba(0,0,0,.08);
+      padding:24px;
+    }
+
+    .hint{
+      font-size:14px;
+      color:#666;
+      margin:6px 0 12px;
+      text-align:center;
+    }
+
+    .review-box{
+      width:min(100%, 720px);
+      margin:0 auto;
+      text-align:left;
+    }
+
+    .review-item{
+      padding:12px 0;
+      border-bottom:1px solid #eee;
+    }
+
+    .review-label{
+      font-weight:700;
+      display:block;
+      margin-bottom:4px;
+    }
+
+    .review-value{
+      color:#333;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+
+    #mensagem{
+      display:none;
+      margin-top:14px;
+      font-weight:600;
+      text-align:center;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="wizard-topbar" id="wizardTopbar" role="banner" aria-label="Etapa do cadastro">
+    <div class="wizard-topbar__inner">
+      <div id="wizardStepCount" class="wizard-topbar__title">ETAPA 1 DE 6</div>
+    </div>
+  </header>
+
+  <main class="page-center">
+    <div id="wizardStepTitle" class="wizard-step-title">TÍTULO</div>
+
+    <!-- ETAPA 1 -->
+    <section class="step active" id="step1" data-title="Bem-vindo ao Eu vou CMB 2026!">
+      <div class="step-box">
+        <h2>Seja bem-vindo ao CMB 2026!</h2>
+        <p style="line-height:1.6; margin:10px 0; color:#333; font-size:15px; text-align:center;">
+          Vamos criar uma imagem para você divulgar a sua presença nas redes sociais.
+        </p>
+        <p style="line-height:1.6; margin:10px 0; color:#333; font-size:15px; text-align:center;">
+          Preencha os dados, ajuste a foto no preview e finalize para baixar sua arte.
+        </p>
+      </div>
+
+      <div class="button-row">
+        <button class="btn-nav btn-proximo" data-next>Próximo</button>
+      </div>
+
+      <a class="btn-light-text" href="index.html?back=1">Menu</a>
+    </section>
+
+    <!-- ETAPA 2 -->
+    <section class="step" id="step2" data-title="Nome de divulgação">
+      <div class="step-box">
+        <label class="title-label">Nome de divulgação*</label>
+        <div class="hint">Esse nome será usado na divulgação.</div>
+        <input type="text" id="nomeArtistico" placeholder="Ex.: Thiago Takahashi / Crás / Studio X" />
+        <div id="nomeArtisticoError" class="inline-error"></div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn-nav btn-voltar" data-prev>Voltar</button>
+        <button class="btn-nav btn-proximo" data-next>Próximo</button>
+      </div>
+
+      <a class="btn-light-text" href="index.html?back=1">Menu</a>
+    </section>
+
+    <!-- ETAPA 3 -->
+    <section class="step" id="step3" data-title="Sua imagem">
+      <div class="step-box">
+        <label class="title-label">Envie sua imagem*</label>
+        <div class="hint">Essa imagem será usada no preview para gerar seu post.</div>
+        <input type="file" id="fotoDivulgacao" accept="image/*" />
+        <div id="fotoDivulgacaoError" class="inline-error"></div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn-nav btn-voltar" data-prev>Voltar</button>
+        <button class="btn-nav btn-proximo" data-next>Próximo</button>
+      </div>
+
+      <a class="btn-light-text" href="index.html?back=1">Menu</a>
+    </section>
+
+    <!-- ETAPA 4 -->
+    <section class="step" id="step4" data-title="Quem é você?">
+      <div class="step-box">
+        <label class="title-label">Biografia*</label>
+        <div class="hint">Usaremos esse texto como base da sua divulgação.</div>
+        <textarea id="biografia" rows="8" placeholder="Conte quem é você, seus trabalhos, publicações, estilo, atuação, etc."></textarea>
+        <div id="biografiaError" class="inline-error"></div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn-nav btn-voltar" data-prev>Voltar</button>
+        <button class="btn-nav btn-proximo" data-next>Próximo</button>
+      </div>
+
+      <a class="btn-light-text" href="index.html?back=1">Menu</a>
+    </section>
+
+    <!-- ETAPA 5 -->
+    <section class="step" id="step5" data-title="Preview da sua imagem">
+      <div class="step-box">
+        <div class="preview-wrap">
+          <canvas id="canvas" width="1080" height="1350"></canvas>
+        </div>
+
+        <label class="title-label">Tamanho</label>
+        <input type="range" id="imgScale" min="0.4" max="2" step="0.01" value="1" />
+
+        <label class="title-label">Mover horizontalmente</label>
+        <input type="range" id="imgX" min="-500" max="500" step="1" value="0" />
+
+        <label class="title-label">Mover verticalmente</label>
+        <input type="range" id="imgY" min="-500" max="500" step="1" value="0" />
+      </div>
+
+      <div class="button-row">
+        <button class="btn-nav btn-voltar" data-prev>Voltar</button>
+        <button class="btn-nav btn-proximo" data-next>Próximo</button>
+      </div>
+
+      <a class="btn-light-text" href="index.html?back=1">Menu</a>
+    </section>
+
+    <!-- ETAPA 6 -->
+    <section class="step" id="step6" data-title="Confirmar e finalizar">
+      <div class="step-box">
+        <img id="confirmPreview"
+             alt="Preview da divulgação"
+             style="width:100%; max-width:420px; display:block; margin:0 auto; border-radius:14px;" />
+
+        <div id="review-list" class="review-box" style="margin-top:18px;"></div>
+        <div id="mensagem"></div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn-nav btn-voltar" data-prev>Voltar/Ajustar</button>
+        <button class="btn-nav btn-proximo" id="botao-enviar" onclick="enviarParaGoogle()">Confirmar imagem</button>
+      </div>
+
+      <a class="btn-light-text" href="index.html?back=1">Menu</a>
+    </section>
+
+    <!-- FINAL -->
+    <section id="final-screen" class="final-screen">
+      <div class="final-card">
+        <h2>✅ Imagem criada!</h2>
+        <p>Baixe e divulgue a sua presença no CMB 2026.</p>
+
+        <img id="finalPreview"
+             style="max-width:320px; width:100%; height:auto; margin:20px auto; display:block; border-radius:12px;">
+
+        <button class="btn-download" id="btn-final-download" onclick="baixarImagem()">
+          Baixar imagem
+        </button>
+
+        <div id="captionWrap" class="caption-wrap">
+          <h3>Ajuste e use essa descrição nas suas redes:</h3>
+          <textarea id="captionBox"></textarea>
+          <div style="text-align:center">
+            <button class="btn-copy" id="btnCopyCaption" type="button">Copiar</button>
+            <button class="btn-copy" id="btnShareNative" type="button">Compartilhar</button>
+          </div>
+        </div>
+      </div>
+
+      <a class="btn-light-text" href="index.html?back=1">Voltar para o Menu</a>
+    </section>
+
+    <div id="overlay">
+      <div class="loader">
+        <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
+        <div class="loader-text">Enviando.</div>
+      </div>
+    </div>
+  </main>
+
+  <script src="app-euvou.js?v=1"></script>
+  <script src="footer-loader.js"></script>
+</body>
+</html>
