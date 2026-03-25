@@ -60,7 +60,7 @@
   <h3>Suas Páginas</h3>
 
   <p class="menu-hint">
-    Nesse painel você compartilha informações para contato, envia imagens e cria posts para divulgação.
+    Nesse painel você compartilha informações para contrato, envia imagens e cria posts para divulgação.
     Seja bem vindo ao CMB!
   </p>
 
@@ -80,16 +80,15 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec";
 
     // CORES DOS BOTÕES (ajuste aqui no HTML, sem CSS)
-const BUTTON_COLORS = ["#f1c40f", "#3498db", "#2ecc71", "#ff9ff3", "#e67e22", "#ba7fd6"];
+const BUTTON_COLORS = ["#f1c40f", "#3498db", "#2ecc71", "#ff9ff3", "#e67e22", "#9b59b6"];
     
     // Definição das páginas do menu
     const paginas = [
-      { nome: "expo_artistas",          label: "Área dos Artistas",        href: "artistas.html" },
+      { nome: "area_artista",          label: "Área dos Artistas",        href: "artistas.html" },
       { nome: "expo_business",         label: "Expositor Área Business",  href: "expo_business.html" },
       { nome: "expo_market",           label: "Expositor Área Market",    href: "expo_market.html" },
-      { nome: "cadastro_masterclass",  label: "Cadastro Masterclass",     href: "comic_learning.html" },
+      { nome: "cadastro_masterclass",  label: "Cadastro Masterclass",     href: "cadastro_masterclass.html" },
       { nome: "cadastro_lancamento",   label: "Cadastro de Lançamento",   href: "cadastro_lancamento.html" },
-      { nome: "eu_vou",   label: "Eu vou CMB 2026!",   href: "euvou.html" },
     ];
 
     let isLoading = false;
@@ -276,8 +275,6 @@ function showMenuLoadingUI() {
  <script src="footer-loader.js"></script>
 </body>
 </html>
-
-
 
 
 
