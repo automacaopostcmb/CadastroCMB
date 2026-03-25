@@ -587,6 +587,7 @@ try {
   msg.style.display = 'block';
 
   if (result.status === 'success') {
+       await registrarLogPagina(PAGINA_LOG, true);
     msg.textContent = '✅ Enviado com sucesso!';
     msg.style.color = 'green';
 
