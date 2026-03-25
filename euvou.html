@@ -22,7 +22,6 @@
       height:auto;
       display:block;
       margin:0 auto;
-      border-radius:16px;
       background:#eee;
       box-shadow:0 8px 24px rgba(0,0,0,.12);
     }
@@ -131,15 +130,13 @@
     <div id="wizardStepTitle" class="wizard-step-title">TÍTULO</div>
 
     <!-- ETAPA 1 -->
-    <section class="step active" id="step1" data-title="Bem-vindo ao Eu vou CMB 2026!">
+    <section class="step active" id="step1" data-title="BEM-VINDO AO CMB 2026!">
       <div class="step-box">
-        <h2>Seja bem-vindo ao CMB 2026!</h2>
+        <h2>Vamos divulgar a sua presença?</h2>
         <p style="line-height:1.6; margin:10px 0; color:#333; font-size:15px; text-align:center;">
-          Vamos criar uma imagem para você divulgar a sua presença nas redes sociais.
+          Vamos criar uma imagem para você divulgar a sua presença no CMB 2026 nas redes sociais!
         </p>
-        <p style="line-height:1.6; margin:10px 0; color:#333; font-size:15px; text-align:center;">
-          Preencha os dados, ajuste a foto no preview e finalize para baixar sua arte.
-        </p>
+  
       </div>
 
       <div class="button-row">
@@ -153,8 +150,7 @@
     <section class="step" id="step2" data-title="Nome de divulgação">
       <div class="step-box">
         <label class="title-label">Nome de divulgação*</label>
-        <div class="hint">Esse nome será usado na divulgação.</div>
-        <input type="text" id="nomeArtistico" placeholder="Ex.: Thiago Takahashi / Crás / Studio X" />
+        <input type="text" id="nomeArtistico" />
         <div id="nomeArtisticoError" class="inline-error"></div>
       </div>
 
@@ -170,7 +166,6 @@
     <section class="step" id="step3" data-title="Sua imagem">
       <div class="step-box">
         <label class="title-label">Envie sua imagem*</label>
-        <div class="hint">Essa imagem será usada no preview para gerar seu post.</div>
         <input type="file" id="fotoDivulgacao" accept="image/*" />
         <div id="fotoDivulgacaoError" class="inline-error"></div>
       </div>
@@ -230,9 +225,9 @@
       <div class="step-box">
         <img id="confirmPreview"
              alt="Preview da divulgação"
-             style="width:100%; max-width:420px; display:block; margin:0 auto; border-radius:14px;" />
+             style="width:100%; max-width:420px; display:block; margin:0 auto;" />
 
-        <div id="review-list" class="review-box" style="margin-top:18px;"></div>
+         <!-- <div id="review-list" class="review-box" style="margin-top:18px;"></div> -->
         <div id="mensagem"></div>
       </div>
 
@@ -251,7 +246,7 @@
         <p>Baixe e divulgue a sua presença no CMB 2026.</p>
 
         <img id="finalPreview"
-             style="max-width:320px; width:100%; height:auto; margin:20px auto; display:block; border-radius:12px;">
+             style="max-width:320px; width:100%; height:auto; margin:20px auto; display:block;">
 
         <button class="btn-download" id="btn-final-download" onclick="baixarImagem()">
           Baixar imagem
