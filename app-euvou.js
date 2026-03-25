@@ -1,4 +1,4 @@
-const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxyWAq72fNVzMt2p2c4b1caDjds_g7-CowcUautWzZn_jax1tyaPmEtL9vn-y5cu4h5/exec';
+const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbw9g5VGrXZAcTVPcfl0sIIRhPMOlzTI8_hx053Nv2YPwRtJLAhBwBgN3GCBCtRA9dMC/exec';
 const PAGINA = 'euvou';
 
 let steps = [];
