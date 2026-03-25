@@ -109,11 +109,13 @@ function showStep(stepNumber) {
   }
 
   updateWizardHeader();
+  refreshStepButtons(currentStep);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function validateStep(step) {
   const required = REQUIRED_BY_STEP[step] || [];
+  let isValid = true;
 
   for (const id of required) {
     const el = qs(id);
@@ -122,7 +124,7 @@ function validateStep(step) {
     if (el.type === 'file') {
       if (!el.files || !el.files.length) {
         showFieldError(id, 'Envie um arquivo.');
-        return false;
+        isValid = false;
       } else {
         showFieldError(id, '');
       }
@@ -130,16 +132,47 @@ function validateStep(step) {
       const value = (el.value || '').trim();
       if (!value) {
         showFieldError(id, 'Preencha este campo.');
-        return false;
+        isValid = false;
       } else {
         showFieldError(id, '');
       }
     }
   }
 
-  return true;
+  refreshStepButtons(step);
+  return isValid;
+}
+function getStepNextButton(step) {
+  const stepEl = document.getElementById(`step${step}`);
+  if (!stepEl) return null;
+  return stepEl.querySelector('[data-next]');
 }
 
+function refreshStepButtons(step = currentStep) {
+  const nextBtn = getStepNextButton(step);
+  if (!nextBtn) return;
+
+  const isValid = validateStepSilently(step);
+  nextBtn.disabled = !isValid;
+}
+
+function validateStepSilently(step) {
+  const required = REQUIRED_BY_STEP[step] || [];
+
+  for (const id of required) {
+    const el = qs(id);
+    if (!el) continue;
+
+    if (el.type === 'file') {
+      if (!el.files || !el.files.length) return false;
+    } else {
+      const value = (el.value || '').trim();
+      if (!value) return false;
+    }
+  }
+
+  return true;
+}
 function initCanvas() {
   if (!canvas || !ctx) return;
 
@@ -473,8 +506,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnShare = qs('btnShareNative');
   if (btnShare) btnShare.addEventListener('click', shareNative);
 
+  refreshStepButtons(1);
   showStep(1);
 });
+
+  ['nomeArtistico', 'biografia'].forEach(id => {
+    const el = qs(id);
+    if (!el) return;
+
+    el.addEventListener('input', () => {
+      showFieldError(id, '');
+      refreshStepButtons(currentStep);
+    });
+
+    el.addEventListener('blur', () => {
+      refreshStepButtons(currentStep);
+    });
+  });
+
+  const fotoInput = qs('fotoDivulgacao');
+  if (fotoInput) {
+    fotoInput.addEventListener('change', () => {
+      showFieldError('fotoDivulgacao', '');
+      refreshStepButtons(currentStep);
+    });
+  }
 
 window.goToMenu = goToMenu;
 window.enviarParaGoogle = enviarParaGoogle;
