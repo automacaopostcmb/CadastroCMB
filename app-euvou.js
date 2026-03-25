@@ -14,7 +14,7 @@ let userImgLoaded = false;
 
 const frameImg = new Image();
 let frameLoaded = false;
-frameImg.src = 'assets/euvou26.png';
+frameImg.src = 'assets/euvou2026.png';
 
 const state = {
   imgScale: 1.2,
