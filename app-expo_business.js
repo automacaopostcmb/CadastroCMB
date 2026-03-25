@@ -1,6 +1,7 @@
 /* =========================================================
    CONFIGURAÇÃO
    ========================================================= */
+const PAGINA_LOG = 'expo_business.html';
 const FRAME_URL =
   'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_expo_business.png';
 
