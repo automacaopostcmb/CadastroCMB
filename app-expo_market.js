@@ -1,7 +1,6 @@
 /* =========================================================
    CONFIGURAÇÃO
    ========================================================= */
-const PAGINA_LOG = 'expo_market.html';
 const FRAME_URL =
   'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_expo_market.png';
 
@@ -450,51 +449,20 @@ if (typeof revalidateStepNav === 'function') revalidateStepNav();
 }
 
 function wrapText(text, maxWidth, context) {
-
-  const linhas = [];
   const palavras = text.split(' ');
+  const linhas = [];
   let linha = '';
-
-  palavras.forEach((palavra) => {
-
-    const teste = linha + palavra + ' ';
+  palavras.forEach((p) => {
+    const teste = linha + p + ' ';
     const largura = context.measureText(teste).width;
-
     if (largura > maxWidth && linha !== '') {
-
       linhas.push(linha.trim());
-      linha = palavra + ' ';
-
-    } else if (context.measureText(palavra).width > maxWidth) {
-
-      // palavra gigante (sem espaço) → quebrar em partes
-      let parte = '';
-
-      for (let char of palavra) {
-
-        const testeParte = parte + char;
-
-        if (context.measureText(testeParte).width > maxWidth) {
-          linhas.push(parte);
-          parte = char;
-        } else {
-          parte = testeParte;
-        }
-
-      }
-
-      linha = parte + ' ';
-
+      linha = p + ' ';
     } else {
-
       linha = teste;
-
     }
-
   });
-
-  if (linha.trim() !== '') linhas.push(linha.trim());
-
+  if (linha !== '') linhas.push(linha.trim());
   return linhas;
 }
 
@@ -587,7 +555,6 @@ try {
   msg.style.display = 'block';
 
   if (result.status === 'success') {
-       await registrarLogPagina(PAGINA_LOG, true);
     msg.textContent = '✅ Enviado com sucesso!';
     msg.style.color = 'green';
 
@@ -653,7 +620,6 @@ async function checkAuth() {
 
     // se quiser, ao passar auth, garante overlay sumido
     // hideAuthOverlay();
-   await registrarLogPagina(PAGINA_LOG);
 
   } catch (e) {
     blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html', 2500);
@@ -934,37 +900,3 @@ document.getElementById('accTextos')?.addEventListener('toggle', (e) => {
 window.enviarParaGoogle = enviarParaGoogle;
 window.baixarImagem = baixarImagem;
 window.goToMenu = goToMenu;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
