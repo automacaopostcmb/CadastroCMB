@@ -1,4 +1,3 @@
-const PAGINA_LOG = 'euvou.html';
 const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbw9g5VGrXZAcTVPcfl0sIIRhPMOlzTI8_hx053Nv2YPwRtJLAhBwBgN3GCBCtRA9dMC/exec';
 const PAGINA = 'euvou';
 
@@ -15,17 +14,7 @@ let userImgLoaded = false;
 
 const frameImg = new Image();
 let frameLoaded = false;
-
-frameImg.onload = () => {
-  frameLoaded = true;
-  gerarPost();
-};
-
-frameImg.onerror = () => {
-  console.error('Erro ao carregar o frame.');
-};
-
-frameImg.src = 'assets/euvou2026.png';
+frameImg.src = 'assets/euvou26.png';
 
 const state = {
   imgScale: 1.2,
@@ -80,8 +69,6 @@ async function checkAuth() {
     if (!data.permitido) {
       blockAndRedirect('Você não tem permissão para acessar esta página.', 'index.html');
     }
-       await registrarLogPagina(PAGINA_LOG);
-
   } catch (e) {
     blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html');
   }
@@ -189,10 +176,10 @@ function validateStepSilently(step) {
 function initCanvas() {
   if (!canvas || !ctx) return;
 
-if (frameImg.complete && frameImg.naturalWidth > 0) {
-  frameLoaded = true;
-  gerarPost();
-}
+  frameImg.onload = () => {
+    frameLoaded = true;
+    gerarPost();
+  };
 
   const fotoInput = qs('fotoDivulgacao');
   if (fotoInput) {
@@ -428,7 +415,6 @@ async function enviarParaGoogle() {
     const data = await resp.json();
 
     if (data.status === 'success') {
-        await registrarLogPagina(PAGINA_LOG, true);
       showFinalScreen();
     } else {
       throw new Error(data.message || 'Erro ao enviar.');
