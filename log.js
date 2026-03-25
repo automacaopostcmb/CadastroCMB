@@ -15,7 +15,10 @@ function montarMensagemLog(pagina, ok = false) {
 
 async function registrarLogPagina(pagina, ok = false) {
   const codigo = (localStorage.getItem('chave') || '').toLowerCase().trim();
-  if (!codigo) return;
+  if (!codigo) {
+    console.warn('Sem chave no localStorage');
+    return;
+  }
 
   const mensagem = montarMensagemLog(pagina, ok);
 
@@ -34,6 +37,7 @@ async function registrarLogPagina(pagina, ok = false) {
 
     const data = await resp.json();
     console.log('Resposta do log:', data);
+    return data;
   } catch (err) {
     console.error('Erro ao registrar log:', err);
   }
