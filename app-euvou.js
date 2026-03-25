@@ -428,6 +428,7 @@ async function enviarParaGoogle() {
     const data = await resp.json();
 
     if (data.status === 'success') {
+        await registrarLogPagina(PAGINA_LOG, true);
       showFinalScreen();
     } else {
       throw new Error(data.message || 'Erro ao enviar.');
