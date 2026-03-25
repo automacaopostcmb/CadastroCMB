@@ -15,6 +15,7 @@ function montarMensagemLog(pagina, ok = false) {
 
 async function registrarLogPagina(pagina, ok = false) {
   const codigo = (localStorage.getItem('chave') || '').toLowerCase().trim();
+
   if (!codigo) {
     console.warn('Sem chave no localStorage');
     return;
@@ -35,8 +36,24 @@ async function registrarLogPagina(pagina, ok = false) {
       })
     });
 
-    const data = await resp.json();
-    console.log('Resposta do log:', data);
+    const texto = await resp.text();
+    console.log('Status HTTP do log:', resp.status);
+    console.log('Resposta bruta do log:', texto);
+
+    let data = null;
+    try {
+      data = JSON.parse(texto);
+    } catch (e) {
+      console.error('Resposta do log não é JSON válido');
+      return;
+    }
+
+    console.log('Resposta JSON do log:', data);
+
+    if (data.status !== 'success') {
+      console.warn('Log não gravado:', data);
+    }
+
     return data;
   } catch (err) {
     console.error('Erro ao registrar log:', err);
