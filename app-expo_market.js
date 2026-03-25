@@ -1,6 +1,7 @@
 /* =========================================================
    CONFIGURAÇÃO
    ========================================================= */
+const PAGINA_LOG = 'expo_market.html';
 const FRAME_URL =
   'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_expo_market.png';
 
