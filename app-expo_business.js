@@ -1,7 +1,6 @@
 /* =========================================================
    CONFIGURAÇÃO
    ========================================================= */
-const PAGINA_LOG = 'expo_business.html';
 const FRAME_URL =
   'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_expo_business.png';
 
@@ -540,7 +539,6 @@ async function enviarParaGoogle() {
     msg.style.display = 'block';
 
     if (result.status === 'success') {
-         await registrarLogPagina(PAGINA_LOG, true);
       msg.textContent = '✅ Enviado com sucesso!';
       msg.style.color = 'green';
 
@@ -603,7 +601,6 @@ async function checkAuth() {
       blockAndRedirect('Você não tem permissão para acessar esta página.', 'index.html', 2200);
       return;
     }
-   await registrarLogPagina(PAGINA_LOG);
 
   } catch (e) {
     blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html', 2500);
