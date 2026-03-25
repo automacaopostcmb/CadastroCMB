@@ -17,7 +17,7 @@ let frameLoaded = false;
 frameImg.src = 'assets/euvou.png';
 
 const state = {
-  imgScale: 1,
+  imgScale: 1.2,
   imgX: 0,
   imgY: 0
 };
@@ -194,7 +194,7 @@ function drawCoverImage(img, xOffset, yOffset, scale) {
   const dh = ih * finalScale;
 
   const dx = (cw - dw) / 2 + xOffset;
-  const dy = (ch - dh) / 2 + yOffset;
+const dy = (ch - dh) / 2 - 100 + yOffset;
 
   ctx.drawImage(img, dx, dy, dw, dh);
 }
