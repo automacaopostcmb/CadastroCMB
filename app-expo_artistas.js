@@ -1,7 +1,6 @@
 /* =========================================================
    CONFIG – ARTISTAS (IDs, URLs e moldes)
    ========================================================= */
-
 const FRAME_URL = 'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/areaartista.png';
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyAIRNSN5yaoSIKzxgf5rnme1ryxveWHmePMC6qRDtrkso3pZtQ-7iMW4pi94LbW1uS/exec";
 
@@ -477,7 +476,6 @@ async function enviarParaGoogle() {
     msg.style.display = 'block';
 
     if (result.status === 'success') {
-      await registrarLogPagina(PAGINA_LOG, true);
       msg.textContent = '✅ Enviado com sucesso!';
       msg.style.color = 'green';
 
@@ -513,14 +511,13 @@ async function enviarParaGoogle() {
    AUTENTICAÇÃO
    =========================== */
 const PAGINA = 'expo_artistas';
-const PAGINA_LOG = 'artistas.html';
 
 async function checkAuth() {
   const chave = (localStorage.getItem('chave') || '').trim();
 
   if (!chave) {
     blockAndRedirect('Faça login primeiro.', 'index.html');
-    return false;
+    return;
   }
 
   try {
@@ -530,15 +527,10 @@ async function checkAuth() {
 
     if (!data.permitido) {
       blockAndRedirect('Você não tem permissão para acessar esta página.', 'index.html');
-      return false;
+      return;
     }
-
-    await registrarLogPagina(PAGINA_LOG);
-    return true;
-
   } catch (e) {
     blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html');
-    return false;
   }
 }
 
@@ -792,40 +784,86 @@ function goToMenu() {
 /* ===========================
    BOOTSTRAP
    =========================== */
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   const isWizardPage =
     !!document.querySelector('.step') &&
     !!document.getElementById('wizardStepCount');
 
   if (!isWizardPage) return;
 
-  // Esconde a página até validar acesso
-  document.body.style.visibility = 'hidden';
-
   initCanvas();
-
-  const permitido = await checkAuth();
-  if (!permitido) return;
-
-  // Mostra a página só depois da autenticação
-  document.body.style.visibility = 'visible';
+  checkAuth();
 
   steps = Array.from(document.querySelectorAll('.step'));
   totalSteps = steps.length;
 
   updateWizardHeader();
 
-  document.querySelectorAll('.btn-next').forEach(btn => {
-    btn.addEventListener('click', () => nextStep());
+  // revalida ao digitar/colar/blur/autofill nas etapas 3 e 4
+  ['nomeCompleto','nomeArtistico','emailArtista','telefoneArtista','nomeAjudante','emailAjudante'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    ['input','change','blur','keyup'].forEach(evt =>
+      el.addEventListener(evt, () => { revalidateStepNav(); })
+    );
   });
 
-  document.querySelectorAll('.btn-prev').forEach(btn => {
-    btn.addEventListener('click', () => prevStep());
+  document.addEventListener('input', (e) => {
+    if (wizardDone) return;
+
+    const topbarText = document.getElementById('wizardStepCount');
+    if (topbarText) topbarText.style.display = 'block';
+
+    const activeStep = steps[currentStep - 1];
+    if (!activeStep?.contains(e.target)) return;
+    revalidateStepNav();
   });
 
-  document.querySelectorAll('.btn-finish').forEach(btn => {
-    btn.addEventListener('click', () => enviarParaGoogle());
+  document.addEventListener('change', (e) => {
+    if (wizardDone) return;
+    const activeStep = steps[currentStep - 1];
+    if (!activeStep?.contains(e.target)) return;
+    revalidateStepNav();
   });
+
+  document.addEventListener('click', (e) => {
+    if (wizardDone) return;
+
+    if (e.target.matches('[data-next]')) {
+      if (!validateStep(currentStep)) return;
+      showStep(currentStep + 1);
+    }
+
+    if (e.target.matches('[data-prev]')) {
+      showStep(currentStep - 1);
+    }
+  });
+
+  // botão Copiar legenda
+  const btnCopy = document.getElementById('btnCopyCaption');
+  if (btnCopy) {
+    btnCopy.addEventListener('click', async () => {
+      const box = document.getElementById('captionBox');
+      if (!box) return;
+      try {
+        await navigator.clipboard.writeText(box.value);
+        btnCopy.textContent = 'Copiado ✔';
+        setTimeout(()=>btnCopy.textContent='Copiar', 1500);
+      } catch(e) {
+        box.select(); document.execCommand('copy');
+        btnCopy.textContent = 'Copiado ✔';
+        setTimeout(()=>btnCopy.textContent='Copiar', 1500);
+      }
+    });
+  }
+
+  // botão Compartilhar (o antigo do captionWrap)
+  const btnShare = document.getElementById('btnShareNative');
+  if (btnShare) btnShare.addEventListener('click', shareNative);
+
+  // ✅ botão novo "Compartilhar" da tela final (atalho)
+  const btnFinalShare = document.getElementById('btn-final-share');
+  if (btnFinalShare) btnFinalShare.addEventListener('click', shareNative);
 
   showStep(1);
 });
@@ -835,16 +873,3 @@ window.goToMenu = goToMenu;
 // Se você precisa expor explicitamente (dependendo do seu HTML), descomente:
 // window.enviarParaGoogle = enviarParaGoogle;
 // window.baixarImagem = baixarImagem;
-
-
-
-
-
-
-
-
-
-
-
-
-
