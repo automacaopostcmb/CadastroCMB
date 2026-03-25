@@ -1,6 +1,7 @@
 /* =========================================================
    CONFIGURAÇÃO
    ========================================================= */
+const PAGINA_LOG = 'comic_learning.html';
 const FRAME_URL =
   'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_learning.png';
 
