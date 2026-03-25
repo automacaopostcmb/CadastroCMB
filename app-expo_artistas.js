@@ -520,7 +520,7 @@ async function checkAuth() {
 
   if (!chave) {
     blockAndRedirect('Faça login primeiro.', 'index.html');
-    return;
+    return false;
   }
 
   try {
@@ -530,12 +530,15 @@ async function checkAuth() {
 
     if (!data.permitido) {
       blockAndRedirect('Você não tem permissão para acessar esta página.', 'index.html');
-      return;
+      return false;
     }
-        await registrarLogPagina(PAGINA_LOG);
+
+    await registrarLogPagina(PAGINA_LOG);
+    return true;
 
   } catch (e) {
     blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html');
+    return false;
   }
 }
 
@@ -789,86 +792,40 @@ function goToMenu() {
 /* ===========================
    BOOTSTRAP
    =========================== */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const isWizardPage =
     !!document.querySelector('.step') &&
     !!document.getElementById('wizardStepCount');
 
   if (!isWizardPage) return;
 
+  // Esconde a página até validar acesso
+  document.body.style.visibility = 'hidden';
+
   initCanvas();
-  checkAuth();
+
+  const permitido = await checkAuth();
+  if (!permitido) return;
+
+  // Mostra a página só depois da autenticação
+  document.body.style.visibility = 'visible';
 
   steps = Array.from(document.querySelectorAll('.step'));
   totalSteps = steps.length;
 
   updateWizardHeader();
 
-  // revalida ao digitar/colar/blur/autofill nas etapas 3 e 4
-  ['nomeCompleto','nomeArtistico','emailArtista','telefoneArtista','nomeAjudante','emailAjudante'].forEach((id) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    ['input','change','blur','keyup'].forEach(evt =>
-      el.addEventListener(evt, () => { revalidateStepNav(); })
-    );
+  document.querySelectorAll('.btn-next').forEach(btn => {
+    btn.addEventListener('click', () => nextStep());
   });
 
-  document.addEventListener('input', (e) => {
-    if (wizardDone) return;
-
-    const topbarText = document.getElementById('wizardStepCount');
-    if (topbarText) topbarText.style.display = 'block';
-
-    const activeStep = steps[currentStep - 1];
-    if (!activeStep?.contains(e.target)) return;
-    revalidateStepNav();
+  document.querySelectorAll('.btn-prev').forEach(btn => {
+    btn.addEventListener('click', () => prevStep());
   });
 
-  document.addEventListener('change', (e) => {
-    if (wizardDone) return;
-    const activeStep = steps[currentStep - 1];
-    if (!activeStep?.contains(e.target)) return;
-    revalidateStepNav();
+  document.querySelectorAll('.btn-finish').forEach(btn => {
+    btn.addEventListener('click', () => enviarParaGoogle());
   });
-
-  document.addEventListener('click', (e) => {
-    if (wizardDone) return;
-
-    if (e.target.matches('[data-next]')) {
-      if (!validateStep(currentStep)) return;
-      showStep(currentStep + 1);
-    }
-
-    if (e.target.matches('[data-prev]')) {
-      showStep(currentStep - 1);
-    }
-  });
-
-  // botão Copiar legenda
-  const btnCopy = document.getElementById('btnCopyCaption');
-  if (btnCopy) {
-    btnCopy.addEventListener('click', async () => {
-      const box = document.getElementById('captionBox');
-      if (!box) return;
-      try {
-        await navigator.clipboard.writeText(box.value);
-        btnCopy.textContent = 'Copiado ✔';
-        setTimeout(()=>btnCopy.textContent='Copiar', 1500);
-      } catch(e) {
-        box.select(); document.execCommand('copy');
-        btnCopy.textContent = 'Copiado ✔';
-        setTimeout(()=>btnCopy.textContent='Copiar', 1500);
-      }
-    });
-  }
-
-  // botão Compartilhar (o antigo do captionWrap)
-  const btnShare = document.getElementById('btnShareNative');
-  if (btnShare) btnShare.addEventListener('click', shareNative);
-
-  // ✅ botão novo "Compartilhar" da tela final (atalho)
-  const btnFinalShare = document.getElementById('btn-final-share');
-  if (btnFinalShare) btnFinalShare.addEventListener('click', shareNative);
 
   showStep(1);
 });
