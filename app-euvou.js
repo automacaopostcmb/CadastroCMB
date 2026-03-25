@@ -242,14 +242,11 @@ function buildReview() {
 }
 
 function buildCaptionFromForm() {
-  const nomeArtistico = (qs('nomeArtistico')?.value || '').trim();
   const biografia = (qs('biografia')?.value || '').trim();
   
 const head = `Eu vou para o CMB 2026!!! @comicmarketbrasil!`;
 
-const body = nomeArtistico
-  ? `${nomeArtistico} estará presente no Comic Market Brasil 2026!\n\n${biografia}`
-  : biografia;
+const body = biografia;
 
 return [
   head,
