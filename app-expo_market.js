@@ -652,6 +652,7 @@ async function checkAuth() {
 
     // se quiser, ao passar auth, garante overlay sumido
     // hideAuthOverlay();
+   await registrarLogPagina(PAGINA_LOG);
 
   } catch (e) {
     blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html', 2500);
