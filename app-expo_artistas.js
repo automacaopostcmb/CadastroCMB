@@ -2,6 +2,7 @@
    CONFIG – ARTISTAS (IDs, URLs e moldes)
    ========================================================= */
 const FRAME_URL = 'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/areaartista.png';
+const AUTH_URL = "https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec";
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyAIRNSN5yaoSIKzxgf5rnme1ryxveWHmePMC6qRDtrkso3pZtQ-7iMW4pi94LbW1uS/exec";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
@@ -469,7 +470,13 @@ async function enviarParaGoogle() {
   startOverlayMessages();
 
   try {
-    const response = await fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify(dados) });
+    const response = await fetch(WEBAPP_URL, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'text/plain;charset=utf-8'
+  },
+  body: JSON.stringify(dados)
+});
     const result = await response.json();
 
     const msg = document.getElementById('mensagem');
@@ -521,7 +528,7 @@ async function checkAuth() {
   }
 
   try {
-    const url = `${WEBAPP_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}&v=${Date.now()}`;
+    const url = `${AUTH_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}&v=${Date.now()}`;
     const resp = await fetch(url);
     const data = await resp.json();
 
