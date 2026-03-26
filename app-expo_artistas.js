@@ -477,13 +477,6 @@ async function enviarParaGoogle() {
   },
   body: JSON.stringify(dados)
 });
-const response = await fetch(WEBAPP_URL, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'text/plain;charset=utf-8'
-  },
-  body: JSON.stringify(dados)
-});
 
 const raw = await response.text();
 console.log('Resposta do Apps Script:', raw);
