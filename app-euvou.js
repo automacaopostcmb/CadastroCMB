@@ -359,16 +359,12 @@ function baixarImagem() {
 }
 
 async function enviarParaGoogle() {
-  const msg = qs('mensagem');
-  const overlay = qs('overlay');
+  const nomeArtistico = (document.getElementById('nomeArtistico')?.value || '').trim();
+  const biografia = (document.getElementById('biografia')?.value || '').trim();
+  const fotoInput = document.getElementById('fotoDivulgacao');
 
-  if (!validateStep(6)) return;
-
-  const nomeArtistico = (qs('nomeArtistico')?.value || '').trim();
-  const biografia = (qs('biografia')?.value || '').trim();
-  const foto = qs('fotoDivulgacao')?.files?.[0];
-
-  if (!nomeArtistico || !biografia || !foto) {
+  if (!nomeArtistico || !biografia || !fotoInput?.files?.length) {
+    const msg = document.getElementById('mensagem');
     if (msg) {
       msg.textContent = '❌ Preencha os campos obrigatórios.';
       msg.style.color = 'red';
@@ -384,50 +380,77 @@ async function enviarParaGoogle() {
     r.onerror = rej;
   });
 
-  try {
-    if (overlay) overlay.style.display = 'flex';
+  const file = fotoInput.files[0];
+  const b64 = await toBase64(file);
+  const imagemB64 = {
+    name: file.name,
+    type: file.type,
+    content: b64.split(',')[1]
+  };
 
-    const fotoB64 = await toBase64(foto);
-    const previewURL = canvas.toDataURL('image/png');
-
-    const payload = {
-      nomeArtistico,
-      biografia,
-      legenda: buildCaptionFromForm(),
-      fotoDivulgacao: {
-        name: foto.name,
-        type: foto.type,
-        content: fotoB64.split(',')[1]
-      },
-      preview: {
-        name: 'preview.png',
-        type: 'image/png',
-        content: previewURL.split(',')[1]
-      }
+  let previewBase64 = null;
+  if (canvas) {
+    const dataURL = canvas.toDataURL('image/png');
+    previewBase64 = {
+      name: 'preview.png',
+      type: 'image/png',
+      content: dataURL.split(',')[1]
     };
+  }
 
-    const resp = await fetch(WEBAPP_URL, {
+const dados = {
+  nomeArtistico: (document.getElementById('nomeArtistico')?.value || '').trim(),
+  biografia: (document.getElementById('biografia')?.value || '').trim(),
+  legenda: buildCaptionFromForm(),
+  fotoDivulgacao: imagemB64,
+  preview: previewBase64
+};
+
+  try {
+    const response = await fetch(WEBAPP_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      body: JSON.stringify(dados)
     });
 
-    const data = await resp.json();
+    const raw = await response.text();
+    console.log('Resposta do Apps Script:', raw);
 
-    if (data.status === 'success') {
-      showFinalScreen();
-    } else {
-      throw new Error(data.message || 'Erro ao enviar.');
+    let result;
+    try {
+      result = JSON.parse(raw);
+    } catch (e) {
+      throw new Error('Resposta inválida do Apps Script: ' + raw);
     }
-  } catch (err) {
+
+    const msg = document.getElementById('mensagem');
     if (msg) {
-      msg.textContent = '❌ Erro ao enviar. Tente novamente.';
+      msg.style.display = 'block';
+    }
+
+    if (result.status === 'success') {
+      if (msg) {
+        msg.textContent = '✅ Enviado com sucesso!';
+        msg.style.color = 'green';
+      }
+      showFinalScreen?.();
+    } else {
+      if (msg) {
+        msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
+        msg.style.color = 'red';
+      }
+    }
+
+  } catch (err) {
+    const msg = document.getElementById('mensagem');
+    if (msg) {
+      msg.textContent = '❌ ' + err.message;
       msg.style.color = 'red';
       msg.style.display = 'block';
     }
     console.error(err);
-  } finally {
-    if (overlay) overlay.style.display = 'none';
   }
 }
 
