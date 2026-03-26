@@ -34,7 +34,16 @@ function setOverlayText(text) {
 }
 
 function startOverlayMessages(steps = OVERLAY_STEPS) {
-  stopOverlayMessages();
+  overlayTimers.forEach((t) => clearTimeout(t));
+  overlayTimers = [];
+
+  const overlay = document.getElementById('overlay');
+  if (overlay) {
+    overlay.classList.remove('auth');
+    overlay.classList.add('active');
+    overlay.style.display = 'grid';
+  }
+
   setOverlayText(steps?.[0]?.msg || "Enviando...");
 
   overlayTimers = (steps || []).map((s) =>
