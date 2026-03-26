@@ -213,7 +213,7 @@ function initCanvas() {
 frameImg.onerror = () => {
   frameLoaded = false;
   frameError = true;
-  console.error('Não foi possível carregar assets/euvou26.png');
+  console.error('Não foi possível carregar assets/euvou2026.png');
 
   const msg = qs('mensagem');
   if (msg) {
@@ -223,7 +223,7 @@ frameImg.onerror = () => {
   }
 };
 
-  frameImg.src = 'assets/euvou26.png';
+  frameImg.src = 'assets/euvou2026.png';
 
   const fotoInput = qs('fotoDivulgacao');
   if (fotoInput) {
