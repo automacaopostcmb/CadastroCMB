@@ -47,6 +47,24 @@ function stopOverlayMessages() {
   overlayTimers = [];
   setOverlayText("Enviando...");
 }
+function showInitialLoading(message = 'Carregando informações...') {
+  const overlay = document.getElementById('overlay');
+  if (!overlay) return;
+
+  overlay.classList.remove('auth');
+  overlay.classList.add('active');
+  overlay.style.display = 'grid';
+
+  const el = document.querySelector('#overlay .loader-text');
+  if (el) el.textContent = message;
+}
+
+function hideInitialLoading() {
+  const overlay = document.getElementById('overlay');
+  if (!overlay) return;
+
+  overlay.classList.remove('active');
+}
 
 /* ===========================
    ESTADO
@@ -370,9 +388,12 @@ async function initCanvas() {
   frameImg = new Image();
   frameImg.crossOrigin = 'anonymous';
   frameImg.referrerPolicy = 'no-referrer';
-  frameImg.onload = gerarPost;
-  frameImg.onerror = () => console.error('Falha ao carregar frame:', FRAME_URL);
-  frameImg.src = FRAME_URL + '?v=' + Date.now();
+
+  await new Promise((resolve, reject) => {
+    frameImg.onload = resolve;
+    frameImg.onerror = () => reject(new Error('Falha ao carregar frame: ' + FRAME_URL));
+    frameImg.src = FRAME_URL + '?v=' + Date.now();
+  });
 
   const rostoInput = document.getElementById('foto_rosto');
   const apoioInput = document.getElementById('foto_apoio');
@@ -417,7 +438,11 @@ async function initCanvas() {
     });
   });
 
-  document.fonts?.ready?.then(gerarPost);
+  if (document.fonts?.ready) {
+    await document.fonts.ready;
+  }
+
+  gerarPost();
 }
 
 async function carregarTarja(tipo) {
@@ -1243,62 +1268,69 @@ document.addEventListener('DOMContentLoaded', async () => {
   const isWizardPage = !!document.querySelector('.step') && !!document.getElementById('wizardStepCount');
   if (!isWizardPage) return;
 
-  const telEl = document.getElementById('telefone');
-  telEl?.addEventListener('input', (e) => {
-    const only = e.target.value.replace(/\D/g, '').slice(0, 11);
-    e.target.value = formatPhone(only);
-  });
+  showInitialLoading('Carregando informações...');
 
-  document.getElementById('quantidade_aulas')?.addEventListener('change', () => {
+  try {
+    const telEl = document.getElementById('telefone');
+    telEl?.addEventListener('input', (e) => {
+      const only = e.target.value.replace(/\D/g, '').slice(0, 11);
+      e.target.value = formatPhone(only);
+    });
+
+    document.getElementById('quantidade_aulas')?.addEventListener('change', () => {
+      toggleAula2();
+      revalidateStepNav();
+      gerarPost();
+    });
+
+    ['nome_div', 'rotulo', 'aula1_nome', 'aula2_nome'].forEach((id) => {
+      document.getElementById(id)?.addEventListener('input', gerarPost);
+    });
+
+    await checkAuth();
+    await initCanvas();
     toggleAula2();
-    revalidateStepNav();
-    gerarPost();
-  });
 
-  ['nome_div', 'rotulo', 'aula1_nome', 'aula2_nome'].forEach((id) => {
-    document.getElementById(id)?.addEventListener('input', gerarPost);
-  });
+    document.getElementById('btnAjustar')?.addEventListener('click', () => showStep(6));
+    document.getElementById('btnConfirmar')?.addEventListener('click', () => showStep(8));
 
-initCanvas();
-await checkAuth();
-toggleAula2();
+    document.getElementById('accRosto')?.addEventListener('toggle', (e) => {
+      if (e.target.open) markAccordionAsOpened('rosto');
+    });
 
-  document.getElementById('btnAjustar')?.addEventListener('click', () => showStep(6));
-  document.getElementById('btnConfirmar')?.addEventListener('click', () => showStep(8));
+    document.getElementById('accApoio')?.addEventListener('toggle', (e) => {
+      if (e.target.open) markAccordionAsOpened('apoio');
+    });
 
-  document.getElementById('accRosto')?.addEventListener('toggle', (e) => {
-    if (e.target.open) markAccordionAsOpened('rosto');
-  });
+    steps = Array.from(document.querySelectorAll('.step'));
+    totalSteps = steps.length;
 
-  document.getElementById('accApoio')?.addEventListener('toggle', (e) => {
-    if (e.target.open) markAccordionAsOpened('apoio');
-  });
+    updateWizardHeader();
 
-  steps = Array.from(document.querySelectorAll('.step'));
-  totalSteps = steps.length;
+    document.addEventListener('input', (e) => {
+      const activeStep = steps[currentStep - 1];
+      if (!activeStep?.contains(e.target)) return;
+      revalidateStepNav();
+    });
 
-  updateWizardHeader();
+    document.addEventListener('change', (e) => {
+      const activeStep = steps[currentStep - 1];
+      if (!activeStep?.contains(e.target)) return;
+      revalidateStepNav();
+    });
 
-  document.addEventListener('input', (e) => {
-    const activeStep = steps[currentStep - 1];
-    if (!activeStep?.contains(e.target)) return;
-    revalidateStepNav();
-  });
+    document.addEventListener('click', (e) => {
+      if (e.target.matches('[data-next]')) {
+        if (validateStep(currentStep)) showStep(currentStep + 1);
+      }
+      if (e.target.matches('[data-prev]')) showStep(currentStep - 1);
+    });
 
-  document.addEventListener('change', (e) => {
-    const activeStep = steps[currentStep - 1];
-    if (!activeStep?.contains(e.target)) return;
-    revalidateStepNav();
-  });
+    showStep(1);
 
-  document.addEventListener('click', (e) => {
-    if (e.target.matches('[data-next]')) {
-      if (validateStep(currentStep)) showStep(currentStep + 1);
-    }
-    if (e.target.matches('[data-prev]')) showStep(currentStep - 1);
-  });
-
-  showStep(1);
+  } finally {
+    hideInitialLoading();
+  }
 });
 
 /* Expor globais */
