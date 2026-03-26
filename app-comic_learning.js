@@ -46,6 +46,12 @@ function stopOverlayMessages() {
   overlayTimers.forEach((t) => clearTimeout(t));
   overlayTimers = [];
   setOverlayText("Enviando...");
+
+  const overlay = document.getElementById('overlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+    overlay.style.display = 'none';
+  }
 }
 function showInitialLoading(message = 'Carregando informações...') {
   const overlay = document.getElementById('overlay');
@@ -64,6 +70,8 @@ function hideInitialLoading() {
   if (!overlay) return;
 
   overlay.classList.remove('active');
+  overlay.classList.remove('auth');
+  overlay.style.display = 'none';
 }
 
 /* ===========================
