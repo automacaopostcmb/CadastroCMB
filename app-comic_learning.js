@@ -1239,7 +1239,7 @@ function goToMenu() {
 /* ===========================
    BOOTSTRAP
    =========================== */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const isWizardPage = !!document.querySelector('.step') && !!document.getElementById('wizardStepCount');
   if (!isWizardPage) return;
 
@@ -1259,9 +1259,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById(id)?.addEventListener('input', gerarPost);
   });
 
-  initCanvas();
-  checkAuth();
-  toggleAula2();
+initCanvas();
+await checkAuth();
+toggleAula2();
 
   document.getElementById('btnAjustar')?.addEventListener('click', () => showStep(6));
   document.getElementById('btnConfirmar')?.addEventListener('click', () => showStep(8));
