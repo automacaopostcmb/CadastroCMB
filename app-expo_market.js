@@ -546,7 +546,7 @@ startOverlayMessages();
 
 try {
   const response = await fetch(
-    'https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec',
+    'https://script.google.com/macros/s/AKfycbzRE9ydO6JohXc1nWu6-omCyuiJTdGN9SbzDYyx2no5cH1THiySL6svCa-h1O3M6Ve7Rg/exec',
     { method: 'POST', body: JSON.stringify(dados) }
   );
 
