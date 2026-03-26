@@ -1,5 +1,7 @@
-const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbw9g5VGrXZAcTVPcfl0sIIRhPMOlzTI8_hx053Nv2YPwRtJLAhBwBgN3GCBCtRA9dMC/exec';
+const AUTH_URL = 'https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec';
+const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbw9g5VGrXZAcTVPcfl0sIIRhPMOlzTI8_hx053Nv2YPwRtJLAhBwBgN3GCBCtRA9dMC/exec';
 const PAGINA = 'euvou';
+
 
 let steps = [];
 let currentStep = 1;
@@ -14,7 +16,7 @@ let userImgLoaded = false;
 
 const frameImg = new Image();
 let frameLoaded = false;
-frameImg.src = 'assets/euvou26.png';
+
 
 const state = {
   imgScale: 1.2,
@@ -48,29 +50,54 @@ function showFieldError(id, message) {
   if (box) box.textContent = message || '';
 }
 
-function blockAndRedirect(message, url) {
-  alert(message);
-  window.location.href = url || 'index.html';
+
+
+function showOverlay(text = 'Carregando...') {
+  const overlay = qs('overlay');
+  const textEl = overlay?.querySelector('.loader-text');
+  if (textEl) textEl.textContent = text;
+  if (overlay) overlay.style.display = 'flex';
+}
+
+function hideOverlay() {
+  const overlay = qs('overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function denyAccess(message, url = 'index.html') {
+  showOverlay(message);
+
+  setTimeout(() => {
+    window.location.href = url;
+  }, 1200);
 }
 
 async function checkAuth() {
   const chave = (localStorage.getItem('chave') || '').trim();
 
   if (!chave) {
-    blockAndRedirect('Faça login primeiro.', 'index.html');
-    return;
+    denyAccess('Faça login primeiro.', 'index.html');
+    return false;
   }
 
   try {
-    const url = `${WEBAPP_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}&v=${Date.now()}`;
+    showOverlay('Verificando acesso...');
+
+    const url = `${AUTH_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}&v=${Date.now()}`;
     const resp = await fetch(url);
     const data = await resp.json();
 
-    if (!data.permitido) {
-      blockAndRedirect('Você não tem permissão para acessar esta página.', 'index.html');
+    if (!data || !data.permitido) {
+      denyAccess('Você não tem permissão para acessar esta página.', 'index.html');
+      return false;
     }
+
+    hideOverlay();
+    return true;
+
   } catch (e) {
-    blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html');
+    denyAccess('Falha de rede. Faça login novamente.', 'index.html');
+    return false;
   }
 }
 
@@ -178,8 +205,24 @@ function initCanvas() {
 
   frameImg.onload = () => {
     frameLoaded = true;
+    frameError = false;
     gerarPost();
   };
+
+frameImg.onerror = () => {
+  frameLoaded = false;
+  frameError = true;
+  console.error('Não foi possível carregar assets/euvou26.png');
+
+  const msg = qs('mensagem');
+  if (msg) {
+    msg.textContent = '❌ Não foi possível carregar a moldura do post.';
+    msg.style.color = 'red';
+    msg.style.display = 'block';
+  }
+};
+
+  frameImg.src = 'assets/euvou26.png';
 
   const fotoInput = qs('fotoDivulgacao');
   if (fotoInput) {
@@ -276,24 +319,22 @@ function buildReview() {
 
 function buildCaptionFromForm() {
   const biografia = (qs('biografia')?.value || '').trim();
-  
-const head = `Eu vou para o CMB 2026!!! @comicmarketbrasil!`;
+  const head = `Eu vou para o CMB 2026!!! @comicmarketbrasil!`;
+  const body = biografia;
 
-const body = biografia;
-
-return [
-  head,
-  '',
-  body,
-  '',
-  '📍 FAPCOM – Vila Mariana, São Paulo',
-  '📅 Dias 15 e 16 de agosto de 2026',
-  '',
-  '🎟️ Mais informações e ingressos:',
-  'comicmarketbrasil.com.br',
-  '',
-  '#ComicMarketBrasil #CMB #QuadrinhosBrasileiros #quadrinhos #evento'
-].join('\n');
+  return [
+    head,
+    '',
+    body,
+    '',
+    '📍 FAPCOM – Vila Mariana, São Paulo',
+    '📅 Dias 15 e 16 de agosto de 2026',
+    '',
+    '🎟️ Mais informações e ingressos:',
+    'comicmarketbrasil.com.br',
+    '',
+    '#ComicMarketBrasil #CMB #QuadrinhosBrasileiros #quadrinhos #evento'
+  ].join('\n');
 }
 
 function getCanvasBlob() {
@@ -380,34 +421,37 @@ async function enviarParaGoogle() {
     r.onerror = rej;
   });
 
-  const file = fotoInput.files[0];
-  const b64 = await toBase64(file);
-  const imagemB64 = {
-    name: file.name,
-    type: file.type,
-    content: b64.split(',')[1]
-  };
-
-  let previewBase64 = null;
-  if (canvas) {
-    const dataURL = canvas.toDataURL('image/png');
-    previewBase64 = {
-      name: 'preview.png',
-      type: 'image/png',
-      content: dataURL.split(',')[1]
-    };
-  }
-
-const dados = {
-  nomeArtistico: (document.getElementById('nomeArtistico')?.value || '').trim(),
-  biografia: (document.getElementById('biografia')?.value || '').trim(),
-  legenda: buildCaptionFromForm(),
-  fotoDivulgacao: imagemB64,
-  preview: previewBase64
-};
-
   try {
-    const response = await fetch(WEBAPP_URL, {
+    const file = fotoInput.files[0];
+    const b64 = await toBase64(file);
+
+    const imagemB64 = {
+      name: file.name,
+      type: file.type,
+      content: b64.split(',')[1]
+    };
+
+    let previewBase64 = null;
+    if (canvas) {
+      const dataURL = canvas.toDataURL('image/png');
+      previewBase64 = {
+        name: 'preview.png',
+        type: 'image/png',
+        content: dataURL.split(',')[1]
+      };
+    }
+
+    const dados = {
+      nomeArtistico,
+      biografia,
+      legenda: buildCaptionFromForm(),
+      fotoDivulgacao: imagemB64,
+      preview: previewBase64
+    };
+
+    showOverlay('Finalizando...');
+
+    const response = await fetch(SUBMIT_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain;charset=utf-8'
@@ -435,8 +479,10 @@ const dados = {
         msg.textContent = '✅ Enviado com sucesso!';
         msg.style.color = 'green';
       }
-      showFinalScreen?.();
+      hideOverlay();
+      showFinalScreen();
     } else {
+      hideOverlay();
       if (msg) {
         msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
         msg.style.color = 'red';
@@ -444,6 +490,8 @@ const dados = {
     }
 
   } catch (err) {
+    hideOverlay();
+
     const msg = document.getElementById('mensagem');
     if (msg) {
       msg.textContent = '❌ ' + err.message;
@@ -453,7 +501,6 @@ const dados = {
     console.error(err);
   }
 }
-
 function showFinalScreen() {
   wizardDone = true;
 
@@ -480,18 +527,22 @@ function goToMenu() {
   window.location.href = base + 'index.html?back=1';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const isWizardPage =
     !!document.querySelector('.step') &&
     !!document.getElementById('wizardStepCount');
 
   if (!isWizardPage) return;
 
+  showOverlay('Verificando acesso...');
+
+  const autorizado = await checkAuth();
+  if (!autorizado) return;
+
   steps = Array.from(document.querySelectorAll('.step'));
   totalSteps = steps.length;
 
   initCanvas();
-  checkAuth();
   updateWizardHeader();
 
   document.addEventListener('click', (e) => {
@@ -552,6 +603,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnShare) btnShare.addEventListener('click', shareNative);
 
   showStep(1);
+  hideOverlay();
 });
 
 window.goToMenu = goToMenu;
