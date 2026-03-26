@@ -1,6 +1,7 @@
 /* =========================================================
    CONFIGURAÇÃO
    ========================================================= */
+const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbw2hOGrOITFbi3Lg8wS5TroZvwlO6r2K5fJ9YEnhN2i6reFL7STT5p1L3Cz3XTDCc7e/exec';
 const FRAME_URL =
   'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_learning.png';
 
@@ -852,10 +853,10 @@ async function enviarParaGoogle() {
   startOverlayMessages();
 
   try {
-    const response = await fetch(
-      'https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec',
-      { method: 'POST', body: JSON.stringify(dados) }
-    );
+const response = await fetch(WEBAPP_URL, {
+  method: 'POST',
+  body: JSON.stringify(dados)
+});
 
     const result = await response.json();
     const msg = document.getElementById('mensagem');
