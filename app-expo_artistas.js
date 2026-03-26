@@ -477,7 +477,23 @@ async function enviarParaGoogle() {
   },
   body: JSON.stringify(dados)
 });
-    const result = await response.json();
+const response = await fetch(WEBAPP_URL, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'text/plain;charset=utf-8'
+  },
+  body: JSON.stringify(dados)
+});
+
+const raw = await response.text();
+console.log('Resposta do Apps Script:', raw);
+
+let result;
+try {
+  result = JSON.parse(raw);
+} catch (e) {
+  throw new Error('Resposta inválida do Apps Script: ' + raw);
+}
 
     const msg = document.getElementById('mensagem');
     msg.style.display = 'block';
@@ -876,7 +892,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* Expor funções globais */
+
 window.goToMenu = goToMenu;
-// Se você precisa expor explicitamente (dependendo do seu HTML), descomente:
-// window.enviarParaGoogle = enviarParaGoogle;
-// window.baixarImagem = baixarImagem;
+window.enviarParaGoogle = enviarParaGoogle;
+window.baixarImagem = baixarImagem;
