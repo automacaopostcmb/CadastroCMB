@@ -530,7 +530,7 @@ async function enviarParaGoogle() {
 
   try {
     const response = await fetch(
-      'https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec',
+      'https://script.google.com/macros/s/AKfycbx-tPASd-dRIRyt1X4P3elwSp_iKdnV3wpIk1sV8JqjxgjDI95oO0GsOf2cV24Y6h9YzA/exec',
       { method: 'POST', body: JSON.stringify(dados) }
     );
 
