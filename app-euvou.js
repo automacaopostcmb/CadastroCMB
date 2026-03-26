@@ -16,6 +16,7 @@ let userImgLoaded = false;
 
 const frameImg = new Image();
 let frameLoaded = false;
+let frameError = false;
 
 
 const state = {
