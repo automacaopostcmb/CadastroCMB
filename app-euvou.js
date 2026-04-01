@@ -1,5 +1,5 @@
 const AUTH_URL = 'https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec';
-const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbxqOCarwGBK8gnn4uaHM9FujyZFamkkhXdXEG7jVJKyNsCryugLGpGyejBBONVYjHNn/exec';
+const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycby-u-jy3rrb3bE-1MwqL-ecD9-bNnRMinetfUrA8qNaVReX2fp6uV6jxsy2mLPSEWZf/exec';
 const PAGINA = 'eu_vou';
 
 
