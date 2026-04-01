@@ -23,6 +23,37 @@ const state = {
   imgY: 0
 };
 
+/*
+  ============================
+  AJUSTE A POSIÇÃO AQUI
+  ============================
+  Controle 100% por código
+*/
+const TEXT_LAYOUT = {
+  nome: {
+    x: 540,
+    y: 1030,
+    font: '700 68px "Comic Relief", sans-serif',
+    fillStyle: '#ffffff',
+    strokeStyle: 'rgba(0,0,0,0.42)',
+    lineWidth: 10,
+    textAlign: 'center',
+    textBaseline: 'middle',
+    maxWidth: 860
+  },
+  rotulo: {
+    x: 540,
+    y: 1110,
+    font: '700 38px "Comic Relief", sans-serif',
+    fillStyle: '#ffffff',
+    strokeStyle: 'rgba(0,0,0,0.38)',
+    lineWidth: 8,
+    textAlign: 'center',
+    textBaseline: 'middle',
+    maxWidth: 760
+  }
+};
+
 const REQUIRED_BY_STEP = {
   1: [],
   2: ['nome', 'rotulo'],
@@ -280,6 +311,61 @@ function drawCoverImage(img, xOffset, yOffset, scale) {
   ctx.drawImage(img, dx, dy, dw, dh);
 }
 
+function fitTextToWidth(text, font, maxWidth) {
+  if (!ctx) return font;
+
+  const match = String(font).match(/(\d+)px/);
+  if (!match) return font;
+
+  let size = Number(match[1]);
+  const minSize = 18;
+  let currentFont = font;
+
+  ctx.font = currentFont;
+
+  while (ctx.measureText(text).width > maxWidth && size > minSize) {
+    size -= 2;
+    currentFont = font.replace(/\d+px/, `${size}px`);
+    ctx.font = currentFont;
+  }
+
+  return currentFont;
+}
+
+function drawCanvasText(text, cfg) {
+  const value = String(text || '').trim();
+  if (!value) return;
+
+  ctx.save();
+
+  const finalFont = fitTextToWidth(value, cfg.font, cfg.maxWidth || 9999);
+
+  ctx.font = finalFont;
+  ctx.textAlign = cfg.textAlign || 'center';
+  ctx.textBaseline = cfg.textBaseline || 'middle';
+  ctx.lineJoin = 'round';
+  ctx.miterLimit = 2;
+
+  if (cfg.strokeStyle && cfg.lineWidth > 0) {
+    ctx.lineWidth = cfg.lineWidth;
+    ctx.strokeStyle = cfg.strokeStyle;
+    ctx.strokeText(value, cfg.x, cfg.y);
+  }
+
+  ctx.fillStyle = cfg.fillStyle || '#fff';
+  ctx.fillText(value, cfg.x, cfg.y);
+
+  ctx.restore();
+}
+
+function drawTextOverlay() {
+  const nome = (qs('nome')?.value || '').trim();
+  const rotulo = (qs('rotulo')?.value || '').trim();
+
+  drawCanvasText(nome, TEXT_LAYOUT.nome);
+  drawCanvasText(rotulo, TEXT_LAYOUT.rotulo);
+}
+
 function gerarPost() {
   if (!canvas || !ctx) return;
 
@@ -295,6 +381,8 @@ function gerarPost() {
   if (frameLoaded) {
     ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
   }
+
+  drawTextOverlay();
 }
 
 function updateConfirmPreview() {
@@ -626,11 +714,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     el.addEventListener('input', () => {
       showFieldError(id, '');
       refreshStepButtons(currentStep);
+
+      if (id === 'nome' || id === 'rotulo') {
+        gerarPost();
+      }
     });
 
     el.addEventListener('change', () => {
       showFieldError(id, '');
       refreshStepButtons(currentStep);
+
+      if (id === 'nome' || id === 'rotulo') {
+        gerarPost();
+      }
     });
 
     el.addEventListener('blur', () => {
