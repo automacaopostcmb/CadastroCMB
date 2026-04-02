@@ -86,6 +86,37 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
+function normalizeInstagram(raw) {
+  let v = (raw || '').trim();
+  if (!v) return { url: '', handle: '' };
+  v = v.replace(/\s+/g, '');
+
+  // URL (com ou sem https)
+  if (/^(https?:\/\/)?(www\.)?(instagram\.com|instagr\.am)\//i.test(v)) {
+    if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
+    try {
+      const u = new URL(v);
+      const host = u.hostname.replace(/^www\./, '').toLowerCase();
+      if (host === 'instagram.com' || host === 'instagr.am') {
+        const seg = u.pathname.split('/').filter(Boolean)[0] || '';
+        const handle = seg.replace(/^@+/, '').toLowerCase();
+        if (/^[a-z0-9._]{1,30}$/.test(handle)) {
+          return { url: `https://www.instagram.com/${handle}`, handle };
+        }
+      }
+    } catch {}
+    return { url: '', handle: '' };
+  }
+
+  // handle / @handle
+  const handle = v.replace(/^@+/, '').toLowerCase();
+  if (/^[a-z0-9._]{1,30}$/.test(handle)) {
+    return { url: `https://www.instagram.com/${handle}`, handle };
+  }
+
+  return { url: '', handle: '' };
+}
+
 function showFieldError(id, message) {
   const box = qs(id + 'Error');
   if (box) box.textContent = message || '';
@@ -540,7 +571,9 @@ function buildCaptionFromForm() {
   const biografia = (qs('biografia')?.value || '').trim();
   const dia = (qs('dia')?.value || '').trim();
   const estande = (qs('estande')?.value || '').trim();
-  const estandeInsta = (qs('estandeInsta')?.value || '').trim();
+const estandeInstaRaw = (qs('estandeInsta')?.value || '').trim();
+const instaNorm = normalizeInstagram(estandeInstaRaw);
+const estandeInsta = instaNorm.handle ? '@' + instaNorm.handle : '';
 
   const diaTexto = formatDiaLegenda(dia);
 
@@ -639,7 +672,9 @@ async function enviarParaGoogle() {
   const biografia = (qs('biografia')?.value || '').trim();
   const dia = (qs('dia')?.value || '').trim();
   const estande = (qs('estande')?.value || '').trim();
-  const estandeInsta = (qs('estandeInsta')?.value || '').trim();
+const estandeInstaRaw = (qs('estandeInsta')?.value || '').trim();
+const estandeInstaNorm = normalizeInstagram(estandeInstaRaw);
+const estandeInsta = estandeInstaNorm.url;
   const fotoInput = qs('fotoDivulgacao');
   const btnEnviar = qs('botao-enviar');
 
@@ -815,33 +850,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  ['nome', 'rotulo', 'biografia', 'dia', 'estande', 'estandeInsta'].forEach(id => {
-    const el = qs(id);
-    if (!el) return;
+['nome', 'rotulo', 'biografia', 'dia', 'estande', 'estandeInsta'].forEach(id => {
+  const el = qs(id);
+  if (!el) return;
 
-    el.addEventListener('input', () => {
-      showFieldError(id, '');
-      refreshStepButtons(currentStep);
+  el.addEventListener('input', () => {
+    showFieldError(id, '');
+    refreshStepButtons(currentStep);
 
-      if (id === 'nome' || id === 'rotulo') {
-        gerarPost();
-      }
-    });
-
-    el.addEventListener('change', () => {
-      showFieldError(id, '');
-      refreshStepButtons(currentStep);
-
-      if (id === 'nome' || id === 'rotulo') {
-        gerarPost();
-      }
-    });
-
-    el.addEventListener('blur', () => {
-      refreshStepButtons(currentStep);
-    });
+    if (id === 'nome' || id === 'rotulo') {
+      gerarPost();
+    }
   });
 
+  el.addEventListener('change', () => {
+    showFieldError(id, '');
+    refreshStepButtons(currentStep);
+
+    if (id === 'nome' || id === 'rotulo') {
+      gerarPost();
+    }
+  });
+
+  el.addEventListener('blur', () => {
+    refreshStepButtons(currentStep);
+  });
+});
+
+  const instaInput = qs('estandeInsta');
+if (instaInput) {
+  const applyInstagramNormalization = () => {
+    const norm = normalizeInstagram(instaInput.value);
+    if (norm.url) {
+      instaInput.value = norm.url;
+    }
+  };
+
+  instaInput.addEventListener('blur', applyInstagramNormalization);
+  instaInput.addEventListener('change', applyInstagramNormalization);
+}
+
+  
   const fotoInput = qs('fotoDivulgacao');
   if (fotoInput) {
     fotoInput.addEventListener('change', () => {
