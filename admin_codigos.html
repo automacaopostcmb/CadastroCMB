@@ -395,7 +395,8 @@ async function gerarCodigo() {
     return;
   }
 
-  setOverlay(true, "Gerando código...");
+setOverlay(true, "Gerando código...");
+overlayTimeout();
   showFeedback("");
 
   try {
@@ -502,7 +503,7 @@ async function buscarCodigoParaAlterar() {
   }
 
   setOverlay(true, "Buscando código...");
-
+overlayTimeout();
   try {
     const url = `${ADMIN_URL}?action=buscarCodigo&chave=${encodeURIComponent(chave)}&codigo=${encodeURIComponent(codigo)}&v=${Date.now()}`;
     const resp = await fetch(url);
