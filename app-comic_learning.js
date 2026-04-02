@@ -105,18 +105,7 @@ function showAuthOverlay(message) {
 
   overlay.classList.remove('active');
   overlay.classList.add('auth');
-
-  overlay.style.display = 'flex';
-  overlay.style.alignItems = 'center';
-  overlay.style.justifyContent = 'center';
-  overlay.style.position = 'fixed';
-  overlay.style.inset = '0';
-  overlay.style.zIndex = '9999';
-  overlay.style.padding = '24px';
-  overlay.style.boxSizing = 'border-box';
-  overlay.style.background = 'rgba(18, 96, 145, 0.60)';
-  overlay.style.backdropFilter = 'blur(3px)';
-  overlay.style.webkitBackdropFilter = 'blur(3px)';
+  overlay.style.display = 'grid';
 
   const el = document.querySelector('#overlay .loader-text');
   if (el) el.textContent = message || 'Faça login primeiro.';
@@ -538,11 +527,11 @@ const AULAS_PREVIEW_CONFIG = {
     aula1: {
       x: 540,
       y: 1003,
-      maxWidth: 985,
-      lineHeight: 44,
+      maxWidth: 920,
+      lineHeight: 36,
       maxLines: 2,
       anchor: 'top',
-      multilineOffsetY: 28,
+      multilineOffsetY: 25,   // AQUI
       color: '#ffffff',
       uppercase: true,
       prefix: '•',
@@ -550,11 +539,7 @@ const AULAS_PREVIEW_CONFIG = {
       strokeWidth: 2,
       shadowColor: '#000000',
       shadowOffsetX: 0,
-      shadowOffsetY: 3,
-      baseFontSize: 60,
-      minFontSize: 26,
-      fontWeight: 700,
-      fontFamily: '"Montserrat", Arial, sans-serif'
+      shadowOffsetY: 3
     }
   },
 
@@ -593,7 +578,6 @@ const AULAS_PREVIEW_CONFIG = {
     }
   }
 };
-
 function drawCenteredWrappedText(c, text, cfg) {
   if (!text) return { overflow: false, lines: [] };
 
@@ -608,19 +592,19 @@ function drawCenteredWrappedText(c, text, cfg) {
   const linhasFinais = linhas.slice(0, cfg.maxLines);
 
   let startY = cfg.y;
-  const totalHeight = (linhasFinais.length - 1) * cfg.lineHeight;
+const totalHeight = (linhasFinais.length - 1) * cfg.lineHeight;
 
-  if (cfg.anchor === 'center') {
-    startY = cfg.y - totalHeight / 2;
-  } else if (cfg.anchor === 'bottom') {
-    startY = cfg.y - totalHeight;
-  } else if (cfg.anchor === 'top') {
-    startY = cfg.y;
+if (cfg.anchor === 'center') {
+  startY = cfg.y - totalHeight / 2;
+} else if (cfg.anchor === 'bottom') {
+  startY = cfg.y - totalHeight;
+} else if (cfg.anchor === 'top') {
+  startY = cfg.y;
 
-    if (linhasFinais.length > 1 && cfg.multilineOffsetY) {
-      startY = cfg.y - cfg.multilineOffsetY;
-    }
+  if (linhasFinais.length > 1 && cfg.multilineOffsetY) {
+    startY = cfg.y - cfg.multilineOffsetY;
   }
+}
 
   c.save();
   c.textAlign = 'center';
@@ -656,34 +640,6 @@ function drawCenteredWrappedText(c, text, cfg) {
   return { overflow, lines: linhasFinais };
 }
 
-function getSingleLessonFontSize(text, cfg, c) {
-  const textoBase = String(text || '').trim();
-  if (!textoBase) return 38;
-
-  let size = cfg.baseFontSize || 60;
-  const minSize = cfg.minFontSize || 26;
-  const weight = cfg.fontWeight || 700;
-  const family = cfg.fontFamily || '"Montserrat", Arial, sans-serif';
-
-  while (size >= minSize) {
-    c.font = `${weight} ${size}px ${family}`;
-
-    const textoFinal = cfg.uppercase
-      ? textoBase.toLocaleUpperCase('pt-BR')
-      : textoBase;
-
-    const textoComPrefixo = cfg.prefix ? `${cfg.prefix} ${textoFinal}` : textoFinal;
-    const linhas = wrapText(textoComPrefixo, cfg.maxWidth, c);
-
-    if (linhas.length <= cfg.maxLines) {
-      return size;
-    }
-
-    size -= 2;
-  }
-
-  return minSize;
-}
 function gerarPost() {
   if (!ctx || !canvas) return;
 
@@ -691,85 +647,80 @@ function gerarPost() {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // === IMAGEM DE APOIO (COM MÁSCARA)
-  if (apoioImg) {
-    const baseScale = 1;
-    const sliderScale = parseFloat(document.getElementById('apoioScale')?.value || '1');
-    const scale = baseScale * sliderScale;
 
-    const offsetX = parseInt(document.getElementById('apoioX')?.value || '0', 10);
-    const offsetY = parseInt(document.getElementById('apoioY')?.value || '0', 10);
+// === IMAGEM DE APOIO (COM MÁSCARA)
+if (apoioImg) {
+  const baseScale = 1;
+  const sliderScale = parseFloat(document.getElementById('apoioScale')?.value || '1');
+  const scale = baseScale * sliderScale;
 
-    drawCoverImageMasked(
-      apoioImg,
-      120, 430,
-      scale,
-      offsetX,
-      offsetY,
-      { x: 0, y: 0, w: 223, h: canvas.height }
-    );
-  }
+  const offsetX = parseInt(document.getElementById('apoioX')?.value || '0', 10);
+  const offsetY = parseInt(document.getElementById('apoioY')?.value || '0', 10);
 
-  // === FOTO PRINCIPAL (COM MÁSCARA)
-  if (rostoImg) {
-    const baseScale = 2.2;
-    const sliderScale = parseFloat(document.getElementById('rostoScale')?.value || '1');
-    const scale = baseScale * sliderScale;
+  drawCoverImageMasked(
+    apoioImg,
+    120, 430, // centro da imagem esquerda (ajuste fino depois)
+    scale,
+    offsetX,
+    offsetY,
+    { x: 0, y: 0, w: 223, h: canvas.height }
+  );
+}
 
-    const offsetX = parseInt(document.getElementById('rostoX')?.value || '0', 10);
-    const offsetY = parseInt(document.getElementById('rostoY')?.value || '0', 10);
-     
-    drawCoverImageMasked(
-      rostoImg,
-      656, 454,
-      scale,
-      offsetX,
-      offsetY,
-      { x: 212, y: 0, w: canvas.width - 212, h: canvas.height }
-    );
-  }
+// === FOTO PRINCIPAL (COM MÁSCARA)
+if (rostoImg) {
+  const baseScale = 2.2; // tamanho inicial padrão
+  const sliderScale = parseFloat(document.getElementById('rostoScale')?.value || '1');
+  const scale = baseScale * sliderScale;
 
-  if (frameImg?.complete && frameImg.naturalWidth) {
-    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-  }
+  const offsetX = parseInt(document.getElementById('rostoX')?.value || '0', 10);
+  const offsetY = parseInt(document.getElementById('rostoY')?.value || '0', 10);
+   
+ drawCoverImageMasked(
+  rostoImg,
+  656, 454,
+  scale,
+  offsetX,
+  offsetY,
+  { x: 212, y: 0, w: canvas.width - 212, h: canvas.height }
+);
+}
 
-  const tarjaCfg = TARJAS[currentTarjaType];
-  if (tarjaCfg && tarjaImg) {
-    const w = tarjaImg.naturalWidth * tarjaCfg.scale;
-    const h = tarjaImg.naturalHeight * tarjaCfg.scale;
-    ctx.drawImage(tarjaImg, canvas.width - tarjaCfg.x - w, tarjaCfg.y, w, h);
-  }
+if (frameImg?.complete && frameImg.naturalWidth) {
+  ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+}
 
-  // ===== NOME NA TARJA AMARELA =====
-  const nomeDivulgacao = getNomeDivulgacao();
+const tarjaCfg = TARJAS[currentTarjaType];
+if (tarjaCfg && tarjaImg) {
+  const w = tarjaImg.naturalWidth * tarjaCfg.scale;
+  const h = tarjaImg.naturalHeight * tarjaCfg.scale;
+  ctx.drawImage(tarjaImg, canvas.width - tarjaCfg.x - w, tarjaCfg.y, w, h);
+}
 
-  if (nomeDivulgacao) {
-    drawTarja(ctx, nomeDivulgacao, 43, 750, 1, '#ffd400', true);
-  }
+// ===== NOME NA TARJA AMARELA =====
+const nomeDivulgacao = getNomeDivulgacao();
 
-  // ===== TEXTO ABAIXO =====
-  const rotulo = getRotuloDivulgacao();
-  if (rotulo) {
-    drawTarja(ctx, rotulo, 103, 794, 0.8, '#4ec3ff', false);
-  }
+if (nomeDivulgacao) {
+drawTarja(ctx, nomeDivulgacao, 43, 750, 1, '#ffd400', true);
+}
 
+// ===== TEXTO ABAIXO =====
+const rotulo = getRotuloDivulgacao();
+   if (rotulo) {
+  drawTarja(ctx, rotulo, 103, 794, 0.8, '#4ec3ff', false);
+}
 const aulasList = getAulasPreviewList();
 
 let overflowAulas = false;
 
 if (aulasList.length === 1) {
-  const cfgUmaAula = AULAS_PREVIEW_CONFIG.umaAula.aula1;
-  const fontSize = getSingleLessonFontSize(aulasList[0], cfgUmaAula, ctx);
-
-  ctx.font = `700 ${fontSize}px "Montserrat", Arial, sans-serif`;
+  ctx.font = '700 38px "Montserrat", Arial, sans-serif';
 
   const r1 = drawCenteredWrappedText(
     ctx,
     aulasList[0],
-    {
-      ...cfgUmaAula,
-      lineHeight: Math.round(fontSize * 1.08)
-    }
+    AULAS_PREVIEW_CONFIG.umaAula.aula1
+     
   );
 
   overflowAulas = r1.overflow;
@@ -944,10 +895,10 @@ async function enviarParaGoogle() {
   startOverlayMessages();
 
   try {
-    const response = await fetch(WEBAPP_URL, {
-      method: 'POST',
-      body: JSON.stringify(dados)
-    });
+const response = await fetch(WEBAPP_URL, {
+  method: 'POST',
+  body: JSON.stringify(dados)
+});
 
     const result = await response.json();
     const msg = document.getElementById('mensagem');
@@ -1005,34 +956,21 @@ async function checkAuth() {
   const chave = (localStorage.getItem('chave') || '').trim();
 
   if (!chave) {
-    showAuthOverlay('Faça login primeiro.');
-    setTimeout(() => {
-      window.location.href = 'index.html';
-    }, 1800);
-    return false;
+    blockAndRedirect('Faça login primeiro.', 'index.html', 2000);
+    return;
   }
 
   try {
-    const resp = await fetch(
-      `${API_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}&v=${Date.now()}`
-    );
+    const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}&v=${Date.now()}`);
     const data = await resp.json();
 
-    if (!data || !data.permitido) {
-      showAuthOverlay('Você não tem permissão para acessar esta página.');
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 1800);
-      return false;
+    if (!data.permitido) {
+      blockAndRedirect('Você não tem permissão para acessar esta página.', 'index.html', 2200);
+      return;
     }
 
-    return true;
   } catch (e) {
-    showAuthOverlay('Falha de rede. Faça login novamente.');
-    setTimeout(() => {
-      window.location.href = 'index.html';
-    }, 2000);
-    return false;
+    blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html', 2500);
   }
 }
 
@@ -1347,8 +1285,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const isWizardPage = !!document.querySelector('.step') && !!document.getElementById('wizardStepCount');
   if (!isWizardPage) return;
 
-  let autorizado = false;
-
   showInitialLoading('Carregando informações...');
 
   try {
@@ -1368,9 +1304,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById(id)?.addEventListener('input', gerarPost);
     });
 
-    autorizado = await checkAuth();
-    if (!autorizado) return;
-
+    await checkAuth();
     await initCanvas();
     toggleAula2();
 
@@ -1412,9 +1346,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     showStep(1);
 
   } finally {
-    if (autorizado) {
-      hideInitialLoading();
-    }
+    hideInitialLoading();
   }
 });
 
