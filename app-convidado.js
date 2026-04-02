@@ -412,8 +412,8 @@ function drawRotuloSimples(text, cfg) {
 }
 
 function drawTextOverlay() {
-  const nome = (qs('nome')?.value || '').trim();
-  const rotulo = (qs('rotulo')?.value || '').trim();
+const nome = (qs('nome')?.value || '').trim().substring(0, 20);
+  const rotulo = (qs('rotulo')?.value || '').trim().substring(0, 20);
 
   drawNomeEstilizado(nome, TEXT_LAYOUT.nome);
   drawRotuloSimples(rotulo, TEXT_LAYOUT.rotulo);
