@@ -127,16 +127,20 @@
       color: #8b0000;
     }
 
-    /* ===== FIX MOBILE – CONFIRMAÇÃO EXCLUSÃO ===== */
+   /* ===== CONFIRMAÇÃO EXCLUSÃO – AJUSTE BONITO ===== */
+
 .confirmar-exclusao-box .button-row{
   display:flex;
   gap:10px;
-  flex-wrap:wrap;
+  justify-content:center;
 }
 
 .confirmar-exclusao-box .button-row button{
-  flex:1 1 140px;
-  min-width:0;
+  flex:1;
+  max-width:180px;
+  height:44px;
+  padding:0 14px;
+  font-size:15px;
   box-sizing:border-box;
 }
 
@@ -144,14 +148,17 @@
 @media (max-width: 640px){
   .confirmar-exclusao-box .button-row{
     flex-direction:column;
+    align-items:center;
   }
 
   .confirmar-exclusao-box .button-row button{
-    width:100%;
+    width:80%;
+    max-width:220px;
+    height:44px;
   }
 }
 
-/* Evita que algo estique os blocos brancos */
+/* Evita layout esticar */
 .step-box{
   max-width:100%;
   overflow-x:hidden;
