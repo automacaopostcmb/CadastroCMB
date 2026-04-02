@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
+  <style>
+  body.auth-pending main,
+  body.auth-pending header {
+    visibility: hidden;
+  }
+
+  #overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(255,255,255,0.92);
+  }
+</style>
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Criar novo código – CMB</title>
@@ -95,7 +110,7 @@
   </style>
 </head>
 <body>
-
+<body class="auth-pending">
 <header class="wizard-topbar" role="banner" aria-label="Administrador">
   <div class="wizard-topbar__inner">
     <div class="wizard-topbar__title">ADMINISTRADOR</div>
@@ -528,6 +543,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setOverlay(true, "Carregando permissões...");
   await carregarPermissoes();
 
+  document.body.classList.remove("auth-pending");
   closeOverlayNow();
 
   document.getElementById("btnGerarCodigo")?.addEventListener("click", gerarCodigo);
