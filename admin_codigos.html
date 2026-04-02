@@ -230,6 +230,12 @@ function closeOverlayNow() {
   if (overlay) overlay.style.display = "none";
 }
 
+  function overlayTimeout(ms = 8000) {
+  setTimeout(() => {
+    closeOverlayNow();
+  }, ms);
+}
+  
 function showFeedback(msg, ok = false) {
   const el = document.getElementById("adminFeedback");
   if (!el) return;
