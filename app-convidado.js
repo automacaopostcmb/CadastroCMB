@@ -24,33 +24,41 @@ const state = {
 };
 
 /*
-  ============================
-  AJUSTE A POSIÇÃO AQUI
-  ============================
-  Controle 100% por código
+  ============================================
+  AJUSTE DE POSIÇÃO E TAMANHO SÓ POR CÓDIGO
+  ============================================
 */
 const TEXT_LAYOUT = {
   nome: {
     x: 540,
-    y: 1030,
-    font: '700 68px "Comic Relief", sans-serif',
-    fillStyle: '#ffffff',
-    strokeStyle: 'rgba(0,0,0,0.42)',
-    lineWidth: 10,
+    y: 1035,
+    font: '700 88px "Fredoka", "Comic Relief", sans-serif',
+    maxWidth: 860,
+
+    frontFill: '#f3f3f3',
+    frontStroke: '#000000',
+    frontStrokeWidth: 10,
+
+    yellowFill: '#f3b233',
+    yellowOffsetY: 8,
+    yellowLayers: [4, 8, 12, 16, 20],
+    yellowSideOffsets: [-6, -3, 0, 3, 6],
+
+    innerShadowColor: '#777777',
+    innerShadowOffsetY: 6,
+
     textAlign: 'center',
-    textBaseline: 'middle',
-    maxWidth: 860
+    textBaseline: 'middle'
   },
+
   rotulo: {
     x: 540,
-    y: 1110,
-    font: '700 38px "Comic Relief", sans-serif',
-    fillStyle: '#ffffff',
-    strokeStyle: 'rgba(0,0,0,0.38)',
-    lineWidth: 8,
+    y: 1130,
+    font: '700 46px "Fredoka", "Comic Relief", sans-serif',
+    maxWidth: 760,
+    fillStyle: '#000000',
     textAlign: 'center',
-    textBaseline: 'middle',
-    maxWidth: 760
+    textBaseline: 'middle'
   }
 };
 
@@ -332,27 +340,72 @@ function fitTextToWidth(text, font, maxWidth) {
   return currentFont;
 }
 
-function drawCanvasText(text, cfg) {
+function drawNomeEstilizado(text, cfg) {
   const value = String(text || '').trim();
   if (!value) return;
 
   ctx.save();
 
   const finalFont = fitTextToWidth(value, cfg.font, cfg.maxWidth || 9999);
-
   ctx.font = finalFont;
   ctx.textAlign = cfg.textAlign || 'center';
   ctx.textBaseline = cfg.textBaseline || 'middle';
   ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
   ctx.miterLimit = 2;
 
-  if (cfg.strokeStyle && cfg.lineWidth > 0) {
-    ctx.lineWidth = cfg.lineWidth;
-    ctx.strokeStyle = cfg.strokeStyle;
-    ctx.strokeText(value, cfg.x, cfg.y);
+  const x = cfg.x;
+  const y = cfg.y;
+
+  // camada amarela de volume para baixo
+  ctx.fillStyle = cfg.yellowFill;
+
+  for (const sideX of cfg.yellowSideOffsets) {
+    for (const downY of cfg.yellowLayers) {
+      ctx.fillText(
+        value,
+        x + sideX,
+        y + cfg.yellowOffsetY + downY
+      );
+    }
   }
 
-  ctx.fillStyle = cfg.fillStyle || '#fff';
+  // camada preta grossa
+  ctx.lineWidth = cfg.frontStrokeWidth + 10;
+  ctx.strokeStyle = '#000000';
+  ctx.strokeText(value, x, y + 2);
+
+  // camada branca com contorno preto
+  ctx.lineWidth = cfg.frontStrokeWidth;
+  ctx.strokeStyle = cfg.frontStroke;
+  ctx.strokeText(value, x, y);
+
+  ctx.fillStyle = cfg.frontFill;
+  ctx.fillText(value, x, y);
+
+  // branco interno com sombra cinza leve
+  ctx.fillStyle = cfg.frontFill;
+  ctx.shadowColor = cfg.innerShadowColor;
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = cfg.innerShadowOffsetY;
+  ctx.fillText(value, x, y);
+
+  ctx.restore();
+}
+
+function drawRotuloSimples(text, cfg) {
+  const value = String(text || '').trim();
+  if (!value) return;
+
+  ctx.save();
+
+  const finalFont = fitTextToWidth(value, cfg.font, cfg.maxWidth || 9999);
+  ctx.font = finalFont;
+  ctx.textAlign = cfg.textAlign || 'center';
+  ctx.textBaseline = cfg.textBaseline || 'middle';
+  ctx.fillStyle = cfg.fillStyle || '#000000';
+
   ctx.fillText(value, cfg.x, cfg.y);
 
   ctx.restore();
@@ -362,8 +415,8 @@ function drawTextOverlay() {
   const nome = (qs('nome')?.value || '').trim();
   const rotulo = (qs('rotulo')?.value || '').trim();
 
-  drawCanvasText(nome, TEXT_LAYOUT.nome);
-  drawCanvasText(rotulo, TEXT_LAYOUT.rotulo);
+  drawNomeEstilizado(nome, TEXT_LAYOUT.nome);
+  drawRotuloSimples(rotulo, TEXT_LAYOUT.rotulo);
 }
 
 function gerarPost() {
