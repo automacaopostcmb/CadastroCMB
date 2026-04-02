@@ -246,12 +246,7 @@ const LABELS_PAGINAS = {
 };
 
 function formatarNomePermissao(nome) {
-  if (typeof paginas !== "undefined") {
-    const item = paginas.find(p => p.nome === nome);
-    if (item && item.label) return item.label;
-  }
-
-  return String(nome || "")
+  return LABELS_PAGINAS[nome] || String(nome || "")
     .replace(/_/g, " ")
     .replace(/\b\w/g, l => l.toUpperCase());
 }
