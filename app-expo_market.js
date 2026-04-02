@@ -215,7 +215,7 @@ function buildCaptionFromForm() {
 
   const head = `Expositor confirmado! ${empresa || '—'} ${instaHandle || ''} no CMB @comicmarketbrasil`;
   const tags =
-    '#ComicMarketBrasil #QuadrinhosNacionais #QuadrinhosBrasileiros #hqbr #mangabr #historiaemquadrinhos #desenhistabrasileiro #ilustradorbrasileiro #fapcom';
+    '#ComicMarketBrasil #QuadrinhosNacionais #CMB #evento #quadrinhos';
   return [head, '', descricao, '', tags].join('\n');
 }
 function escapeHtml(s) {
