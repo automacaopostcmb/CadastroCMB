@@ -314,7 +314,7 @@ function buildCaptionFromForm() {
   const head = `${nomeDiv || 'Professor(a) confirmado(a)'} ${instaHandle || ''} no Comic Learning @comicmarketbrasil`;
   const role = rotulo || '';
   const aulasTexto = aulas ? `Aulas: ${aulas}` : '';
-  const tags = '#ComicLearning #ComicMarketBrasil #QuadrinhosNacionais #QuadrinhosBrasileiros #hqbr #mangabr #historiaemquadrinhos #fapcom';
+  const tags = '#ComicMarketBrasil #QuadrinhosNacionais #CMB #evento #quadrinhos';
 
   return [head, role, aulasTexto, '', descricao, '', tags].filter(Boolean).join('\n');
 }
