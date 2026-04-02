@@ -255,7 +255,7 @@ function initCanvas() {
   frameImg.onerror = () => {
     frameLoaded = false;
     frameError = true;
-    console.error('Não foi possível carregar assets/convidado.png');
+    console.error('Não foi possível carregar assets/convidado2.png');
 
     const msg = qs('mensagem');
     if (msg) {
@@ -265,7 +265,7 @@ function initCanvas() {
     }
   };
 
-  frameImg.src = 'assets/convidado.png';
+  frameImg.src = 'assets/convidado2.png';
 
   const fotoInput = qs('fotoDivulgacao');
   if (fotoInput) {
