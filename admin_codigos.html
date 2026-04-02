@@ -318,6 +318,14 @@ async function gerarCodigo() {
 
     showFeedback("Código criado com sucesso.", true);
 
+// copia automaticamente a mensagem
+try {
+  await navigator.clipboard.writeText(mensagem);
+  showFeedback("Código criado e mensagem copiada.", true);
+} catch (e) {
+  console.log("Não conseguiu copiar automaticamente.");
+}
+    
     document.getElementById("nomeDestinatario").value = "";
 document.getElementById("nomeDestinatario").focus();
 
