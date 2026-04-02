@@ -128,19 +128,22 @@
     }
 
    /* ===== CONFIRMAÇÃO EXCLUSÃO – AJUSTE BONITO ===== */
+/* ===== CONFIRMAÇÃO EXCLUSÃO – TAMANHO IDEAL ===== */
 
 .confirmar-exclusao-box .button-row{
   display:flex;
-  gap:10px;
+  gap:12px;
   justify-content:center;
+  flex-wrap:wrap;
 }
 
 .confirmar-exclusao-box .button-row button{
-  flex:1;
-  max-width:180px;
-  height:44px;
-  padding:0 14px;
-  font-size:15px;
+  min-width:140px;
+  max-width:200px;
+  height:52px;
+  padding:0 18px;
+  font-size:16px;
+  border-radius:10px;
   box-sizing:border-box;
 }
 
@@ -152,13 +155,13 @@
   }
 
   .confirmar-exclusao-box .button-row button{
-    width:80%;
+    width:70%;
     max-width:220px;
-    height:44px;
+    height:52px;
   }
 }
 
-/* Evita layout esticar */
+/* Segurança para não esticar layout */
 .step-box{
   max-width:100%;
   overflow-x:hidden;
