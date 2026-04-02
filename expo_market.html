@@ -37,7 +37,7 @@
     <div class="step-box">
       <h2>Seja um expositor no CMB!</h2>
       <p style="line-height:1.5; margin:10px 0; color:#333; font-size:15px; text-align:left;">
-        Preencha seus dados para formalizar seu cadastro de expositor.
+          Preencha seus dados para criar sua divulgação no evento.
       </p>
       <p style="line-height:1.5; margin:10px 0; color:#333; font-size:15px; text-align:left;">
         Clique em <strong>Próximo</strong> para começar!
@@ -102,11 +102,11 @@
   <section class="step" id="step4" data-title="Imagens">
     <div class="step-box">
       <label class="title-label">Envie o seu Logo com fundo transparente*</label>
-      <div class="hint">(Mínimo 500x500px. Use uma imagem sem bordas, mesmo que transparentes.)</div>
+      <div class="hint">(Use uma imagem sem bordas, mesmo que transparentes.)</div>
       <input type="file" id="logo" accept="image/*" />
 
       <label class="title-label">Envie uma imagem de apoio*</label>
-      <div class="hint">(Mínimo 500x500px. Essa é uma outra imagem que podemos usar para mostrar mais de você.)</div>
+      <div class="hint">(Essa imagem é para mostrar mais do que você faz, como por exemplo uma arte.)</div>
       <input type="file" id="lateral" accept="image/*" />
     </div>
 
@@ -159,11 +159,12 @@
       <summary class="acc__sum" id="accTextosSum">Escrever Textos</summary>
 
       <div class="acc__body">
-        <label class="title-label">Frase que defina o que você faz*</label>
-        <div class="hint">(Pense como se fosse um título chamativo do seu trabalho)</div>
-        <input type="text" id="titulo" placeholder="Título" />
+        <label class="title-label">Frase que define o que você faz*</label>
+        <div class="hint">(Pense bem nesse título, ele chamará atenção das pessoas.)</div>
+        <input type="text" id="titulo" placeholder="Título" maxlength="64"/>
 
-        <label class="title-label">Crie uma breve descrição*</label>
+        <label class="title-label">Descreva seu trabalho*</label>
+        <input type="text" placeholder="Quem é você, sua história, seu impacto, etc.">
         <textarea id="descricao" rows="4"></textarea>
       </div>
     </details>
@@ -208,10 +209,11 @@
   <section class="step" id="step7" data-title="Informações adicionais">
     <div class="step-box">
       <label class="title-label">Texto complementar</label>
-      <div class="hint">(Biografia ou texto maior sobre você ou seu trabalho.)</div>
+      <div class="hint">(Quer escrever mais algo para nós? Todas as informações serão usadas para a sua divulgação nas redes do evento!)</div>
       <textarea id="descricaolonga" rows="8"></textarea>
 
-      <label class="title-label">Tem alguma outra imagem para nos mandar?</label>
+      <label class="title-label">>Envio de imagem complementar</label>
+      <div class="hint">(Podemos usar em postagens e stories!)</div>
       <input type="file" id="background" accept="image/*" />
     </div>
 
@@ -242,11 +244,13 @@
 <section id="final-screen" class="final-screen">
   
   <div class="step-box">
-    <h2>✅ Cadastro realizado com sucesso!</h2>
-    <p style="text-align: center;">
-  Prosseguiremos com a formalização do contrato e entraremos em contato. 
-  Em breve comunicaremos sua participação no CMB e encaminharemos a imagem de divulgação.
-</p>
+   <h2>✅ Informações enviadas com sucesso!</h2>
+      <p style="text-align: center;">
+        Em breve anunciaremos sua participação no evento em nossas redes sociais e faremos um post colaborativo com você. Fique atento para aceitar o convite de colaboração no Instagram.
+      </p>
+      <p>
+        O CMB possui um cronograma oficial de anúncios dos parceiros, por isso pedimos que aguarde a publicação do nosso post confirmando sua presença.
+      </p>
   </div>
 
 
