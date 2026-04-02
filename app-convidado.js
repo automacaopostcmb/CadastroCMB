@@ -28,6 +28,12 @@ const state = {
   AJUSTE DE POSIÇÃO E TAMANHO SÓ POR CÓDIGO
   ============================================
 */
+
+let rotuloPlaquinhaX = 760;   // lado direito da plaquinha
+let rotuloPlaquinhaY = 1115;  // topo da plaquinha
+let rotuloPlaquinhaScale = 0.42;
+let fontsReady = false;
+
 const TEXT_LAYOUT = {
   nome: {
     x: 540,
@@ -51,15 +57,7 @@ yellowSideOffsets: [-10, -6, -3, 0, 3, 6, 10],
     textBaseline: 'middle'
   },
 
-  rotulo: {
-    x: 540,
-    y: 1140,
-    font: '700 34px "Fredoka", "Comic Relief", sans-serif',
-    maxWidth: 760,
-    fillStyle: '#000000',
-    textAlign: 'center',
-    textBaseline: 'middle'
-  }
+
 };
 
 const REQUIRED_BY_STEP = {
@@ -370,6 +368,10 @@ function initCanvas() {
       gerarPost();
     });
   });
+  document.fonts?.ready?.then(() => {
+  fontsReady = true;
+  gerarPost();
+});
 }
 
 function drawCoverImage(img, xOffset, yOffset, scale) {
@@ -410,6 +412,81 @@ function fitTextToWidth(text, font, maxWidth) {
   }
 
   return currentFont;
+}
+function drawRoundedRect(c, x, y, w, h, r) {
+  const rr = Math.min(r, w / 2, h / 2);
+  c.beginPath();
+  c.moveTo(x + rr, y);
+  c.lineTo(x + w - rr, y);
+  c.quadraticCurveTo(x + w, y, x + w, y + rr);
+  c.lineTo(x + w, y + h - rr);
+  c.quadraticCurveTo(x + w, y + h, x + w - rr, y + h);
+  c.lineTo(x + rr, y + h);
+  c.quadraticCurveTo(x, y + h, x, y + h - rr);
+  c.lineTo(x, y + rr);
+  c.quadraticCurveTo(x, y, x + rr, y);
+  c.closePath();
+}
+
+function drawPlaquinhaCanvas(c, text, x, y, scale = rotuloPlaquinhaScale) {
+  const value = String(text || '').trim();
+  if (!value) return;
+
+  const s = scale;
+
+  const PADDING_X = 28 * s;
+  const PADDING_Y = 18 * s;
+  const BORDER    = 5  * s;
+  const RADIUS    = 6  * s;
+  const SHADOW_X  = -7 * s;
+  const SHADOW_Y  = 5  * s;
+  const MAX_WIDTH = 940 * s;
+
+  let fontSize = 64 * s;
+  c.font = `700 ${fontSize}px "Comic Relief", Arial, sans-serif`;
+  if (!fontsReady) c.font = `700 ${fontSize}px Arial, sans-serif`;
+
+  let metrics = c.measureText(value);
+  while (metrics.width > MAX_WIDTH && fontSize > 16 * s) {
+    fontSize -= 2;
+    c.font = `700 ${fontSize}px "Comic Relief", Arial, sans-serif`;
+    if (!fontsReady) c.font = `700 ${fontSize}px Arial, sans-serif`;
+    metrics = c.measureText(value);
+  }
+
+  const ascent  = metrics.actualBoundingBoxAscent ?? fontSize * 0.8;
+  const descent = metrics.actualBoundingBoxDescent ?? fontSize * 0.2;
+  const textH   = ascent + descent;
+
+  const rectW = Math.ceil(metrics.width + PADDING_X * 2);
+  const rectH = Math.ceil(textH + PADDING_Y * 2);
+
+  // x = lado direito da caixa
+  const leftX = x - rectW;
+
+  // sombra
+  drawRoundedRect(c, leftX + SHADOW_X, y + SHADOW_Y, rectW, rectH, RADIUS);
+  c.fillStyle = '#000';
+  c.fill();
+
+  // caixa
+  drawRoundedRect(c, leftX, y, rectW, rectH, RADIUS);
+  c.fillStyle = '#ffd400';
+  c.fill();
+
+  // borda
+  c.lineWidth = BORDER;
+  c.strokeStyle = '#000';
+  c.stroke();
+
+  // texto
+  c.fillStyle = '#111';
+  c.textAlign = 'left';
+  c.textBaseline = 'alphabetic';
+
+  const textX = leftX + PADDING_X;
+  const textY = y + (rectH - textH) / 2 + ascent;
+  c.fillText(value, textX, textY);
 }
 
 function drawNomeEstilizado(text, cfg) {
@@ -466,29 +543,15 @@ function drawNomeEstilizado(text, cfg) {
   ctx.restore();
 }
 
-function drawRotuloSimples(text, cfg) {
-  const value = String(text || '').trim();
-  if (!value) return;
-
-  ctx.save();
-
-  const finalFont = fitTextToWidth(value, cfg.font, cfg.maxWidth || 9999);
-  ctx.font = finalFont;
-  ctx.textAlign = cfg.textAlign || 'center';
-  ctx.textBaseline = cfg.textBaseline || 'middle';
-  ctx.fillStyle = cfg.fillStyle || '#000000';
-
-  ctx.fillText(value, cfg.x, cfg.y);
-
-  ctx.restore();
-}
-
 function drawTextOverlay() {
-const nome = (qs('nome')?.value || '').trim().substring(0, 20);
+  const nome = (qs('nome')?.value || '').trim().substring(0, 20);
   const rotulo = (qs('rotulo')?.value || '').trim().substring(0, 20);
 
   drawNomeEstilizado(nome, TEXT_LAYOUT.nome);
-  drawRotuloSimples(rotulo, TEXT_LAYOUT.rotulo);
+
+  if (rotulo) {
+    drawPlaquinhaCanvas(ctx, rotulo, rotuloPlaquinhaX, rotuloPlaquinhaY, rotuloPlaquinhaScale);
+  }
 }
 
 function gerarPost() {
