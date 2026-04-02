@@ -218,6 +218,22 @@ function showMenuLoadingUI() {
     const perms = data.permissoes || data.paginas || {};
 
     area.innerHTML = "";
+    if (perms.mestre) {
+  algumPermitido = true;
+
+  const btnAdmin = document.createElement("button");
+  btnAdmin.textContent = "CRIAR NOVO CÓDIGO";
+  btnAdmin.className = "menu-btn";
+  btnAdmin.style.backgroundColor = "#000";
+  btnAdmin.style.color = "#fff";
+  btnAdmin.style.marginBottom = "14px";
+
+  btnAdmin.addEventListener("click", () => {
+    window.location.href = "admin_codigos.html";
+  });
+
+  area.appendChild(btnAdmin);
+}
     algumPermitido = false;
 
     paginas.forEach((pag, idx) => {
