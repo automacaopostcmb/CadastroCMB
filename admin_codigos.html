@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
 
-  <style>
-  body.auth-pending main,
-  body.auth-pending header {
+<style>
+  body.auth-pending .wizard-topbar,
+  body.auth-pending .page-center > *:not(#overlay) {
     visibility: hidden;
   }
 
@@ -13,6 +13,7 @@
     inset: 0;
     z-index: 99999;
     background: rgba(255,255,255,0.92);
+    display: grid;
   }
 </style>
   
@@ -109,7 +110,6 @@
     }
   </style>
 </head>
-<body>
 <body class="auth-pending">
 <header class="wizard-topbar" role="banner" aria-label="Administrador">
   <div class="wizard-topbar__inner">
@@ -175,14 +175,16 @@
     <a class="btn-light-text" href="index.html?back=1">Voltar para o Menu</a>
   </section>
 
+
+</main>
+  
   <div id="overlay" style="display:grid;">
     <div class="loader">
       <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
       <div class="loader-text">Verificando acesso...</div>
     </div>
   </div>
-</main>
-
+  
 <script>
 const AUTH_URL = "https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec";
 const ADMIN_URL = "https://script.google.com/macros/s/AKfycbyNlxliAYm01ZdIpEdc43MFVLQt2OrCBrc7e1MNtWICgrGXlUeKd5kPKXntmPyn7QUDcQ/exec";
