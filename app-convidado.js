@@ -31,7 +31,7 @@ const state = {
 const TEXT_LAYOUT = {
   nome: {
     x: 540,
-    y: 1035,
+    y: 1100,
     font: '700 88px "Fredoka", "Comic Relief", sans-serif',
     maxWidth: 860,
 
