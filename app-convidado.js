@@ -29,7 +29,7 @@ const state = {
   ============================================
 */
 
-let rotuloPlaquinhaX = 760;   // lado direito da plaquinha
+let rotuloPlaquinhaX = 540;   // lado direito da plaquinha
 let rotuloPlaquinhaY = 1115;  // topo da plaquinha
 let rotuloPlaquinhaScale = 0.42;
 let fontsReady = false;
@@ -461,8 +461,8 @@ function drawPlaquinhaCanvas(c, text, x, y, scale = rotuloPlaquinhaScale) {
   const rectW = Math.ceil(metrics.width + PADDING_X * 2);
   const rectH = Math.ceil(textH + PADDING_Y * 2);
 
-  // x = lado direito da caixa
-  const leftX = x - rectW;
+  // x = centro horizontal da caixa
+  const leftX = x - rectW / 2;
 
   // sombra
   drawRoundedRect(c, leftX + SHADOW_X, y + SHADOW_Y, rectW, rectH, RADIUS);
