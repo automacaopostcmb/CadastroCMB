@@ -42,7 +42,7 @@ const TEXT_LAYOUT = {
     yellowFill: '#f3b233',
     yellowOffsetY: 2,
     yellowLayers: [4, 8, 12, 16, 20],
-yellowSideOffsets: [-14, -10, -6, -3, 0, 3, 6, 10, 14],
+yellowSideOffsets: [-10, -6, -3, 0, 3, 6, 10],
 
     innerShadowColor: '#777777',
     innerShadowOffsetY: 6,
