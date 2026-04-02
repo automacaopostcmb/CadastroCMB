@@ -318,9 +318,9 @@ function buildCaptionFromForm() {
 
   const head = `Estarei na área dos artistas do CMB 2026 @comicmarketbrasil!`;
   const place = `📍 FAPCOM – Vila Mariana, São Paulo`;
-  const date  = `Dia 16 e 17 de agosto`;
+  const date  = `Dia 15 e 16 de agosto`;
   const tickets = `🎟️ Mais informações e ingressos:\ncomicmarketbrasil.com.br`;
-  const tags = `#ComicMarketBrasil #QuadrinhosNacionais #QuadrinhosBrasileiros #hqbr #mangabr #historiaemquadrinhos #desenhistabrasileiro #ilustradorbrasileiro #fapcom`;
+  const tags = `#ComicMarketBrasil #QuadrinhosNacionais #CMB #evento #quadrinhos`;
 
   const corpo = bio ? `${nomeArtistico ? nomeArtistico + ' — ' : ''}${bio}` : (nomeArtistico || '');
   return [head, '', corpo, '', place, date, '', tickets, '', tags].join('\n');
