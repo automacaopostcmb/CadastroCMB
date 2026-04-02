@@ -559,8 +559,6 @@ function buildCaptionFromForm() {
   return [
     primeiraLinha,
     '',
-    blocoIdentidade,
-    '',
     biografia,
     '',
     '📍 FAPCOM – Vila Mariana, São Paulo',
