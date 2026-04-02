@@ -900,6 +900,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   initCanvas();
   updateWizardHeader();
 
+document.addEventListener('DOMContentLoaded', async () => {
+
+  showOverlay('Verificando acesso...');
+
+  const autorizado = await checkAuth();
+  if (!autorizado) return;
+
+  const isWizardPage =
+    !!document.querySelector('.step') &&
+    !!document.getElementById('wizardStepCount');
+
+  if (!isWizardPage) {
+    hideOverlay();
+    return;
+  }
+
+  steps = Array.from(document.querySelectorAll('.step'));
+  totalSteps = steps.length;
+
+  initCanvas();
+  updateWizardHeader();
+
   document.addEventListener('click', (e) => {
     if (wizardDone) return;
 
@@ -913,76 +935,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-['nome', 'rotulo', 'biografia', 'dia', 'estande', 'estandeInsta'].forEach(id => {
-  const el = qs(id);
-  if (!el) return;
+  // inputs
+  ['nome', 'rotulo', 'biografia', 'dia', 'estande', 'estandeInsta'].forEach(id => {
+    const el = qs(id);
+    if (!el) return;
 
-  el.addEventListener('input', () => {
-    showFieldError(id, '');
-    refreshStepButtons(currentStep);
-
-    if (id === 'nome' || id === 'rotulo') {
-      gerarPost();
-    }
-  });
-
-  el.addEventListener('change', () => {
-    showFieldError(id, '');
-    refreshStepButtons(currentStep);
-
-    if (id === 'nome' || id === 'rotulo') {
-      gerarPost();
-    }
-  });
-
-  el.addEventListener('blur', () => {
-    refreshStepButtons(currentStep);
-  });
-});
-
-  const instaInput = qs('estandeInsta');
-if (instaInput) {
-  const applyInstagramNormalization = () => {
-    const norm = normalizeInstagram(instaInput.value);
-    if (norm.url) {
-      instaInput.value = norm.url;
-    }
-  };
-
-  instaInput.addEventListener('blur', applyInstagramNormalization);
-  instaInput.addEventListener('change', applyInstagramNormalization);
-}
-
-  
-  const fotoInput = qs('fotoDivulgacao');
-  if (fotoInput) {
-    fotoInput.addEventListener('change', () => {
-      showFieldError('fotoDivulgacao', '');
+    el.addEventListener('input', () => {
+      showFieldError(id, '');
       refreshStepButtons(currentStep);
-    });
-  }
 
-  const btnCopy = qs('btnCopyCaption');
-  if (btnCopy) {
-    btnCopy.addEventListener('click', async () => {
-      const box = qs('captionBox');
-      if (!box) return;
-
-      try {
-        await navigator.clipboard.writeText(box.value);
-        btnCopy.textContent = 'Copiado ✔';
-        setTimeout(() => btnCopy.textContent = 'Copiar', 1500);
-      } catch (e) {
-        box.select();
-        document.execCommand('copy');
-        btnCopy.textContent = 'Copiado ✔';
-        setTimeout(() => btnCopy.textContent = 'Copiar', 1500);
+      if (id === 'nome' || id === 'rotulo') {
+        gerarPost();
       }
     });
-  }
 
-  const btnShare = qs('btnShareNative');
-  if (btnShare) btnShare.addEventListener('click', shareNative);
+    el.addEventListener('change', () => {
+      showFieldError(id, '');
+      refreshStepButtons(currentStep);
+
+      if (id === 'nome' || id === 'rotulo') {
+        gerarPost();
+      }
+    });
+
+    el.addEventListener('blur', () => {
+      refreshStepButtons(currentStep);
+    });
+  });
+
+  // instagram normalize
+  const instaInput = qs('estandeInsta');
+  if (instaInput) {
+    const applyInstagramNormalization = () => {
+      const norm = normalizeInstagram(instaInput.value);
+      if (norm.url) {
+        instaInput.value = norm.url;
+      }
+    };
+
+    instaInput.addEventListener('blur', applyInstagramNormalization);
+    instaInput.addEventListener('change', applyInstagramNormalization);
+  }
 
   showStep(1);
   hideOverlay();
