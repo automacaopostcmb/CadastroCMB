@@ -26,7 +26,7 @@ const state = {
 };
 
 const OVERLAY_STEPS = [
-  { after: 0,      msg: "Finalizando seu cadastro..." },
+  { after: 0,      msg: "Finalizando sua participação..." },
   { after: 6000,   msg: "Salvando a sua imagem..." },
   { after: 12000,  msg: "Quase lá!" },
   { after: 25000,  msg: "Só mais um pouco…" },
