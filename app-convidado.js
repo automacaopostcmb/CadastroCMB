@@ -883,25 +883,6 @@ function goToMenu() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const isWizardPage =
-    !!document.querySelector('.step') &&
-    !!document.getElementById('wizardStepCount');
-
-  if (!isWizardPage) return;
-
-  showOverlay('Verificando acesso...');
-
-  const autorizado = await checkAuth();
-  if (!autorizado) return;
-
-  steps = Array.from(document.querySelectorAll('.step'));
-  totalSteps = steps.length;
-
-  initCanvas();
-  updateWizardHeader();
-
-document.addEventListener('DOMContentLoaded', async () => {
-
   showOverlay('Verificando acesso...');
 
   const autorizado = await checkAuth();
@@ -935,7 +916,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // inputs
   ['nome', 'rotulo', 'biografia', 'dia', 'estande', 'estandeInsta'].forEach(id => {
     const el = qs(id);
     if (!el) return;
@@ -963,7 +943,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // instagram normalize
   const instaInput = qs('estandeInsta');
   if (instaInput) {
     const applyInstagramNormalization = () => {
@@ -977,9 +956,40 @@ document.addEventListener('DOMContentLoaded', async () => {
     instaInput.addEventListener('change', applyInstagramNormalization);
   }
 
+  const fotoInput = qs('fotoDivulgacao');
+  if (fotoInput) {
+    fotoInput.addEventListener('change', () => {
+      showFieldError('fotoDivulgacao', '');
+      refreshStepButtons(currentStep);
+    });
+  }
+
+  const btnCopy = qs('btnCopyCaption');
+  if (btnCopy) {
+    btnCopy.addEventListener('click', async () => {
+      const box = qs('captionBox');
+      if (!box) return;
+
+      try {
+        await navigator.clipboard.writeText(box.value);
+        btnCopy.textContent = 'Copiado ✔';
+        setTimeout(() => btnCopy.textContent = 'Copiar', 1500);
+      } catch (e) {
+        box.select();
+        document.execCommand('copy');
+        btnCopy.textContent = 'Copiado ✔';
+        setTimeout(() => btnCopy.textContent = 'Copiar', 1500);
+      }
+    });
+  }
+
+  const btnShare = qs('btnShareNative');
+  if (btnShare) btnShare.addEventListener('click', shareNative);
+
   showStep(1);
   hideOverlay();
 });
+
 
 window.goToMenu = goToMenu;
 window.enviarParaGoogle = enviarParaGoogle;
