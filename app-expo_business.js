@@ -204,10 +204,15 @@ function buildCaptionFromForm() {
   const descricao = descLonga || descCurta || '';
 
   const head = `Expositor confirmado! ${empresa || '—'} ${instaHandle || ''} no CMB @comicmarketbrasil`;
-  const tags =
-    '#ComicMarketBrasil #QuadrinhosNacionais #CMB #evento #quadrinhos';
 
-  return [head, '', descricao, '', tags].join('\n');
+  const infoCMB =
+`Mais informações e ingressos: http://comicmarketbrasil.com.br
+O CMB será dia 15 e 16 de agosto!`;
+
+  const tags =
+'#ComicMarketBrasil #QuadrinhosNacionais #CMB #evento #quadrinhos';
+
+  return [head, '', descricao, '', infoCMB, '', tags].join('\n');
 }
 
 function escapeHtml(s) {
