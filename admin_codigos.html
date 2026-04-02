@@ -19,7 +19,7 @@
   
   <meta charset="UTF-8" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Criar novo código – CMB</title>
 
@@ -110,6 +110,22 @@
       color: #444;
       font-weight: 700;
     }
+
+    .confirmar-exclusao-box {
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      background: #fff8f8;
+      text-align: center;
+      display: none;
+    }
+
+    .confirmar-exclusao-texto {
+      font-size: 16px;
+      font-weight: 700;
+      color: #8b0000;
+    }
   </style>
 </head>
 <body class="auth-pending">
@@ -171,21 +187,28 @@
         <div class="button-row" style="margin-top:22px;">
           <button id="btnAlterarCodigo" class="btn-nav btn-proximo">Alterar</button>
         </div>
+
+        <div id="confirmarExclusaoBox" class="confirmar-exclusao-box">
+          <div class="confirmar-exclusao-texto">Você quer apagar esse código?</div>
+
+          <div class="button-row" style="margin-top:14px;">
+            <button id="btnConfirmarExcluirSim" class="btn-nav btn-proximo" type="button">Sim</button>
+            <button id="btnConfirmarExcluirNao" class="btn-nav btn-light" type="button">Não</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <a class="btn-light-text" href="index.html?back=1">Voltar para o Menu</a>
   </section>
-
-
 </main>
   
-  <div id="overlay" style="display:grid;">
-    <div class="loader">
-      <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
-      <div class="loader-text">Verificando acesso...</div>
-    </div>
+<div id="overlay" style="display:grid;">
+  <div class="loader">
+    <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
+    <div class="loader-text">Verificando acesso...</div>
   </div>
+</div>
   
 <script>
 const AUTH_URL = "https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec";
@@ -221,6 +244,16 @@ function showAlterarFeedback(msg, ok = false) {
   el.textContent = msg;
   el.style.display = msg ? "block" : "none";
   el.style.color = ok ? "green" : "red";
+}
+
+function mostrarConfirmacaoExclusao() {
+  const box = document.getElementById("confirmarExclusaoBox");
+  if (box) box.style.display = "block";
+}
+
+function esconderConfirmacaoExclusao() {
+  const box = document.getElementById("confirmarExclusaoBox");
+  if (box) box.style.display = "none";
 }
 
 function getChave() {
@@ -444,6 +477,7 @@ function resetAlterarBloco() {
   document.getElementById("codigoEncontrado").textContent = "";
   document.getElementById("alterarBox").style.display = "none";
   showAlterarFeedback("");
+  esconderConfirmacaoExclusao();
   renderListaPermissoes("listaPermissoesAlterar", permissoesDisponiveis);
 }
 
@@ -452,6 +486,7 @@ async function buscarCodigoParaAlterar() {
   const chave = getChave();
 
   showAlterarFeedback("");
+  esconderConfirmacaoExclusao();
   document.getElementById("alterarBox").style.display = "none";
   document.getElementById("codigoEncontrado").textContent = "";
 
@@ -495,6 +530,13 @@ async function alterarCodigo() {
     return;
   }
 
+  if (!paginas.length) {
+    showAlterarFeedback("");
+    mostrarConfirmacaoExclusao();
+    return;
+  }
+
+  esconderConfirmacaoExclusao();
   setOverlay(true, "Alterando código...");
   showAlterarFeedback("");
 
@@ -538,6 +580,57 @@ async function alterarCodigo() {
   }
 }
 
+async function excluirCodigo() {
+  const chaveAdmin = getChave();
+
+  if (!codigoEmEdicao) {
+    showAlterarFeedback("Busque um código primeiro.");
+    esconderConfirmacaoExclusao();
+    return;
+  }
+
+  setOverlay(true, "Apagando código...");
+  showAlterarFeedback("");
+
+  try {
+    const resp = await fetch(ADMIN_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify({
+        action: "excluirCodigo",
+        chaveAdmin,
+        codigo: codigoEmEdicao
+      })
+    });
+
+    const raw = await resp.text();
+    let data;
+
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      throw new Error("Resposta inválida do servidor.");
+    }
+
+    closeOverlayNow();
+
+    if (!data.ok) {
+      showAlterarFeedback(data.message || "Erro ao apagar código.");
+      return;
+    }
+
+    resetAlterarBloco();
+    showAlterarFeedback("Código apagado com sucesso.", true);
+
+  } catch (e) {
+    console.error(e);
+    closeOverlayNow();
+    showAlterarFeedback(e.message || "Erro ao apagar código.");
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   setOverlay(true, "Verificando acesso...");
 
@@ -554,6 +647,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btnCopiarMensagem")?.addEventListener("click", copiarMensagem);
   document.getElementById("btnBuscarCodigo")?.addEventListener("click", buscarCodigoParaAlterar);
   document.getElementById("btnAlterarCodigo")?.addEventListener("click", alterarCodigo);
+  document.getElementById("btnConfirmarExcluirSim")?.addEventListener("click", excluirCodigo);
+  document.getElementById("btnConfirmarExcluirNao")?.addEventListener("click", () => {
+    esconderConfirmacaoExclusao();
+    showAlterarFeedback("");
+  });
 });
 </script>
 
