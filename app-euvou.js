@@ -320,7 +320,7 @@ function buildReview() {
 
 function buildCaptionFromForm() {
   const biografia = (qs('biografia')?.value || '').trim();
-  const head = `Eu vou para o CMB 2026!!! @comicmarketbrasil!`;
+  const head = `Eu vou para o CMB 2026 @comicmarketbrasil!!!`;
   const body = biografia;
 
   return [
@@ -334,7 +334,7 @@ function buildCaptionFromForm() {
     '🎟️ Mais informações e ingressos:',
     'comicmarketbrasil.com.br',
     '',
-    '#ComicMarketBrasil #CMB #QuadrinhosBrasileiros #quadrinhos #evento'
+    '#ComicMarketBrasil #QuadrinhosNacionais #CMB #evento #quadrinhos'
   ].join('\n');
 }
 
