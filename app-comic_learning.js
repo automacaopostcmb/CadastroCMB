@@ -527,11 +527,11 @@ const AULAS_PREVIEW_CONFIG = {
     aula1: {
       x: 540,
       y: 1003,
-      maxWidth: 920,
-      lineHeight: 36,
+      maxWidth: 985,
+      lineHeight: 44,
       maxLines: 2,
       anchor: 'top',
-      multilineOffsetY: 25,   // AQUI
+      multilineOffsetY: 28,
       color: '#ffffff',
       uppercase: true,
       prefix: '•',
@@ -539,7 +539,11 @@ const AULAS_PREVIEW_CONFIG = {
       strokeWidth: 2,
       shadowColor: '#000000',
       shadowOffsetX: 0,
-      shadowOffsetY: 3
+      shadowOffsetY: 3,
+      baseFontSize: 60,
+      minFontSize: 26,
+      fontWeight: 700,
+      fontFamily: '"Montserrat", Arial, sans-serif'
     }
   },
 
@@ -578,6 +582,7 @@ const AULAS_PREVIEW_CONFIG = {
     }
   }
 };
+
 function drawCenteredWrappedText(c, text, cfg) {
   if (!text) return { overflow: false, lines: [] };
 
@@ -592,19 +597,19 @@ function drawCenteredWrappedText(c, text, cfg) {
   const linhasFinais = linhas.slice(0, cfg.maxLines);
 
   let startY = cfg.y;
-const totalHeight = (linhasFinais.length - 1) * cfg.lineHeight;
+  const totalHeight = (linhasFinais.length - 1) * cfg.lineHeight;
 
-if (cfg.anchor === 'center') {
-  startY = cfg.y - totalHeight / 2;
-} else if (cfg.anchor === 'bottom') {
-  startY = cfg.y - totalHeight;
-} else if (cfg.anchor === 'top') {
-  startY = cfg.y;
+  if (cfg.anchor === 'center') {
+    startY = cfg.y - totalHeight / 2;
+  } else if (cfg.anchor === 'bottom') {
+    startY = cfg.y - totalHeight;
+  } else if (cfg.anchor === 'top') {
+    startY = cfg.y;
 
-  if (linhasFinais.length > 1 && cfg.multilineOffsetY) {
-    startY = cfg.y - cfg.multilineOffsetY;
+    if (linhasFinais.length > 1 && cfg.multilineOffsetY) {
+      startY = cfg.y - cfg.multilineOffsetY;
+    }
   }
-}
 
   c.save();
   c.textAlign = 'center';
@@ -640,6 +645,110 @@ if (cfg.anchor === 'center') {
   return { overflow, lines: linhasFinais };
 }
 
+function buildPreviewFont(size, weight = 700, family = '"Montserrat", Arial, sans-serif') {
+  return `${weight} ${size}px ${family}`;
+}
+
+function fitWrappedFontSize(text, cfg, c) {
+  const baseFontSize = cfg.baseFontSize || 60;
+  const minFontSize = cfg.minFontSize || 26;
+  const fontWeight = cfg.fontWeight || 700;
+  const fontFamily = cfg.fontFamily || '"Montserrat", Arial, sans-serif';
+
+  let size = baseFontSize;
+  let linhas = [];
+
+  while (size >= minFontSize) {
+    c.font = buildPreviewFont(size, fontWeight, fontFamily);
+
+    const textoFinal = cfg.uppercase
+      ? String(text || '').toLocaleUpperCase('pt-BR')
+      : String(text || '');
+
+    const textoComPrefixo = cfg.prefix ? `${cfg.prefix} ${textoFinal}` : textoFinal;
+    linhas = wrapText(textoComPrefixo, cfg.maxWidth, c);
+
+    if (linhas.length <= cfg.maxLines) {
+      return { fontSize: size, lines };
+    }
+
+    size -= 2;
+  }
+
+  c.font = buildPreviewFont(minFontSize, fontWeight, fontFamily);
+
+  const textoFinal = cfg.uppercase
+    ? String(text || '').toLocaleUpperCase('pt-BR')
+    : String(text || '');
+
+  const textoComPrefixo = cfg.prefix ? `${cfg.prefix} ${textoFinal}` : textoFinal;
+  linhas = wrapText(textoComPrefixo, cfg.maxWidth, c);
+
+  return { fontSize: minFontSize, lines };
+}
+
+function drawCenteredWrappedTextAutoFit(c, text, cfg) {
+  if (!text) return { overflow: false, lines: [], fontSize: cfg.baseFontSize || 60 };
+
+  const fit = fitWrappedFontSize(text, cfg, c);
+  const linhas = fit.lines || [];
+  const overflow = linhas.length > cfg.maxLines;
+  const linhasFinais = linhas.slice(0, cfg.maxLines);
+
+  const fontWeight = cfg.fontWeight || 700;
+  const fontFamily = cfg.fontFamily || '"Montserrat", Arial, sans-serif';
+
+  c.save();
+  c.font = buildPreviewFont(fit.fontSize, fontWeight, fontFamily);
+  c.textAlign = 'center';
+  c.textBaseline = 'top';
+
+  let startY = cfg.y;
+  const totalHeight = (linhasFinais.length - 1) * cfg.lineHeight;
+
+  if (cfg.anchor === 'center') {
+    startY = cfg.y - totalHeight / 2;
+  } else if (cfg.anchor === 'bottom') {
+    startY = cfg.y - totalHeight;
+  } else if (cfg.anchor === 'top') {
+    startY = cfg.y;
+
+    if (linhasFinais.length > 1 && cfg.multilineOffsetY) {
+      startY = cfg.y - cfg.multilineOffsetY;
+    }
+  }
+
+  linhasFinais.forEach((linha, i) => {
+    const drawY = startY + i * cfg.lineHeight;
+
+    if (cfg.shadowColor) {
+      c.fillStyle = cfg.shadowColor;
+      c.fillText(
+        linha,
+        cfg.x + (cfg.shadowOffsetX || 0),
+        drawY + (cfg.shadowOffsetY || 0)
+      );
+    }
+
+    if (cfg.strokeColor && cfg.strokeWidth > 0) {
+      c.lineWidth = cfg.strokeWidth;
+      c.strokeStyle = cfg.strokeColor;
+      c.strokeText(linha, cfg.x, drawY);
+    }
+
+    c.fillStyle = cfg.color;
+    c.fillText(linha, cfg.x, drawY);
+  });
+
+  c.restore();
+
+  return {
+    overflow,
+    lines: linhasFinais,
+    fontSize: fit.fontSize
+  };
+}
+
 function gerarPost() {
   if (!ctx || !canvas) return;
 
@@ -647,100 +756,97 @@ function gerarPost() {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+  // === IMAGEM DE APOIO (COM MÁSCARA)
+  if (apoioImg) {
+    const baseScale = 1;
+    const sliderScale = parseFloat(document.getElementById('apoioScale')?.value || '1');
+    const scale = baseScale * sliderScale;
 
-// === IMAGEM DE APOIO (COM MÁSCARA)
-if (apoioImg) {
-  const baseScale = 1;
-  const sliderScale = parseFloat(document.getElementById('apoioScale')?.value || '1');
-  const scale = baseScale * sliderScale;
+    const offsetX = parseInt(document.getElementById('apoioX')?.value || '0', 10);
+    const offsetY = parseInt(document.getElementById('apoioY')?.value || '0', 10);
 
-  const offsetX = parseInt(document.getElementById('apoioX')?.value || '0', 10);
-  const offsetY = parseInt(document.getElementById('apoioY')?.value || '0', 10);
+    drawCoverImageMasked(
+      apoioImg,
+      120, 430,
+      scale,
+      offsetX,
+      offsetY,
+      { x: 0, y: 0, w: 223, h: canvas.height }
+    );
+  }
 
-  drawCoverImageMasked(
-    apoioImg,
-    120, 430, // centro da imagem esquerda (ajuste fino depois)
-    scale,
-    offsetX,
-    offsetY,
-    { x: 0, y: 0, w: 223, h: canvas.height }
-  );
-}
+  // === FOTO PRINCIPAL (COM MÁSCARA)
+  if (rostoImg) {
+    const baseScale = 2.2;
+    const sliderScale = parseFloat(document.getElementById('rostoScale')?.value || '1');
+    const scale = baseScale * sliderScale;
 
-// === FOTO PRINCIPAL (COM MÁSCARA)
-if (rostoImg) {
-  const baseScale = 2.2; // tamanho inicial padrão
-  const sliderScale = parseFloat(document.getElementById('rostoScale')?.value || '1');
-  const scale = baseScale * sliderScale;
-
-  const offsetX = parseInt(document.getElementById('rostoX')?.value || '0', 10);
-  const offsetY = parseInt(document.getElementById('rostoY')?.value || '0', 10);
-   
- drawCoverImageMasked(
-  rostoImg,
-  656, 454,
-  scale,
-  offsetX,
-  offsetY,
-  { x: 212, y: 0, w: canvas.width - 212, h: canvas.height }
-);
-}
-
-if (frameImg?.complete && frameImg.naturalWidth) {
-  ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-}
-
-const tarjaCfg = TARJAS[currentTarjaType];
-if (tarjaCfg && tarjaImg) {
-  const w = tarjaImg.naturalWidth * tarjaCfg.scale;
-  const h = tarjaImg.naturalHeight * tarjaCfg.scale;
-  ctx.drawImage(tarjaImg, canvas.width - tarjaCfg.x - w, tarjaCfg.y, w, h);
-}
-
-// ===== NOME NA TARJA AMARELA =====
-const nomeDivulgacao = getNomeDivulgacao();
-
-if (nomeDivulgacao) {
-drawTarja(ctx, nomeDivulgacao, 43, 750, 1, '#ffd400', true);
-}
-
-// ===== TEXTO ABAIXO =====
-const rotulo = getRotuloDivulgacao();
-   if (rotulo) {
-  drawTarja(ctx, rotulo, 103, 794, 0.8, '#4ec3ff', false);
-}
-const aulasList = getAulasPreviewList();
-
-let overflowAulas = false;
-
-if (aulasList.length === 1) {
-  ctx.font = '700 38px "Montserrat", Arial, sans-serif';
-
-  const r1 = drawCenteredWrappedText(
-    ctx,
-    aulasList[0],
-    AULAS_PREVIEW_CONFIG.umaAula.aula1
+    const offsetX = parseInt(document.getElementById('rostoX')?.value || '0', 10);
+    const offsetY = parseInt(document.getElementById('rostoY')?.value || '0', 10);
      
-  );
+    drawCoverImageMasked(
+      rostoImg,
+      656, 454,
+      scale,
+      offsetX,
+      offsetY,
+      { x: 212, y: 0, w: canvas.width - 212, h: canvas.height }
+    );
+  }
 
-  overflowAulas = r1.overflow;
-} else if (aulasList.length >= 2) {
-  ctx.font = '700 28px "Montserrat", Arial, sans-serif';
+  if (frameImg?.complete && frameImg.naturalWidth) {
+    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+  }
 
-  const r1 = drawCenteredWrappedText(
-    ctx,
-    aulasList[0],
-    AULAS_PREVIEW_CONFIG.duasAulas.aula1
-  );
+  const tarjaCfg = TARJAS[currentTarjaType];
+  if (tarjaCfg && tarjaImg) {
+    const w = tarjaImg.naturalWidth * tarjaCfg.scale;
+    const h = tarjaImg.naturalHeight * tarjaCfg.scale;
+    ctx.drawImage(tarjaImg, canvas.width - tarjaCfg.x - w, tarjaCfg.y, w, h);
+  }
 
-  const r2 = drawCenteredWrappedText(
-    ctx,
-    aulasList[1],
-    AULAS_PREVIEW_CONFIG.duasAulas.aula2
-  );
+  // ===== NOME NA TARJA AMARELA =====
+  const nomeDivulgacao = getNomeDivulgacao();
 
-  overflowAulas = r1.overflow || r2.overflow;
-}
+  if (nomeDivulgacao) {
+    drawTarja(ctx, nomeDivulgacao, 43, 750, 1, '#ffd400', true);
+  }
+
+  // ===== TEXTO ABAIXO =====
+  const rotulo = getRotuloDivulgacao();
+  if (rotulo) {
+    drawTarja(ctx, rotulo, 103, 794, 0.8, '#4ec3ff', false);
+  }
+
+  const aulasList = getAulasPreviewList();
+
+  let overflowAulas = false;
+
+  if (aulasList.length === 1) {
+    const r1 = drawCenteredWrappedTextAutoFit(
+      ctx,
+      aulasList[0],
+      AULAS_PREVIEW_CONFIG.umaAula.aula1
+    );
+
+    overflowAulas = r1.overflow;
+  } else if (aulasList.length >= 2) {
+    ctx.font = '700 28px "Montserrat", Arial, sans-serif';
+
+    const r1 = drawCenteredWrappedText(
+      ctx,
+      aulasList[0],
+      AULAS_PREVIEW_CONFIG.duasAulas.aula1
+    );
+
+    const r2 = drawCenteredWrappedText(
+      ctx,
+      aulasList[1],
+      AULAS_PREVIEW_CONFIG.duasAulas.aula2
+    );
+
+    overflowAulas = r1.overflow || r2.overflow;
+  }
 
   validationFlags.overflowNome = false;
   validationFlags.overflowRotulo = false;
@@ -895,10 +1001,10 @@ async function enviarParaGoogle() {
   startOverlayMessages();
 
   try {
-const response = await fetch(WEBAPP_URL, {
-  method: 'POST',
-  body: JSON.stringify(dados)
-});
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      body: JSON.stringify(dados)
+    });
 
     const result = await response.json();
     const msg = document.getElementById('mensagem');
