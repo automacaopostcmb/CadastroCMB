@@ -235,7 +235,22 @@ async function checkAuth() {
   }
 }
 
+const LABELS_PAGINAS = {
+  expo_artistas: "Novo Artista/mesa",
+  expo_business: "Expositor Business",
+  expo_market: "Expositor Market",
+  cadastro_masterclass: "Cadastro aula/learning",
+  cadastro_lancamento: "Artista/Lançamento no evento",
+  eu_vou: "Eu vou CMB 2026!",
+  convidado: "Convidado confirmado!"
+};
+
 function formatarNomePermissao(nome) {
+  if (typeof paginas !== "undefined") {
+    const item = paginas.find(p => p.nome === nome);
+    if (item && item.label) return item.label;
+  }
+
   return String(nome || "")
     .replace(/_/g, " ")
     .replace(/\b\w/g, l => l.toUpperCase());
