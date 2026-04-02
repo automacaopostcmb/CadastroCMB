@@ -40,9 +40,9 @@ const TEXT_LAYOUT = {
     frontStrokeWidth: 10,
 
     yellowFill: '#f3b233',
-    yellowOffsetY: 3,
+    yellowOffsetY: 2,
     yellowLayers: [4, 8, 12, 16, 20],
-    yellowSideOffsets: [-6, -3, 0, 3, 6],
+yellowSideOffsets: [-14, -10, -6, -3, 0, 3, 6, 10, 14],
 
     innerShadowColor: '#777777',
     innerShadowOffsetY: 6,
