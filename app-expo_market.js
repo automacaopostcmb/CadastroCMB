@@ -206,17 +206,36 @@ function updateAccordionErrorState() {
 
 function buildCaptionFromForm() {
   const empresa = (document.getElementById('empresa')?.value || '').trim();
-  const { handle } = normalizeInstagram(document.getElementById('insta')?.value || '');
+
+  const { handle } = normalizeInstagram(
+    document.getElementById('insta')?.value || ''
+  );
   const instaHandle = handle ? '@' + handle : '';
 
   const descLonga = (document.getElementById('descricaolonga')?.value || '').trim();
   const descCurta = (document.getElementById('descricao')?.value || '').trim();
   const descricao = descLonga || descCurta || '';
 
-  const head = `Expositor confirmado! ${empresa || '—'} ${instaHandle || ''} no CMB @comicmarketbrasil`;
+  const nomeLinha = [empresa, instaHandle].filter(Boolean).join(' ').trim();
+
+  const head = `Expositor confirmado! ${nomeLinha} estará no CMB @comicmarketbrasil!!!`;
+
+  const infoCMB =
+`Mais informações e ingressos: http://comicmarketbrasil.com.br
+O CMB será dia 15 e 16 de agosto!`;
+
   const tags =
-    '#ComicMarketBrasil #QuadrinhosNacionais #CMB #evento #quadrinhos';
-  return [head, '', descricao, '', tags].join('\n');
+'#ComicMarketBrasil #QuadrinhosNacionais #CMB #evento #quadrinhos';
+
+  return [
+    head,
+    '',
+    descricao,
+    '',
+    infoCMB,
+    '',
+    tags
+  ].join('\n');
 }
 function escapeHtml(s) {
   return String(s)
