@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Criar novo código – CMB</title>
+
+  <link rel="stylesheet" href="style.css?v=52">
+
+  <style>
+    .admin-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 18px;
+      text-align: left;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .admin-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 16px;
+      color: #222;
+    }
+
+    .admin-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      flex: 0 0 auto;
+    }
+
+    .admin-result {
+      margin-top: 18px;
+      display: none;
+    }
+
+    .admin-code-box {
+      text-align: center;
+      margin: 10px 0 22px;
+    }
+
+    .admin-code-label {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .admin-code {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #111;
+      word-break: break-word;
+    }
+
+    .admin-msg {
+      width: 100%;
+      min-height: 140px;
+      border-radius: 12px;
+      border: 1px solid #cfd8e3;
+      padding: 14px;
+      font-size: 15px;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    .admin-feedback {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 14px;
+      display: none;
+    }
+
+    .btn-black-top {
+      width: 100%;
+      background: #000 !important;
+      color: #fff !important;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<header class="wizard-topbar" role="banner" aria-label="Administrador">
+  <div class="wizard-topbar__inner">
+    <div class="wizard-topbar__title">ADMINISTRADOR</div>
+  </div>
+</header>
+
+<main class="page-center">
+  <div id="wizardStepTitle" class="wizard-step-title">CRIAR NOVO CÓDIGO</div>
+
+  <section class="step active">
+    <div class="step-box">
+      <label class="title-label">Para quem você vai enviar esse código de acesso?</label>
+      <input type="text" id="nomeDestinatario" placeholder="Nome da pessoa ou empresa" />
+
+      <label class="title-label" style="margin-top:20px;">Quais páginas esse código terá acesso?</label>
+      <div id="listaPermissoes" class="admin-list"></div>
+
+      <div class="button-row" style="margin-top:22px;">
+        <button id="btnGerarCodigo" class="btn-nav btn-proximo">Gerar código</button>
+      </div>
+
+      <div id="adminFeedback" class="admin-feedback"></div>
+
+      <div id="adminResult" class="admin-result">
+        <div class="admin-code-box">
+          <div class="admin-code-label">Novo código:</div>
+          <div id="novoCodigo" class="admin-code"></div>
+        </div>
+
+        <textarea id="mensagemPronta" class="admin-msg" readonly></textarea>
+
+        <div class="button-row" style="margin-top:16px;">
+          <button id="btnCopiarMensagem" class="btn-nav btn-proximo">Copiar mensagem</button>
+        </div>
+      </div>
+    </div>
+
+    <a class="btn-light-text" href="index.html?back=1">Voltar para o Menu</a>
+  </section>
+
+  <div id="overlay">
+    <div class="loader">
+      <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
+      <div class="loader-text">Carregando...</div>
+    </div>
+  </div>
+</main>
+
+<script>
+const AUTH_URL = "https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec";
+const PAGINA = "mestre";
+
+function setOverlay(show, text) {
+  const overlay = document.getElementById("overlay");
+  const label = overlay?.querySelector(".loader-text");
+  if (label) label.textContent = text || "Carregando...";
+  if (overlay) overlay.style.display = show ? "grid" : "none";
+}
+
+function showFeedback(msg, ok = false) {
+  const el = document.getElementById("adminFeedback");
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = "block";
+  el.style.color = ok ? "green" : "red";
+}
+
+function getChave() {
+  return (localStorage.getItem("chave") || "").trim();
+}
+
+async function checkAuth() {
+  const chave = getChave();
+  if (!chave) {
+    setOverlay(true, "Faça login primeiro.");
+    setTimeout(() => window.location.href = "index.html", 1200);
+    return false;
+  }
+
+  try {
+    const url = `${AUTH_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}&v=${Date.now()}`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+
+    if (!data.ok || !data.permitido) {
+      setOverlay(true, "Você não tem permissão para acessar esta página.");
+      setTimeout(() => window.location.href = "index.html", 1400);
+      return false;
+    }
+
+    return true;
+  } catch (e) {
+    setOverlay(true, "Erro ao validar acesso.");
+    setTimeout(() => window.location.href = "index.html", 1400);
+    return false;
+  }
+}
+
+function formatarNomePermissao(nome) {
+  return String(nome || "")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, l => l.toUpperCase());
+}
+
+async function carregarPermissoes() {
+  const chave = getChave();
+  setOverlay(true, "Carregando permissões...");
+
+  try {
+    const url = `${AUTH_URL}?action=listPermissoes&chave=${encodeURIComponent(chave)}&v=${Date.now()}`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+
+    if (!data.ok) {
+      throw new Error(data.message || "Erro ao carregar permissões.");
+    }
+
+    const wrap = document.getElementById("listaPermissoes");
+    wrap.innerHTML = "";
+
+    (data.permissoes || []).forEach((perm) => {
+      const item = document.createElement("label");
+      item.className = "admin-item";
+
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.value = perm;
+
+      const text = document.createElement("span");
+      text.textContent = formatarNomePermissao(perm);
+
+      item.appendChild(cb);
+      item.appendChild(text);
+      wrap.appendChild(item);
+    });
+
+  } catch (e) {
+    showFeedback(e.message || "Erro ao carregar permissões.");
+  } finally {
+    setOverlay(false);
+  }
+}
+
+function getPermissoesMarcadas() {
+  return Array.from(document.querySelectorAll('#listaPermissoes input[type="checkbox"]:checked'))
+    .map(el => el.value);
+}
+
+function montarMensagem(codigo) {
+  return `Entre nesse link: https://cadastrocomicmarketbrasil.com.br/
+E use o código ${codigo} para criar a sua divulgação!`;
+}
+
+async function gerarCodigo() {
+  const nome = (document.getElementById("nomeDestinatario").value || "").trim();
+  const paginas = getPermissoesMarcadas();
+  const chaveAdmin = getChave();
+
+  if (!nome) {
+    showFeedback("Preencha o nome.");
+    return;
+  }
+
+  if (!paginas.length) {
+    showFeedback("Selecione ao menos uma página.");
+    return;
+  }
+
+  setOverlay(true, "Gerando código...");
+  showFeedback("");
+
+  try {
+    const resp = await fetch(AUTH_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify({
+        action: "criarCodigo",
+        chaveAdmin,
+        nome,
+        paginas
+      })
+    });
+
+    const raw = await resp.text();
+    let data;
+
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      throw new Error("Resposta inválida do servidor.");
+    }
+
+    if (!data.ok) {
+      throw new Error(data.message || "Erro ao criar código.");
+    }
+
+    const codigo = data.codigo;
+    const mensagem = montarMensagem(codigo);
+
+    document.getElementById("novoCodigo").textContent = codigo;
+    document.getElementById("mensagemPronta").value = mensagem;
+    document.getElementById("adminResult").style.display = "block";
+
+    showFeedback("Código criado com sucesso.", true);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+
+  } catch (e) {
+    showFeedback(e.message || "Erro ao criar código.");
+  } finally {
+    setOverlay(false);
+  }
+}
+
+async function copiarMensagem() {
+  const box = document.getElementById("mensagemPronta");
+  const btn = document.getElementById("btnCopiarMensagem");
+  if (!box) return;
+
+  try {
+    await navigator.clipboard.writeText(box.value);
+    const old = btn.textContent;
+    btn.textContent = "Copiado ✔";
+    setTimeout(() => btn.textContent = old, 1500);
+  } catch (e) {
+    box.select();
+    document.execCommand("copy");
+    const old = btn.textContent;
+    btn.textContent = "Copiado ✔";
+    setTimeout(() => btn.textContent = old, 1500);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const ok = await checkAuth();
+  if (!ok) return;
+
+  await carregarPermissoes();
+
+  document.getElementById("btnGerarCodigo")?.addEventListener("click", gerarCodigo);
+  document.getElementById("btnCopiarMensagem")?.addEventListener("click", copiarMensagem);
+});
+</script>
+
+<script src="footer-loader.js"></script>
+</body>
+</html>
