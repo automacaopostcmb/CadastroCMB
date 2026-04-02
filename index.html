@@ -209,7 +209,7 @@ function showMenuLoadingUI() {
   let algumPermitido = false;
 
   try {
-    const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}&menu=1&v=${Date.now()}`);
+    const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}&menu=1`);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
     const data = await resp.json();
