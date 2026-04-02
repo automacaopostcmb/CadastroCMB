@@ -219,7 +219,7 @@ function showMenuLoadingUI() {
 
     area.innerHTML = "";
     if (perms.mestre) {
-  
+   algumPermitido = true;
 
   const btnAdmin = document.createElement("button");
   btnAdmin.textContent = "CRIAR NOVO CÓDIGO";
@@ -234,7 +234,7 @@ function showMenuLoadingUI() {
 
   area.appendChild(btnAdmin);
 }
-    algumPermitido = false;
+
 
     paginas.forEach((pag, idx) => {
       if (perms[pag.nome]) {
