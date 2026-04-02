@@ -126,6 +126,37 @@
       font-weight: 700;
       color: #8b0000;
     }
+
+    /* ===== FIX MOBILE – CONFIRMAÇÃO EXCLUSÃO ===== */
+.confirmar-exclusao-box .button-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.confirmar-exclusao-box .button-row button{
+  flex:1 1 140px;
+  min-width:0;
+  box-sizing:border-box;
+}
+
+/* Mobile */
+@media (max-width: 640px){
+  .confirmar-exclusao-box .button-row{
+    flex-direction:column;
+  }
+
+  .confirmar-exclusao-box .button-row button{
+    width:100%;
+  }
+}
+
+/* Evita que algo estique os blocos brancos */
+.step-box{
+  max-width:100%;
+  overflow-x:hidden;
+  box-sizing:border-box;
+}
   </style>
 </head>
 <body class="auth-pending">
