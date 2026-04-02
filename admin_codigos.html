@@ -76,15 +76,21 @@
       display: none;
     }
 
-    .btn-black-top {
-      width: 100%;
-      background: #000 !important;
-      color: #fff !important;
-      border: none;
-      border-radius: 12px;
-      padding: 14px 18px;
+    .admin-block-title {
+      margin-top: 34px;
+    }
+
+    .admin-edit-box {
+      margin-top: 18px;
+      display: none;
+    }
+
+    .codigo-encontrado {
+      font-size: 14px;
+      text-align: center;
+      margin-top: 8px;
+      color: #444;
       font-weight: 700;
-      cursor: pointer;
     }
   </style>
 </head>
@@ -127,22 +133,48 @@
       </div>
     </div>
 
+    <div class="wizard-step-title admin-block-title">ALTERAR CÓDIGO</div>
+
+    <div class="step-box">
+      <label class="title-label">Qual código você quer alterar?</label>
+      <input type="text" id="codigoAlterar" placeholder="Digite o código" />
+
+      <div class="button-row" style="margin-top:22px;">
+        <button id="btnBuscarCodigo" class="btn-nav btn-proximo">Atualizar</button>
+      </div>
+
+      <div id="alterarFeedback" class="admin-feedback"></div>
+
+      <div id="alterarBox" class="admin-edit-box">
+        <div id="codigoEncontrado" class="codigo-encontrado"></div>
+
+        <label class="title-label" style="margin-top:20px;">Quais páginas esse código terá acesso?</label>
+        <div id="listaPermissoesAlterar" class="admin-list"></div>
+
+        <div class="button-row" style="margin-top:22px;">
+          <button id="btnAlterarCodigo" class="btn-nav btn-proximo">Alterar</button>
+        </div>
+      </div>
+    </div>
+
     <a class="btn-light-text" href="index.html?back=1">Voltar para o Menu</a>
   </section>
 
-<div id="overlay" style="display:grid;">
-  <div class="loader">
-    <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
-    <div class="loader-text">Verificando acesso...</div>
+  <div id="overlay" style="display:grid;">
+    <div class="loader">
+      <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
+      <div class="loader-text">Verificando acesso...</div>
+    </div>
   </div>
-</div>
 </main>
+
 <script>
 const AUTH_URL = "https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec";
 const ADMIN_URL = "https://script.google.com/macros/s/AKfycbyNlxliAYm01ZdIpEdc43MFVLQt2OrCBrc7e1MNtWICgrGXlUeKd5kPKXntmPyn7QUDcQ/exec";
 const PAGINA = "mestre";
 
-let pageBootFinished = false;
+let permissoesDisponiveis = [];
+let codigoEmEdicao = "";
 
 function setOverlay(show, text) {
   const overlay = document.getElementById("overlay");
@@ -158,6 +190,14 @@ function closeOverlayNow() {
 
 function showFeedback(msg, ok = false) {
   const el = document.getElementById("adminFeedback");
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = msg ? "block" : "none";
+  el.style.color = ok ? "green" : "red";
+}
+
+function showAlterarFeedback(msg, ok = false) {
+  const el = document.getElementById("alterarFeedback");
   if (!el) return;
   el.textContent = msg;
   el.style.display = msg ? "block" : "none";
@@ -201,6 +241,31 @@ function formatarNomePermissao(nome) {
     .replace(/\b\w/g, l => l.toUpperCase());
 }
 
+function renderListaPermissoes(containerId, permissoes, marcadas = []) {
+  const wrap = document.getElementById(containerId);
+  if (!wrap) return;
+
+  wrap.innerHTML = "";
+  const marcadasSet = new Set(marcadas);
+
+  permissoes.forEach((perm) => {
+    const item = document.createElement("label");
+    item.className = "admin-item";
+
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.value = perm;
+    cb.checked = marcadasSet.has(perm);
+
+    const text = document.createElement("span");
+    text.textContent = formatarNomePermissao(perm);
+
+    item.appendChild(cb);
+    item.appendChild(text);
+    wrap.appendChild(item);
+  });
+}
+
 async function carregarPermissoes() {
   const chave = getChave();
 
@@ -223,28 +288,13 @@ async function carregarPermissoes() {
       }
     }
 
-    const wrap = document.getElementById("listaPermissoes");
-    wrap.innerHTML = "";
-
     if (!permissoes.length) {
       throw new Error("Nenhuma permissão encontrada.");
     }
 
-    permissoes.forEach((perm) => {
-      const item = document.createElement("label");
-      item.className = "admin-item";
-
-      const cb = document.createElement("input");
-      cb.type = "checkbox";
-      cb.value = perm;
-
-      const text = document.createElement("span");
-      text.textContent = formatarNomePermissao(perm);
-
-      item.appendChild(cb);
-      item.appendChild(text);
-      wrap.appendChild(item);
-    });
+    permissoesDisponiveis = permissoes.slice();
+    renderListaPermissoes("listaPermissoes", permissoesDisponiveis);
+    renderListaPermissoes("listaPermissoesAlterar", permissoesDisponiveis);
 
   } catch (e) {
     console.error(e);
@@ -252,8 +302,8 @@ async function carregarPermissoes() {
   }
 }
 
-function getPermissoesMarcadas() {
-  return Array.from(document.querySelectorAll('#listaPermissoes input[type="checkbox"]:checked'))
+function getPermissoesMarcadas(containerId) {
+  return Array.from(document.querySelectorAll(`#${containerId} input[type="checkbox"]:checked`))
     .map(el => el.value);
 }
 
@@ -264,7 +314,7 @@ E use o código ${codigo} para criar a sua divulgação!`;
 
 async function gerarCodigo() {
   const nome = (document.getElementById("nomeDestinatario").value || "").trim();
-  const paginas = getPermissoesMarcadas();
+  const paginas = getPermissoesMarcadas("listaPermissoes");
   const chaveAdmin = getChave();
 
   if (!nome) {
@@ -316,18 +366,15 @@ async function gerarCodigo() {
     document.getElementById("mensagemPronta").value = mensagem;
     document.getElementById("adminResult").style.display = "block";
 
-    showFeedback("Código criado com sucesso.", true);
+    try {
+      await navigator.clipboard.writeText(mensagem);
+      showFeedback("Código criado e mensagem copiada.", true);
+    } catch (e) {
+      showFeedback("Código criado com sucesso.", true);
+    }
 
-// copia automaticamente a mensagem
-try {
-  await navigator.clipboard.writeText(mensagem);
-  showFeedback("Código criado e mensagem copiada.", true);
-} catch (e) {
-  console.log("Não conseguiu copiar automaticamente.");
-}
-    
     document.getElementById("nomeDestinatario").value = "";
-document.getElementById("nomeDestinatario").focus();
+    document.getElementById("nomeDestinatario").focus();
 
     setTimeout(() => {
       document.getElementById("adminResult")?.scrollIntoView({
@@ -362,6 +409,106 @@ async function copiarMensagem() {
   }
 }
 
+function resetAlterarBloco() {
+  codigoEmEdicao = "";
+  document.getElementById("codigoAlterar").value = "";
+  document.getElementById("codigoEncontrado").textContent = "";
+  document.getElementById("alterarBox").style.display = "none";
+  showAlterarFeedback("");
+  renderListaPermissoes("listaPermissoesAlterar", permissoesDisponiveis);
+}
+
+async function buscarCodigoParaAlterar() {
+  const codigo = (document.getElementById("codigoAlterar").value || "").trim();
+  const chave = getChave();
+
+  showAlterarFeedback("");
+  document.getElementById("alterarBox").style.display = "none";
+  document.getElementById("codigoEncontrado").textContent = "";
+
+  if (!codigo) {
+    showAlterarFeedback("Digite um código.");
+    return;
+  }
+
+  setOverlay(true, "Buscando código...");
+
+  try {
+    const url = `${ADMIN_URL}?action=buscarCodigo&chave=${encodeURIComponent(chave)}&codigo=${encodeURIComponent(codigo)}&v=${Date.now()}`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+
+    closeOverlayNow();
+
+    if (!data.ok) {
+      showAlterarFeedback(data.message || "Esse código não existe!");
+      return;
+    }
+
+    codigoEmEdicao = data.codigo || codigo;
+    document.getElementById("codigoEncontrado").textContent = `Código encontrado: ${codigoEmEdicao}`;
+    renderListaPermissoes("listaPermissoesAlterar", permissoesDisponiveis, data.paginas || []);
+    document.getElementById("alterarBox").style.display = "block";
+
+  } catch (e) {
+    console.error(e);
+    closeOverlayNow();
+    showAlterarFeedback("Erro ao buscar código.");
+  }
+}
+
+async function alterarCodigo() {
+  const chaveAdmin = getChave();
+  const paginas = getPermissoesMarcadas("listaPermissoesAlterar");
+
+  if (!codigoEmEdicao) {
+    showAlterarFeedback("Busque um código primeiro.");
+    return;
+  }
+
+  setOverlay(true, "Alterando código...");
+  showAlterarFeedback("");
+
+  try {
+    const resp = await fetch(ADMIN_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify({
+        action: "alterarCodigo",
+        chaveAdmin,
+        codigo: codigoEmEdicao,
+        paginas
+      })
+    });
+
+    const raw = await resp.text();
+    let data;
+
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      throw new Error("Resposta inválida do servidor.");
+    }
+
+    closeOverlayNow();
+
+    if (!data.ok) {
+      showAlterarFeedback(data.message || "Erro ao alterar código.");
+      return;
+    }
+
+    resetAlterarBloco();
+    showAlterarFeedback("Código alterado com sucesso.", true);
+
+  } catch (e) {
+    console.error(e);
+    closeOverlayNow();
+    showAlterarFeedback(e.message || "Erro ao alterar código.");
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   setOverlay(true, "Verificando acesso...");
 
@@ -372,10 +519,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   await carregarPermissoes();
 
   closeOverlayNow();
-  pageBootFinished = true;
 
   document.getElementById("btnGerarCodigo")?.addEventListener("click", gerarCodigo);
   document.getElementById("btnCopiarMensagem")?.addEventListener("click", copiarMensagem);
+  document.getElementById("btnBuscarCodigo")?.addEventListener("click", buscarCodigoParaAlterar);
+  document.getElementById("btnAlterarCodigo")?.addEventListener("click", alterarCodigo);
 });
 </script>
 
