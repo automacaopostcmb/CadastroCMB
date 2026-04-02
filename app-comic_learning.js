@@ -105,7 +105,18 @@ function showAuthOverlay(message) {
 
   overlay.classList.remove('active');
   overlay.classList.add('auth');
-  overlay.style.display = 'grid';
+
+  overlay.style.display = 'flex';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
+  overlay.style.position = 'fixed';
+  overlay.style.inset = '0';
+  overlay.style.zIndex = '9999';
+  overlay.style.padding = '24px';
+  overlay.style.boxSizing = 'border-box';
+  overlay.style.background = 'rgba(18, 96, 145, 0.60)';
+  overlay.style.backdropFilter = 'blur(3px)';
+  overlay.style.webkitBackdropFilter = 'blur(3px)';
 
   const el = document.querySelector('#overlay .loader-text');
   if (el) el.textContent = message || 'Faça login primeiro.';
@@ -645,110 +656,34 @@ function drawCenteredWrappedText(c, text, cfg) {
   return { overflow, lines: linhasFinais };
 }
 
-function buildPreviewFont(size, weight = 700, family = '"Montserrat", Arial, sans-serif') {
-  return `${weight} ${size}px ${family}`;
-}
+function getSingleLessonFontSize(text, cfg, c) {
+  const textoBase = String(text || '').trim();
+  if (!textoBase) return 38;
 
-function fitWrappedFontSize(text, cfg, c) {
-  const baseFontSize = cfg.baseFontSize || 60;
-  const minFontSize = cfg.minFontSize || 26;
-  const fontWeight = cfg.fontWeight || 700;
-  const fontFamily = cfg.fontFamily || '"Montserrat", Arial, sans-serif';
+  let size = cfg.baseFontSize || 60;
+  const minSize = cfg.minFontSize || 26;
+  const weight = cfg.fontWeight || 700;
+  const family = cfg.fontFamily || '"Montserrat", Arial, sans-serif';
 
-  let size = baseFontSize;
-  let linhas = [];
-
-  while (size >= minFontSize) {
-    c.font = buildPreviewFont(size, fontWeight, fontFamily);
+  while (size >= minSize) {
+    c.font = `${weight} ${size}px ${family}`;
 
     const textoFinal = cfg.uppercase
-      ? String(text || '').toLocaleUpperCase('pt-BR')
-      : String(text || '');
+      ? textoBase.toLocaleUpperCase('pt-BR')
+      : textoBase;
 
     const textoComPrefixo = cfg.prefix ? `${cfg.prefix} ${textoFinal}` : textoFinal;
-    linhas = wrapText(textoComPrefixo, cfg.maxWidth, c);
+    const linhas = wrapText(textoComPrefixo, cfg.maxWidth, c);
 
     if (linhas.length <= cfg.maxLines) {
-      return { fontSize: size, lines };
+      return size;
     }
 
     size -= 2;
   }
 
-  c.font = buildPreviewFont(minFontSize, fontWeight, fontFamily);
-
-  const textoFinal = cfg.uppercase
-    ? String(text || '').toLocaleUpperCase('pt-BR')
-    : String(text || '');
-
-  const textoComPrefixo = cfg.prefix ? `${cfg.prefix} ${textoFinal}` : textoFinal;
-  linhas = wrapText(textoComPrefixo, cfg.maxWidth, c);
-
-  return { fontSize: minFontSize, lines };
+  return minSize;
 }
-
-function drawCenteredWrappedTextAutoFit(c, text, cfg) {
-  if (!text) return { overflow: false, lines: [], fontSize: cfg.baseFontSize || 60 };
-
-  const fit = fitWrappedFontSize(text, cfg, c);
-  const linhas = fit.lines || [];
-  const overflow = linhas.length > cfg.maxLines;
-  const linhasFinais = linhas.slice(0, cfg.maxLines);
-
-  const fontWeight = cfg.fontWeight || 700;
-  const fontFamily = cfg.fontFamily || '"Montserrat", Arial, sans-serif';
-
-  c.save();
-  c.font = buildPreviewFont(fit.fontSize, fontWeight, fontFamily);
-  c.textAlign = 'center';
-  c.textBaseline = 'top';
-
-  let startY = cfg.y;
-  const totalHeight = (linhasFinais.length - 1) * cfg.lineHeight;
-
-  if (cfg.anchor === 'center') {
-    startY = cfg.y - totalHeight / 2;
-  } else if (cfg.anchor === 'bottom') {
-    startY = cfg.y - totalHeight;
-  } else if (cfg.anchor === 'top') {
-    startY = cfg.y;
-
-    if (linhasFinais.length > 1 && cfg.multilineOffsetY) {
-      startY = cfg.y - cfg.multilineOffsetY;
-    }
-  }
-
-  linhasFinais.forEach((linha, i) => {
-    const drawY = startY + i * cfg.lineHeight;
-
-    if (cfg.shadowColor) {
-      c.fillStyle = cfg.shadowColor;
-      c.fillText(
-        linha,
-        cfg.x + (cfg.shadowOffsetX || 0),
-        drawY + (cfg.shadowOffsetY || 0)
-      );
-    }
-
-    if (cfg.strokeColor && cfg.strokeWidth > 0) {
-      c.lineWidth = cfg.strokeWidth;
-      c.strokeStyle = cfg.strokeColor;
-      c.strokeText(linha, cfg.x, drawY);
-    }
-
-    c.fillStyle = cfg.color;
-    c.fillText(linha, cfg.x, drawY);
-  });
-
-  c.restore();
-
-  return {
-    overflow,
-    lines: linhasFinais,
-    fontSize: fit.fontSize
-  };
-}
-
 function gerarPost() {
   if (!ctx || !canvas) return;
 
@@ -818,35 +753,43 @@ function gerarPost() {
     drawTarja(ctx, rotulo, 103, 794, 0.8, '#4ec3ff', false);
   }
 
-  const aulasList = getAulasPreviewList();
+const aulasList = getAulasPreviewList();
 
-  let overflowAulas = false;
+let overflowAulas = false;
 
-  if (aulasList.length === 1) {
-    const r1 = drawCenteredWrappedTextAutoFit(
-      ctx,
-      aulasList[0],
-      AULAS_PREVIEW_CONFIG.umaAula.aula1
-    );
+if (aulasList.length === 1) {
+  const cfgUmaAula = AULAS_PREVIEW_CONFIG.umaAula.aula1;
+  const fontSize = getSingleLessonFontSize(aulasList[0], cfgUmaAula, ctx);
 
-    overflowAulas = r1.overflow;
-  } else if (aulasList.length >= 2) {
-    ctx.font = '700 28px "Montserrat", Arial, sans-serif';
+  ctx.font = `700 ${fontSize}px "Montserrat", Arial, sans-serif`;
 
-    const r1 = drawCenteredWrappedText(
-      ctx,
-      aulasList[0],
-      AULAS_PREVIEW_CONFIG.duasAulas.aula1
-    );
+  const r1 = drawCenteredWrappedText(
+    ctx,
+    aulasList[0],
+    {
+      ...cfgUmaAula,
+      lineHeight: Math.round(fontSize * 1.08)
+    }
+  );
 
-    const r2 = drawCenteredWrappedText(
-      ctx,
-      aulasList[1],
-      AULAS_PREVIEW_CONFIG.duasAulas.aula2
-    );
+  overflowAulas = r1.overflow;
+} else if (aulasList.length >= 2) {
+  ctx.font = '700 28px "Montserrat", Arial, sans-serif';
 
-    overflowAulas = r1.overflow || r2.overflow;
-  }
+  const r1 = drawCenteredWrappedText(
+    ctx,
+    aulasList[0],
+    AULAS_PREVIEW_CONFIG.duasAulas.aula1
+  );
+
+  const r2 = drawCenteredWrappedText(
+    ctx,
+    aulasList[1],
+    AULAS_PREVIEW_CONFIG.duasAulas.aula2
+  );
+
+  overflowAulas = r1.overflow || r2.overflow;
+}
 
   validationFlags.overflowNome = false;
   validationFlags.overflowRotulo = false;
@@ -1062,21 +1005,34 @@ async function checkAuth() {
   const chave = (localStorage.getItem('chave') || '').trim();
 
   if (!chave) {
-    blockAndRedirect('Faça login primeiro.', 'index.html', 2000);
-    return;
+    showAuthOverlay('Faça login primeiro.');
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 1800);
+    return false;
   }
 
   try {
-    const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}&v=${Date.now()}`);
+    const resp = await fetch(
+      `${API_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}&v=${Date.now()}`
+    );
     const data = await resp.json();
 
-    if (!data.permitido) {
-      blockAndRedirect('Você não tem permissão para acessar esta página.', 'index.html', 2200);
-      return;
+    if (!data || !data.permitido) {
+      showAuthOverlay('Você não tem permissão para acessar esta página.');
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1800);
+      return false;
     }
 
+    return true;
   } catch (e) {
-    blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html', 2500);
+    showAuthOverlay('Falha de rede. Faça login novamente.');
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 2000);
+    return false;
   }
 }
 
@@ -1391,6 +1347,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const isWizardPage = !!document.querySelector('.step') && !!document.getElementById('wizardStepCount');
   if (!isWizardPage) return;
 
+  let autorizado = false;
+
   showInitialLoading('Carregando informações...');
 
   try {
@@ -1410,7 +1368,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById(id)?.addEventListener('input', gerarPost);
     });
 
-    await checkAuth();
+    autorizado = await checkAuth();
+    if (!autorizado) return;
+
     await initCanvas();
     toggleAula2();
 
@@ -1452,7 +1412,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     showStep(1);
 
   } finally {
-    hideInitialLoading();
+    if (autorizado) {
+      hideInitialLoading();
+    }
   }
 });
 
