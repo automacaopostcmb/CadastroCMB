@@ -318,6 +318,9 @@ async function gerarCodigo() {
 
     showFeedback("Código criado com sucesso.", true);
 
+    document.getElementById("nomeDestinatario").value = "";
+document.getElementById("nomeDestinatario").focus();
+
     setTimeout(() => {
       document.getElementById("adminResult")?.scrollIntoView({
         behavior: "smooth",
