@@ -53,7 +53,7 @@ yellowSideOffsets: [-10, -6, -3, 0, 3, 6, 10],
 
   rotulo: {
     x: 540,
-    y: 1160,
+    y: 1150,
     font: '700 34px "Fredoka", "Comic Relief", sans-serif',
     maxWidth: 760,
     fillStyle: '#000000',
