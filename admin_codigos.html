@@ -142,6 +142,8 @@ const AUTH_URL = "https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6
 const ADMIN_URL = "https://script.google.com/macros/s/AKfycbyNlxliAYm01ZdIpEdc43MFVLQt2OrCBrc7e1MNtWICgrGXlUeKd5kPKXntmPyn7QUDcQ/exec";
 const PAGINA = "mestre";
 
+let pageBootFinished = false;
+
 function setOverlay(show, text) {
   const overlay = document.getElementById("overlay");
   const label = overlay?.querySelector(".loader-text");
@@ -149,11 +151,16 @@ function setOverlay(show, text) {
   if (overlay) overlay.style.display = show ? "grid" : "none";
 }
 
+function closeOverlayNow() {
+  const overlay = document.getElementById("overlay");
+  if (overlay) overlay.style.display = "none";
+}
+
 function showFeedback(msg, ok = false) {
   const el = document.getElementById("adminFeedback");
   if (!el) return;
   el.textContent = msg;
-  el.style.display = "block";
+  el.style.display = msg ? "block" : "none";
   el.style.color = ok ? "green" : "red";
 }
 
@@ -202,8 +209,6 @@ async function carregarPermissoes() {
     const resp = await fetch(url);
     const data = await resp.json();
 
-    console.log("Resposta listPermissoes:", data);
-
     if (!data.ok) {
       throw new Error(data.message || "Erro ao carregar permissões.");
     }
@@ -244,8 +249,6 @@ async function carregarPermissoes() {
   } catch (e) {
     console.error(e);
     showFeedback(e.message || "Erro ao carregar permissões.");
-  } finally {
-    setOverlay(false);
   }
 }
 
@@ -307,18 +310,25 @@ async function gerarCodigo() {
     const codigo = data.codigo;
     const mensagem = montarMensagem(codigo);
 
+    closeOverlayNow();
+
     document.getElementById("novoCodigo").textContent = codigo;
     document.getElementById("mensagemPronta").value = mensagem;
     document.getElementById("adminResult").style.display = "block";
 
     showFeedback("Código criado com sucesso.", true);
-    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+
+    setTimeout(() => {
+      document.getElementById("adminResult")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 50);
 
   } catch (e) {
     console.error(e);
+    closeOverlayNow();
     showFeedback(e.message || "Erro ao criar código.");
-  } finally {
-    setOverlay(false);
   }
 }
 
@@ -349,6 +359,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   setOverlay(true, "Carregando permissões...");
   await carregarPermissoes();
+
+  closeOverlayNow();
+  pageBootFinished = true;
 
   document.getElementById("btnGerarCodigo")?.addEventListener("click", gerarCodigo);
   document.getElementById("btnCopiarMensagem")?.addEventListener("click", copiarMensagem);
