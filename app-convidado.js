@@ -40,7 +40,7 @@ const TEXT_LAYOUT = {
     frontStrokeWidth: 10,
 
     yellowFill: '#f3b233',
-    yellowOffsetY: 2,
+    yellowOffsetY: 1,
     yellowLayers: [4, 8, 12, 16, 20],
 yellowSideOffsets: [-10, -6, -3, 0, 3, 6, 10],
 
@@ -54,7 +54,7 @@ yellowSideOffsets: [-10, -6, -3, 0, 3, 6, 10],
   rotulo: {
     x: 540,
     y: 1130,
-    font: '700 46px "Fredoka", "Comic Relief", sans-serif',
+    font: '700 34px "Fredoka", "Comic Relief", sans-serif',
     maxWidth: 760,
     fillStyle: '#000000',
     textAlign: 'center',
