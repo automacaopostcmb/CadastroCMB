@@ -130,12 +130,12 @@
     <a class="btn-light-text" href="index.html?back=1">Voltar para o Menu</a>
   </section>
 
-  <div id="overlay">
-    <div class="loader">
-      <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
-      <div class="loader-text">Carregando...</div>
-    </div>
+<div id="overlay" style="display:grid;">
+  <div class="loader">
+    <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
+    <div class="loader-text">Verificando acesso...</div>
   </div>
+</div>
 </main>
 <script>
 const AUTH_URL = "https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec";
@@ -196,7 +196,6 @@ function formatarNomePermissao(nome) {
 
 async function carregarPermissoes() {
   const chave = getChave();
-  setOverlay(true, "Carregando permissões...");
 
   try {
     const url = `${ADMIN_URL}?action=listPermissoes&chave=${encodeURIComponent(chave)}&v=${Date.now()}`;
@@ -343,11 +342,12 @@ async function copiarMensagem() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-
+  setOverlay(true, "Verificando acesso...");
 
   const ok = await checkAuth();
   if (!ok) return;
 
+  setOverlay(true, "Carregando permissões...");
   await carregarPermissoes();
 
   document.getElementById("btnGerarCodigo")?.addEventListener("click", gerarCodigo);
