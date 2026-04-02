@@ -105,7 +105,18 @@ function showAuthOverlay(message) {
 
   overlay.classList.remove('active');
   overlay.classList.add('auth');
-  overlay.style.display = 'grid';
+
+  overlay.style.display = 'flex';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
+  overlay.style.position = 'fixed';
+  overlay.style.inset = '0';
+  overlay.style.zIndex = '9999';
+  overlay.style.padding = '24px';
+  overlay.style.boxSizing = 'border-box';
+  overlay.style.background = 'rgba(18, 96, 145, 0.60)';
+  overlay.style.backdropFilter = 'blur(3px)';
+  overlay.style.webkitBackdropFilter = 'blur(3px)';
 
   const el = document.querySelector('#overlay .loader-text');
   if (el) el.textContent = message || 'Faça login primeiro.';
@@ -956,21 +967,32 @@ async function checkAuth() {
   const chave = (localStorage.getItem('chave') || '').trim();
 
   if (!chave) {
-    blockAndRedirect('Faça login primeiro.', 'index.html', 2000);
-    return;
+    showAuthOverlay('Faça login primeiro.');
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 1800);
+    return false;
   }
 
   try {
     const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}&v=${Date.now()}`);
     const data = await resp.json();
 
-    if (!data.permitido) {
-      blockAndRedirect('Você não tem permissão para acessar esta página.', 'index.html', 2200);
-      return;
+    if (!data || !data.permitido) {
+      showAuthOverlay('Você não tem permissão para acessar esta página.');
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1800);
+      return false;
     }
 
+    return true;
   } catch (e) {
-    blockAndRedirect('Falha de rede. Faça login novamente.', 'index.html', 2500);
+    showAuthOverlay('Falha de rede. Faça login novamente.');
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 2000);
+    return false;
   }
 }
 
@@ -1285,6 +1307,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const isWizardPage = !!document.querySelector('.step') && !!document.getElementById('wizardStepCount');
   if (!isWizardPage) return;
 
+  let autorizado = false;
+
   showInitialLoading('Carregando informações...');
 
   try {
@@ -1304,7 +1328,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById(id)?.addEventListener('input', gerarPost);
     });
 
-    await checkAuth();
+    autorizado = await checkAuth();
+    if (!autorizado) return;
+
     await initCanvas();
     toggleAula2();
 
@@ -1346,7 +1372,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     showStep(1);
 
   } finally {
-    hideInitialLoading();
+    if (autorizado) {
+      hideInitialLoading();
+    }
   }
 });
 
