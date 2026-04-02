@@ -301,22 +301,87 @@ function getAulasPreviewText() {
 
 function buildCaptionFromForm() {
   const nomeDiv = getNomeDivulgacao();
-  const rotulo = getRotuloDivulgacao();
-  const aulas = getAulasPreviewText();
+  const qtd = (document.getElementById('quantidade_aulas')?.value || '').trim();
+
+  const aula1Nome = (document.getElementById('aula1_nome')?.value || '').trim();
+  const aula1Desc = (document.getElementById('aula1_descricao')?.value || '').trim();
+
+  const aula2Nome = (document.getElementById('aula2_nome')?.value || '').trim();
+  const aula2Desc = (document.getElementById('aula2_descricao')?.value || '').trim();
+
+  const textoComp = (document.getElementById('texto_complementar')?.value || '').trim();
 
   const { handle } = normalizeInstagram(document.getElementById('insta')?.value || '');
   const instaHandle = handle ? '@' + handle : '';
 
-  const textoComp = (document.getElementById('texto_complementar')?.value || '').trim();
-  const descAula1 = (document.getElementById('aula1_descricao')?.value || '').trim();
-  const descricao = textoComp || descAula1 || '';
+  const tipoTarja = getTipoTarjaSelecionada();
 
-  const head = `${nomeDiv || 'Professor(a) confirmado(a)'} ${instaHandle || ''} no Comic Learning @comicmarketbrasil`;
-  const role = rotulo || '';
-  const aulasTexto = aulas ? `Aulas: ${aulas}` : '';
-  const tags = '#ComicMarketBrasil #QuadrinhosNacionais #CMB #evento #quadrinhos';
+  let head = '';
 
-  return [head, role, aulasTexto, '', descricao, '', tags].filter(Boolean).join('\n');
+  const nomeLinha = [nomeDiv, instaHandle].filter(Boolean).join(' ').trim();
+
+  if (tipoTarja === 'professor') {
+    head = `${nomeLinha} é nosso professor no Comic Learning @comicmarketbrasil!`;
+  } else if (tipoTarja === 'professora') {
+    head = `${nomeLinha} é nossa professora no Comic Learning @comicmarketbrasil!`;
+  } else {
+    head = `${nomeLinha} nos ensinará no Comic Learning @comicmarketbrasil!`;
+  }
+
+  let aulasLinha = '';
+  if (qtd === '2' && aula1Nome && aula2Nome) {
+    aulasLinha = `Aulas: ${aula1Nome} e ${aula2Nome}`;
+  } else if (aula1Nome) {
+    aulasLinha = `Aula: ${aula1Nome}`;
+  }
+
+  const blocosAulas = [];
+
+  if (aula1Nome || aula1Desc) {
+    blocosAulas.push(
+      `${aula1Nome}${aula1Desc ? ':\n' + aula1Desc : ''}`
+    );
+  }
+
+  if (qtd === '2' && (aula2Nome || aula2Desc)) {
+    blocosAulas.push(
+      `${aula2Nome}${aula2Desc ? ':\n' + aula2Desc : ''}`
+    );
+  }
+
+  const infoData = qtd === '2'
+    ? 'Data e dia das aulas serão divulgadas em breve!'
+    : 'Data e dia da aula será divulgada em breve!';
+
+  const infoCMB =
+`Mais informações e ingressos: http://comicmarketbrasil.com.br
+O CMB será dia 15 e 16 de agosto!`;
+
+  const tags =
+'#ComicMarketBrasil #QuadrinhosNacionais #CMB #evento #quadrinhos';
+
+  const partes = [
+    head,
+    '',
+    aulasLinha,
+    '',
+    ...blocosAulas.flatMap((bloco, i) => i === 0 ? [bloco] : ['', bloco]),
+  ];
+
+  if (textoComp) {
+    partes.push('', textoComp);
+  }
+
+  partes.push(
+    '',
+    infoData,
+    '',
+    infoCMB,
+    '',
+    tags
+  );
+
+  return partes.filter((item) => item !== null && item !== undefined).join('\n');
 }
 
 /* ===========================
