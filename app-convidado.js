@@ -569,7 +569,7 @@ function buildCaptionFromForm() {
     '🎟️ Mais informações e ingressos:',
     'comicmarketbrasil.com.br',
     '',
-    '#ComicMarketBrasil #QuadrinhosNacionais #QuadrinhosBrasileiros #hqbr #mangabr #historiaemquadrinhos #desenhistabrasileiro #ilustradorbrasileiro #fapcom'
+    '#ComicMarketBrasil #QuadrinhosNacionais #CMB #evento #quadrinhos'
   ].join('\n');
 }
 
