@@ -91,6 +91,46 @@ function showFieldError(id, message) {
   if (box) box.textContent = message || '';
 }
 
+const OVERLAY_STEPS = [
+  { after: 0,      msg: "Finalizando sua presença..." },
+  { after: 6000,   msg: "Salvando a sua imagem..." },
+  { after: 12000,  msg: "Quase lá!" },
+  { after: 25000,  msg: "Só mais um pouco…" },
+  { after: 40000,  msg: "Finalizando..." },
+  { after: 50000,  msg: "Só mais um pouco…" },
+  { after: 80000,  msg: "Está demorando mais do que o normal." },
+  { after: 100000, msg: "Imagem é pesada ou sua internet está ruim?" },
+  { after: 155000, msg: "Demorou mais do que o normal. Tente trocar de rede e reenviar." },
+];
+
+let overlayTimers = [];
+let overlayStartedAt = 0;
+
+function setOverlayText(text) {
+  const overlay = qs('overlay');
+  const textEl = overlay?.querySelector('.loader-text');
+  if (textEl) textEl.textContent = text || 'Carregando...';
+}
+
+function stopOverlayMessages() {
+  overlayTimers.forEach(clearTimeout);
+  overlayTimers = [];
+}
+
+function startOverlayMessages(customSteps = OVERLAY_STEPS) {
+  stopOverlayMessages();
+  overlayStartedAt = Date.now();
+
+  const first = customSteps?.[0]?.msg || 'Enviando...';
+  showOverlay(first);
+
+  overlayTimers = (customSteps || []).map((step) => {
+    return setTimeout(() => {
+      setOverlayText(step.msg);
+    }, Math.max(0, Number(step.after) || 0));
+  });
+}
+
 function showOverlay(text = 'Carregando...') {
   const overlay = qs('overlay');
   const textEl = overlay?.querySelector('.loader-text');
@@ -99,6 +139,7 @@ function showOverlay(text = 'Carregando...') {
 }
 
 function hideOverlay() {
+  stopOverlayMessages();
   const overlay = qs('overlay');
   if (overlay) overlay.style.display = 'none';
 }
@@ -602,6 +643,7 @@ async function enviarParaGoogle() {
   const estande = (qs('estande')?.value || '').trim();
   const estandeInsta = (qs('estandeInsta')?.value || '').trim();
   const fotoInput = qs('fotoDivulgacao');
+  const btnEnviar = qs('botao-enviar');
 
   if (!nome || !rotulo || !biografia || !dia || !fotoInput?.files?.length) {
     const msg = qs('mensagemFinalDados');
@@ -621,6 +663,11 @@ async function enviarParaGoogle() {
   });
 
   try {
+    if (btnEnviar) {
+      btnEnviar.disabled = true;
+      btnEnviar.textContent = 'Enviando...';
+    }
+
     const file = fotoInput.files[0];
     const b64 = await toBase64(file);
 
@@ -652,7 +699,7 @@ async function enviarParaGoogle() {
       preview: previewBase64
     };
 
-    showOverlay('Finalizando...');
+    startOverlayMessages();
 
     const response = await fetch(SUBMIT_URL, {
       method: 'POST',
@@ -688,6 +735,11 @@ async function enviarParaGoogle() {
         msg.textContent = '❌ Erro ao enviar: ' + (result.message || 'Tente novamente.');
         msg.style.color = 'red';
       }
+
+      if (btnEnviar) {
+        btnEnviar.disabled = false;
+        btnEnviar.textContent = 'Confirmar e finalizar';
+      }
     }
   } catch (err) {
     hideOverlay();
@@ -697,6 +749,11 @@ async function enviarParaGoogle() {
       msg.textContent = '❌ ' + err.message;
       msg.style.color = 'red';
       msg.style.display = 'block';
+    }
+
+    if (btnEnviar) {
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = 'Confirmar e finalizar';
     }
 
     console.error(err);
