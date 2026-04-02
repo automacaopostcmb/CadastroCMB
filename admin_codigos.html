@@ -137,9 +137,9 @@
     </div>
   </div>
 </main>
-
 <script>
 const AUTH_URL = "https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec";
+const ADMIN_URL = "https://script.google.com/macros/s/AKfycbyNlxliAYm01ZdIpEdc43MFVLQt2OrCBrc7e1MNtWICgrGXlUeKd5kPKXntmPyn7QUDcQ/exec";
 const PAGINA = "mestre";
 
 function setOverlay(show, text) {
@@ -199,18 +199,34 @@ async function carregarPermissoes() {
   setOverlay(true, "Carregando permissões...");
 
   try {
-    const url = `${AUTH_URL}?action=listPermissoes&chave=${encodeURIComponent(chave)}&v=${Date.now()}`;
+    const url = `${ADMIN_URL}?action=listPermissoes&chave=${encodeURIComponent(chave)}&v=${Date.now()}`;
     const resp = await fetch(url);
     const data = await resp.json();
+
+    console.log("Resposta listPermissoes:", data);
 
     if (!data.ok) {
       throw new Error(data.message || "Erro ao carregar permissões.");
     }
 
+    let permissoes = data.permissoes || [];
+
+    if (!Array.isArray(permissoes)) {
+      if (typeof permissoes === "object" && permissoes !== null) {
+        permissoes = Object.keys(permissoes);
+      } else {
+        permissoes = [];
+      }
+    }
+
     const wrap = document.getElementById("listaPermissoes");
     wrap.innerHTML = "";
 
-    (data.permissoes || []).forEach((perm) => {
+    if (!permissoes.length) {
+      throw new Error("Nenhuma permissão encontrada.");
+    }
+
+    permissoes.forEach((perm) => {
       const item = document.createElement("label");
       item.className = "admin-item";
 
@@ -227,6 +243,7 @@ async function carregarPermissoes() {
     });
 
   } catch (e) {
+    console.error(e);
     showFeedback(e.message || "Erro ao carregar permissões.");
   } finally {
     setOverlay(false);
@@ -262,7 +279,7 @@ async function gerarCodigo() {
   showFeedback("");
 
   try {
-    const resp = await fetch(AUTH_URL, {
+    const resp = await fetch(ADMIN_URL, {
       method: "POST",
       headers: {
         "Content-Type": "text/plain;charset=utf-8"
@@ -299,6 +316,7 @@ async function gerarCodigo() {
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
 
   } catch (e) {
+    console.error(e);
     showFeedback(e.message || "Erro ao criar código.");
   } finally {
     setOverlay(false);
