@@ -577,7 +577,7 @@ function drawTextOverlay() {
     const baseFont = PREVIEW_CONFIG.obra.fontBaseSize;
     const sizeDiff = Math.max(0, baseFont - (finalTitleSize || baseFont));
 
-    const dynamicPlaquinhaY = PREVIEW_CONFIG.nomePlaquinha.y + (sizeDiff * 0.9);
+    const dynamicPlaquinhaY = PREVIEW_CONFIG.nomePlaquinha.y + (sizeDiff * 0.5);
 
     drawPlaquinhaCanvas(
       ctx,
