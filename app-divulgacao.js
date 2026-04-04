@@ -1,6 +1,6 @@
 const AUTH_URL = 'https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec';
 const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbyHzp8x1x48GQ65SsbebbLjzt0FhnwdbBO9Fj714cDTbUt2ANCuv7LUIajKIi3bsyVq/exec';
-const PAGINA = 'divulgação';
+const PAGINA = 'lançamento';
 
 let steps = [];
 let currentStep = 1;
