@@ -352,7 +352,7 @@ function initCanvas() {
   frameImg.onerror = () => {
     frameLoaded = false;
     frameError = true;
-    console.error('Não foi possível carregar assets/divulgacao.png');
+    console.error('Não foi possível carregar assets/lancamento.png');
 
     const msg = qs('mensagem');
     if (msg) {
@@ -362,7 +362,7 @@ function initCanvas() {
     }
   };
 
-  frameImg.src = 'assets/divulgacao.png';
+  frameImg.src = 'assets/lancamento.png';
 
   const fotoInput = qs('imagemDivulgacao');
   if (fotoInput) {
@@ -706,7 +706,7 @@ function baixarImagem() {
   if (!canvas) return;
 
   const link = document.createElement('a');
-  link.download = 'divulgacao-cmb-2026.png';
+  link.download = 'lancamento-cmb-2026.png';
   link.href = canvas.toDataURL('image/png');
   link.click();
 
