@@ -512,7 +512,7 @@ function drawPlaquinhaCanvas(c, text, x, y, scale = 0.42, maxWidth = 940) {
 
 function drawStyledTitle(text, cfg) {
   const value = String(text || '').trim();
-  if (!value) return;
+  if (!value) return null;
 
   ctx.save();
 
@@ -541,41 +541,49 @@ function drawStyledTitle(text, cfg) {
     }
   }
 
-  ctx.lineWidth = cfg.frontStrokeWidth + 10;
+  const dynamicOuterStroke = Math.max(6, fitted.size * 0.12);
+  const dynamicInnerStroke = Math.max(3, fitted.size * 0.07);
+  const dynamicShadow = fitted.size * 0.06;
+
+  ctx.lineWidth = dynamicOuterStroke;
   ctx.strokeStyle = '#000000';
   ctx.strokeText(value, x, y + 2);
 
-  ctx.lineWidth = cfg.frontStrokeWidth;
+  ctx.lineWidth = dynamicInnerStroke;
   ctx.strokeStyle = cfg.frontStroke;
   ctx.strokeText(value, x, y);
 
   ctx.fillStyle = cfg.frontFill;
   ctx.fillText(value, x, y);
 
-const dynamicShadow = fitted.size * 0.08;
-
-ctx.fillStyle = cfg.frontFill;
-ctx.shadowColor = cfg.innerShadowColor;
-ctx.shadowBlur = 0;
-ctx.shadowOffsetX = 0;
-ctx.shadowOffsetY = dynamicShadow;
-ctx.fillText(value, x, y);
+  ctx.fillStyle = cfg.frontFill;
+  ctx.shadowColor = cfg.innerShadowColor;
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = dynamicShadow;
+  ctx.fillText(value, x, y);
 
   ctx.restore();
+  return fitted.size;
 }
 
 function drawTextOverlay() {
   const obra = (qs('obra')?.value || '').trim();
   const nome = (qs('nome')?.value || '').trim();
 
-  drawStyledTitle(obra, PREVIEW_CONFIG.obra);
+  const finalTitleSize = drawStyledTitle(obra, PREVIEW_CONFIG.obra);
 
   if (nome) {
+    const baseFont = PREVIEW_CONFIG.obra.fontBaseSize;
+    const sizeDiff = Math.max(0, baseFont - (finalTitleSize || baseFont));
+
+    const dynamicPlaquinhaY = PREVIEW_CONFIG.nomePlaquinha.y + (sizeDiff * 0.9);
+
     drawPlaquinhaCanvas(
       ctx,
       nome,
       PREVIEW_CONFIG.nomePlaquinha.x,
-      PREVIEW_CONFIG.nomePlaquinha.y,
+      dynamicPlaquinhaY,
       PREVIEW_CONFIG.nomePlaquinha.scale,
       PREVIEW_CONFIG.nomePlaquinha.maxWidth
     );
