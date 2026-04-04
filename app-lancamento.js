@@ -40,7 +40,7 @@ const state = {
 const PREVIEW_CONFIG = {
   obra: {
     x: 25,
-    y: 1113,
+    y: 1192,
     fontBaseSize: 88,
     fontMinSize: 28,
     maxWidth: 715,
@@ -64,7 +64,7 @@ const PREVIEW_CONFIG = {
 
   nomePlaquinha: {
     x: 25,
-    y: 1211,
+    y: 1090,
     scale: 0.42,
     maxWidth: 715
   }
@@ -552,12 +552,14 @@ function drawStyledTitle(text, cfg) {
   ctx.fillStyle = cfg.frontFill;
   ctx.fillText(value, x, y);
 
-  ctx.fillStyle = cfg.frontFill;
-  ctx.shadowColor = cfg.innerShadowColor;
-  ctx.shadowBlur = 0;
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = cfg.innerShadowOffsetY;
-  ctx.fillText(value, x, y);
+const dynamicShadow = fitted.size * 0.08;
+
+ctx.fillStyle = cfg.frontFill;
+ctx.shadowColor = cfg.innerShadowColor;
+ctx.shadowBlur = 0;
+ctx.shadowOffsetX = 0;
+ctx.shadowOffsetY = dynamicShadow;
+ctx.fillText(value, x, y);
 
   ctx.restore();
 }
