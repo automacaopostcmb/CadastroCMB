@@ -39,11 +39,11 @@ const state = {
 
 const PREVIEW_CONFIG = {
   obra: {
-    x: 540,
-    y: 1048,
+    x: 25,
+    y: 1113,
     fontBaseSize: 88,
     fontMinSize: 28,
-    maxWidth: 860,
+    maxWidth: 715,
     fontFamily: '"Comic Relief", Arial, sans-serif',
 
     frontFill: '#f3f3f3',
@@ -58,15 +58,15 @@ const PREVIEW_CONFIG = {
     innerShadowColor: '#777777',
     innerShadowOffsetY: 6,
 
-    textAlign: 'center',
+    textAlign: 'left',
     textBaseline: 'middle'
   },
 
   nomePlaquinha: {
-    x: 540,
-    y: 1115,
+    x: 25,
+    y: 1211,
     scale: 0.42,
-    maxWidth: 940
+    maxWidth: 715
   }
 };
 
@@ -487,7 +487,7 @@ function drawPlaquinhaCanvas(c, text, x, y, scale = 0.42, maxWidth = 940) {
   const rectW = Math.ceil(metrics.width + PADDING_X * 2);
   const rectH = Math.ceil(textH + PADDING_Y * 2);
 
-  const leftX = x - rectW / 2;
+ const leftX = x;
 
   drawRoundedRect(c, leftX + SHADOW_X, y + SHADOW_Y, rectW, rectH, RADIUS);
   c.fillStyle = '#000';
@@ -595,7 +595,10 @@ function gerarPost() {
   if (frameLoaded) {
     ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
   }
-
+// DEBUG HITBOX
+//ctx.strokeStyle = 'red';
+//ctx.lineWidth = 2;
+//ctx.strokeRect(25, 1113 - 40, 715, 80);
   drawTextOverlay();
 }
 
@@ -674,7 +677,7 @@ async function shareNative() {
     const blob = await getCanvasBlob();
 
     if (blob && window.File && navigator.canShare) {
-      const file = new File([blob], 'divulgacao-cmb-2026.png', { type: 'image/png' });
+      const file = new File([blob], 'lancamento-cmb-2026.png', { type: 'image/png' });
 
       if (navigator.canShare({ files: [file] })) {
         await navigator.share({ text, files: [file] });
