@@ -534,12 +534,17 @@ function drawStyledTitle(text, cfg) {
   const x = cfg.x;
   const y = cfg.y;
 
-  ctx.fillStyle = cfg.yellowFill;
-  for (const sideX of cfg.yellowSideOffsets) {
-    for (const downY of cfg.yellowLayers) {
-      ctx.fillText(value, x + sideX, y + cfg.yellowOffsetY + downY);
-    }
+const scale = fitted.size / cfg.fontBaseSize;
+
+const yellowLayersScaled = cfg.yellowLayers.map(v => v * scale);
+const yellowSideScaled = cfg.yellowSideOffsets.map(v => v * scale);
+
+ctx.fillStyle = cfg.yellowFill;
+for (const sideX of yellowSideScaled) {
+  for (const downY of yellowLayersScaled) {
+    ctx.fillText(value, x + sideX, y + cfg.yellowOffsetY + downY);
   }
+}
 
   const dynamicOuterStroke = Math.max(6, fitted.size * 0.12);
   const dynamicInnerStroke = Math.max(3, fitted.size * 0.07);
