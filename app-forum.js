@@ -1,4 +1,4 @@
-const FORUM_WEBAPP_URL = "COLE_AQUI_A_URL_DO_WEBAPP_DO_FORUM";
+const FORUM_WEBAPP_URL = "Chttps://script.google.com/macros/s/AKfycbw1A1guXNDwoNoD_3fvy3b-8l4ZDLC9gXS_Yl_lXEwDeMfThITYRzP3l77Li6t_8LifJg/exec";
 const PAGE_PERMISSION = "expo_artistas";
 
 let forumUser = {
