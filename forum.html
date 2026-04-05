@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Fórum – Área dos Artistas (CMB)</title>
+
+  <link rel="stylesheet" href="style.css?v=16">
+
+  <style>
+    .forum-stack{
+      width:100%;
+      max-width:900px;
+      margin:0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .forum-card{
+      background:#fff;
+      border:1px solid #d9e7ff;
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 6px 14px rgba(0,0,0,.04);
+    }
+
+    .forum-card h2{
+      margin:0 0 10px;
+      font-size:22px;
+      text-align:center;
+    }
+
+    .forum-card .forum-desc{
+      margin:0 0 16px;
+      color:#444;
+      font-size:14px;
+      line-height:1.5;
+      text-align:center;
+    }
+
+    .forum-field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-bottom:14px;
+    }
+
+    .forum-field label{
+      font-weight:700;
+      color:#111;
+      font-size:15px;
+    }
+
+    .forum-field input[type="text"],
+    .forum-field textarea{
+      width:100%;
+      border:1px solid #cfdcf7;
+      border-radius:12px;
+      padding:12px 14px;
+      font-size:15px;
+      font-family:inherit;
+      background:#fff;
+      box-sizing:border-box;
+    }
+
+    .forum-field textarea{
+      min-height:130px;
+      resize:vertical;
+    }
+
+    .forum-check{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin:10px 0 16px;
+      font-size:14px;
+      line-height:1.45;
+      color:#333;
+    }
+
+    .forum-check input{
+      margin-top:3px;
+      transform:scale(1.15);
+      flex:0 0 auto;
+    }
+
+    .forum-actions{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .forum-note{
+      font-size:13px;
+      color:#666;
+      text-align:center;
+      margin-top:10px;
+    }
+
+    .forum-list{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .question-card{
+      border:1px solid #e3ebfb;
+      border-radius:14px;
+      background:#fcfdff;
+      padding:14px;
+    }
+
+    .question-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:8px;
+    }
+
+    .question-title{
+      font-size:18px;
+      font-weight:700;
+      line-height:1.25;
+      color:#111;
+      margin:0;
+      word-break:break-word;
+    }
+
+    .status-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+      border:1px solid #d5def1;
+      background:#f4f7ff;
+      color:#234;
+    }
+
+    .status-pendente{
+      background:#fff7e8;
+      color:#8a5a00;
+      border-color:#f1d291;
+    }
+
+    .status-respondida{
+      background:#eaf8ef;
+      color:#20613a;
+      border-color:#b8e1c7;
+    }
+
+    .question-meta{
+      font-size:12px;
+      color:#777;
+      margin-bottom:10px;
+    }
+
+    .bubble{
+      padding:12px 14px;
+      border-radius:12px;
+      margin-top:10px;
+      white-space:pre-wrap;
+      word-break:break-word;
+      line-height:1.5;
+      font-size:14px;
+    }
+
+    .bubble-label{
+      display:block;
+      font-size:12px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      margin-bottom:6px;
+      opacity:.82;
+    }
+
+    .bubble-pergunta{
+      background:#f7faff;
+      border:1px solid #dce8ff;
+    }
+
+    .bubble-resposta{
+      background:#eefaf1;
+      border:1px solid #c9e8d0;
+    }
+
+    .bubble-replica{
+      background:#fff8ec;
+      border:1px solid #f0dab0;
+    }
+
+    .bubble-treplica{
+      background:#f5f0ff;
+      border:1px solid #ddd1ff;
+    }
+
+    .replica-box{
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px dashed #d6dfef;
+    }
+
+    .replica-box textarea{
+      width:100%;
+      min-height:100px;
+      border:1px solid #cfdcf7;
+      border-radius:12px;
+      padding:12px 14px;
+      font-size:14px;
+      font-family:inherit;
+      box-sizing:border-box;
+      resize:vertical;
+      margin-bottom:10px;
+    }
+
+    .empty-state{
+      text-align:center;
+      font-size:14px;
+      color:#666;
+      padding:10px 4px;
+    }
+
+    .inline-msg{
+      display:none;
+      margin-top:12px;
+      text-align:center;
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .inline-msg.success{ color:#1f7a40; }
+    .inline-msg.error{ color:#b42318; }
+
+    .accordion{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .accordion-item{
+      border:1px solid #e3ebfb;
+      border-radius:14px;
+      overflow:hidden;
+      background:#fcfdff;
+    }
+
+    .accordion-btn{
+      width:100%;
+      border:none;
+      background:#fff;
+      cursor:pointer;
+      text-align:left;
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      font:inherit;
+    }
+
+    .accordion-btn span:first-child{
+      font-size:16px;
+      font-weight:700;
+      color:#111;
+      line-height:1.35;
+    }
+
+    .accordion-arrow{
+      font-size:18px;
+      font-weight:700;
+      color:#666;
+      transition:transform .18s ease;
+      flex:0 0 auto;
+    }
+
+    .accordion-item.open .accordion-arrow{
+      transform:rotate(180deg);
+    }
+
+    .accordion-content{
+      display:none;
+      padding:0 16px 16px;
+      border-top:1px solid #eef2fb;
+    }
+
+    .accordion-item.open .accordion-content{
+      display:block;
+    }
+
+    .btn-full{
+      width:100%;
+    }
+
+    .btn-nav[disabled]{
+      opacity:.55;
+      cursor:not-allowed;
+      pointer-events:none;
+    }
+
+    .forum-visibility{
+      font-size:12px;
+      color:#667085;
+      margin-top:8px;
+    }
+
+    .loading-box{
+      text-align:center;
+      color:#667085;
+      font-size:14px;
+      padding:14px 0 4px;
+    }
+
+    @media (max-width:640px){
+      .forum-card{ padding:16px; }
+      .question-top{ flex-direction:column; align-items:flex-start; }
+      .status-badge{ align-self:flex-start; }
+      .accordion-btn{ padding:13px 14px; }
+      .accordion-content{ padding:0 14px 14px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="wizard-topbar" id="wizardTopbar" role="banner" aria-label="Fórum da Área dos Artistas">
+  <div class="wizard-topbar__inner">
+    <div id="wizardStepCount" class="wizard-topbar__title">FÓRUM – ÁREA DOS ARTISTAS</div>
+  </div>
+</header>
+
+<main class="page-center">
+  <div id="wizardStepTitle" class="wizard-step-title">PERGUNTAS E RESPOSTAS</div>
+
+  <div class="forum-stack">
+
+    <!-- BLOCO 1 -->
+    <section class="forum-card">
+      <h2>Enviar sua pergunta</h2>
+      <p class="forum-desc">
+        Envie sua dúvida para a equipe. Caso ela seja respondida e aprovada como pública,
+        poderá aparecer no bloco de perguntas públicas para ajudar outros artistas.
+      </p>
+
+      <div class="forum-field">
+        <label for="tituloPergunta">Título*</label>
+        <input type="text" id="tituloPergunta" maxlength="140" placeholder="Escreva um título curto para sua pergunta">
+      </div>
+
+      <div class="forum-field">
+        <label for="descricaoPergunta">Descrição*</label>
+        <textarea id="descricaoPergunta" maxlength="3000" placeholder="Explique sua dúvida com mais detalhes"></textarea>
+      </div>
+
+      <label class="forum-check">
+        <input type="checkbox" id="checkPublica">
+        <span>Autorizo que minha pergunta possa ser pública caso a equipe considere útil para outros artistas.*</span>
+      </label>
+
+      <div class="forum-actions">
+        <button id="btnEnviarPergunta" class="btn-nav btn-proximo btn-full" disabled>Enviar pergunta</button>
+      </div>
+
+      <div class="forum-note">
+        O envio só será liberado após preencher título, descrição e marcar a autorização.
+      </div>
+
+      <div id="msgPergunta" class="inline-msg"></div>
+    </section>
+
+    <!-- BLOCO 2 -->
+    <section class="forum-card">
+      <h2>Suas perguntas</h2>
+      <p class="forum-desc">
+        Aqui você acompanha o andamento das suas perguntas, respostas e a possibilidade de enviar uma única réplica.
+      </p>
+
+      <div id="listaMinhasPerguntas" class="forum-list">
+        <div class="loading-box">Carregando suas perguntas...</div>
+      </div>
+    </section>
+
+    <!-- BLOCO 3 -->
+    <section class="forum-card">
+      <h2>Outras perguntas</h2>
+      <p class="forum-desc">
+        Perguntas públicas respondidas pela equipe. Clique para abrir e visualizar a conversa.
+      </p>
+
+      <div id="listaPublicas" class="accordion">
+        <div class="loading-box">Carregando perguntas públicas...</div>
+      </div>
+    </section>
+
+    <a class="btn-light-text" href="index.html?back=1">Menu</a>
+  </div>
+
+  <div id="overlay">
+    <div class="loader">
+      <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
+      <div class="loader-text">Carregando...</div>
+    </div>
+  </div>
+</main>
+
+<script src="app-forum.js?v=1"></script>
+<script src="footer-loader.js"></script>
+
+</body>
+</html>
