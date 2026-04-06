@@ -67,6 +67,29 @@ function formatDateBr(value) {
   return String(value);
 }
 
+function formatarDataForum(value) {
+  if (!value) return '';
+
+  const d = new Date(value);
+
+  if (isNaN(d.getTime())) return value;
+
+  const dia = String(d.getDate()).padStart(2, '0');
+  const mes = String(d.getMonth() + 1).padStart(2, '0');
+  const ano = d.getFullYear();
+
+  let horas = d.getHours();
+  const minutos = String(d.getMinutes()).padStart(2, '0');
+
+  const ampm = horas >= 12 ? 'pm' : 'am';
+  horas = horas % 12;
+  if (horas === 0) horas = 12;
+
+  const horaStr = String(horas).padStart(2, '0');
+
+  return `Mensagem enviada em ${dia}/${mes}/${ano} - ${horaStr}:${minutos}${ampm}`;
+}
+
 function statusClass(status) {
   const s = String(status || '').trim().toLowerCase();
 
@@ -82,16 +105,24 @@ function getStatusEfetivo(item) {
 
 function getMetaResposta(item) {
   if (item.quem_respondeu) {
-    return `Respondido por ${item.quem_respondeu}${item.data_resposta ? ' em ' + item.data_resposta : ''}`;
+    return `Respondido por ${item.quem_respondeu}${
+      item.data_resposta ? ' em ' + formatarDataForum(item.data_resposta) : ''
+    }`;
   }
-  return item.data_resposta ? `Respondido em ${item.data_resposta}` : '';
+  return item.data_resposta
+    ? formatarDataForum(item.data_resposta)
+    : '';
 }
 
 function getMetaTreplica(item) {
   if (item.quem_respondeu_treplica) {
-    return `Respondido por ${item.quem_respondeu_treplica}${item.data_treplica ? ' em ' + item.data_treplica : ''}`;
+    return `Respondido por ${item.quem_respondeu_treplica}${
+      item.data_treplica ? ' em ' + formatarDataForum(item.data_treplica) : ''
+    }`;
   }
-  return item.data_treplica ? `Respondido em ${item.data_treplica}` : '';
+  return item.data_treplica
+    ? formatarDataForum(item.data_treplica)
+    : '';
 }
 
 function updateSendButtonState() {
@@ -405,7 +436,7 @@ function renderMinhasPerguntas(items) {
             'Pergunta',
             'bubble-pergunta',
             item.descricao,
-            item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
+            item.data_pergunta ? formatarDataForum(item.data_pergunta) : '',
             item.titulo || ''
           )}
 
@@ -506,7 +537,7 @@ function renderPerguntasPublicas(items) {
             'Pergunta',
             'bubble-pergunta',
             item.descricao,
-            item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
+            item.data_pergunta ? formatarDataForum(item.data_pergunta) : '',
             item.titulo || ''
           )}
 
