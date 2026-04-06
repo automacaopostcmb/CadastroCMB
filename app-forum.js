@@ -407,19 +407,19 @@ function renderMinhasPerguntas(items) {
     const hasTreplica = !!String(item.treplica || '').trim();
     const status = getStatusEfetivo(item);
 
-    const mostrarConfirmacao =
-      hasResposta &&
-      !hasReplica &&
-      !hasTreplica &&
-      (status === 'aguardando_confirmacao' || status === 'pendente');
+   const mostrarConfirmacao =
+  hasResposta &&
+  !hasReplica &&
+  !hasTreplica &&
+  status === 'aguardando_confirmacao';
 
-    const labelStatus = mostrarConfirmacao
-      ? 'respondida'
-      : (status === 'aguardando_confirmacao' ? 'respondida' : status);
+const labelStatus = mostrarConfirmacao
+  ? 'conferir resposta'
+  : (status === 'aguardando_confirmacao' ? 'respondida' : status);
 
-    const classeStatus = mostrarConfirmacao
-      ? 'status-respondida'
-      : statusClass(status);
+const classeStatus = mostrarConfirmacao
+  ? 'status-conferir'
+  : statusClass(status);
 
     return `
       <div class="accordion-item minha-pergunta-item ${classeStatus}" data-minha-acc="${globalIndex}">
