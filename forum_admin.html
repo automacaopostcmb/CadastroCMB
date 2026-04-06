@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Admin do Fórum – CMB</title>
+
+  <link rel="stylesheet" href="style.css?v=16">
+
+  <style>
+    .forum-stack{
+      width:100%;
+      max-width:900px;
+      margin:0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .forum-card{
+      background:#fff;
+      border:1px solid #d9e7ff;
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 6px 14px rgba(0,0,0,.04);
+    }
+
+    .forum-card h2{
+      margin:0 0 10px;
+      font-size:22px;
+      text-align:left;
+    }
+
+    .forum-card .forum-desc{
+      margin:0 0 16px;
+      color:#444;
+      font-size:14px;
+      line-height:1.5;
+      text-align:left;
+    }
+
+    .forum-list,
+    .accordion{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .empty-state{
+      text-align:center;
+      font-size:14px;
+      color:#666;
+      padding:10px 4px;
+    }
+
+    .accordion-item{
+      border:1px solid #e3ebfb;
+      border-radius:14px;
+      overflow:hidden;
+      background:#fcfdff;
+    }
+
+    .accordion-btn{
+      width:100%;
+      border:none;
+      background:#fff;
+      cursor:pointer;
+      padding:16px 18px;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:center;
+      column-gap:12px;
+      font:inherit;
+      box-sizing:border-box;
+      text-align:left;
+    }
+
+    .accordion-arrow{
+      font-size:18px;
+      font-weight:700;
+      color:#666;
+      transition:transform .18s ease;
+    }
+
+    .accordion-item.open .accordion-arrow{
+      transform:rotate(180deg);
+    }
+
+    .accordion-content{
+      display:none;
+      padding:0 16px 16px;
+      border-top:1px solid #eef2fb;
+    }
+
+    .accordion-item.open .accordion-content{
+      display:block;
+    }
+
+    .question-title{
+      font-size:18px;
+      font-weight:700;
+      line-height:1.25;
+      color:#111;
+      margin:0;
+      word-break:break-word;
+    }
+
+    .question-meta{
+      font-size:12px;
+      color:#777;
+      margin-bottom:10px;
+    }
+
+    .bubble{
+      padding:10px 12px;
+      border-radius:12px;
+      margin-top:10px;
+      white-space:normal;
+      word-break:break-word;
+      line-height:1.25;
+      font-size:13px;
+    }
+
+    .bubble-label{
+      display:block;
+      font-size:11px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      margin:0 0 6px 0;
+      opacity:.82;
+    }
+
+    .bubble-title-inline{
+      font-size:14px;
+      font-weight:700;
+      color:#111;
+      margin:0 0 4px 0;
+      line-height:1.25;
+    }
+
+    .bubble-text{
+      line-height:1.3;
+      margin:0;
+    }
+
+    .bubble-meta{
+      margin-top:6px !important;
+      margin-bottom:0 !important;
+    }
+
+    .bubble-pergunta{ background:#f7faff; border:1px solid #dce8ff; }
+    .bubble-resposta{ background:#eefaf1; border:1px solid #c9e8d0; }
+    .bubble-replica{ background:#fff8ec; border:1px solid #f0dab0; }
+    .bubble-treplica{ background:#f5f0ff; border:1px solid #ddd1ff; }
+
+    .forum-field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:12px;
+      width:100%;
+    }
+
+    .forum-field textarea{
+      display:block;
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      border:1px solid #cfdcf7;
+      border-radius:12px;
+      padding:12px 14px;
+      font-size:15px;
+      font-family:inherit;
+      background:#fff;
+      box-sizing:border-box;
+      min-height:130px;
+      resize:vertical;
+    }
+
+    .btn-full{
+      width:100%;
+    }
+
+    .btn-nav[disabled]{
+      opacity:.55;
+      cursor:not-allowed;
+      pointer-events:none;
+    }
+
+    .loading-box{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      min-height:82px;
+      border:1px solid #dfe7f6;
+      border-radius:14px;
+      background:#fff;
+      color:#5f6b85;
+      font-size:15px;
+      font-weight:500;
+      padding:14px 16px;
+      box-sizing:border-box;
+      text-align:center;
+    }
+
+    .status-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+      border:1px solid #d5def1;
+      background:#f4f7ff;
+      color:#234;
+      flex:0 0 auto;
+    }
+
+    .status-pendente{
+      background:#fff7e8;
+      color:#8a5a00;
+      border-color:#f1d291;
+    }
+
+    .status-respondida{
+      background:#eaf8ef;
+      color:#20613a;
+      border-color:#b8e1c7;
+    }
+
+    .status-bloqueado{
+      background:#eef2f6;
+      color:#5f6b7a;
+      border-color:#d8e0e8;
+    }
+
+    .forum-pagination{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .forum-pagination-buttons{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .forum-pagination-info{
+      text-align:center;
+      font-size:14px;
+      font-weight:500;
+      color:#111;
+    }
+
+    @media (max-width:640px){
+      .forum-card{ padding:16px; }
+      .accordion-btn{ padding:14px 14px; }
+      .accordion-content{ padding:0 14px 14px; }
+      .forum-pagination-buttons{ gap:10px; }
+      .forum-pagination-info{ font-size:13px; }
+    }
+  </style>
+</head>
+
+<body>
+<header class="wizard-topbar" id="wizardTopbar" role="banner" aria-label="Admin do Fórum">
+  <div class="wizard-topbar__inner">
+    <div id="wizardStepCount" class="wizard-topbar__title">ADMIN DO FÓRUM</div>
+  </div>
+</header>
+
+<main class="page-center">
+  <div id="wizardStepTitle" class="wizard-step-title">PERGUNTAS E RESPOSTAS</div>
+
+  <div class="forum-stack">
+
+    <section class="forum-card">
+      <h2>Perguntas para responder</h2>
+      <p class="forum-desc">
+        Aqui aparecem perguntas que realmente ainda precisam de ação: perguntas sem resposta ou com réplica aguardando nova resposta.
+      </p>
+      <div id="listaResponder" class="accordion">
+        <div class="loading-box">Carregando perguntas pendentes...</div>
+      </div>
+    </section>
+
+    <section class="forum-card">
+      <h2>Compartilhar perguntas</h2>
+      <p class="forum-desc">
+        Aqui ficam perguntas já respondidas, mas ainda não públicas. O botão de compartilhar só é liberado quando o artista confirmar que a dúvida foi resolvida.
+      </p>
+      <div id="listaCompartilhar" class="accordion">
+        <div class="loading-box">Carregando perguntas para compartilhar...</div>
+      </div>
+    </section>
+
+    <section class="forum-card">
+      <h2>Todas as perguntas</h2>
+      <p class="forum-desc">
+        Perguntas públicas respondidas pela equipe. Este bloco segue a mesma lógica do fórum público do artista.
+      </p>
+      <div id="listaPublicas" class="accordion">
+        <div class="loading-box">Carregando perguntas públicas...</div>
+      </div>
+    </section>
+
+    <a class="btn-light-text" href="index.html?back=1">Menu</a>
+  </div>
+
+  <div id="overlay">
+    <div class="loader">
+      <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
+      <div class="loader-text">Carregando...</div>
+    </div>
+  </div>
+</main>
+
+<script src="app-forum-admin.js?v=1"></script>
+<script src="footer-loader.js"></script>
+</body>
+</html>
