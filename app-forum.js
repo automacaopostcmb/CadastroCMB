@@ -451,7 +451,7 @@ function renderMinhasPerguntas(items) {
             'Réplica',
             'bubble-replica',
             item.replica,
-            item.data_replica ? `Enviada em ${item.data_replica}` : ''
+            item.data_replica ? formatarDataForum(item.data_replica) : ''
           )}
 
           ${montarBolha(
@@ -552,7 +552,7 @@ function renderPerguntasPublicas(items) {
             'Réplica',
             'bubble-replica',
             item.replica,
-            item.data_replica ? `Enviada em ${item.data_replica}` : ''
+            item.data_replica ? formatarDataForum(item.data_replica) : ''
           )}
 
           ${montarBolha(
