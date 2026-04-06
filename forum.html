@@ -316,10 +316,10 @@
     background:#fff;
     cursor:pointer;
     padding:16px 18px;
-    display:flex;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
     align-items:center;
-    justify-content:flex-start;
-    gap:12px;
+    column-gap:12px;
     font:inherit;
     box-sizing:border-box;
     text-align:left;
@@ -330,8 +330,9 @@
     font-weight:700;
     color:#666;
     transition:transform .18s ease;
-    flex:0 0 auto;
-    margin-left:auto;
+    justify-self:end;
+    align-self:center;
+    margin-left:0;
   }
 
   .accordion-item.open .accordion-arrow{
@@ -354,10 +355,10 @@
   .minha-pergunta-btn{
     background:#fff;
     padding:16px 18px;
-    display:flex;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
     align-items:center;
-    justify-content:flex-start;
-    gap:12px;
+    column-gap:12px;
     width:100%;
     text-align:left;
   }
@@ -368,8 +369,7 @@
     justify-content:flex-start;
     gap:10px;
     min-width:0;
-    flex:1 1 auto;
-    width:0;
+    width:100%;
     text-align:left;
   }
 
@@ -378,6 +378,7 @@
     font-size:16px;
     margin:0;
     text-align:left;
+    min-width:0;
   }
 
   .minha-pergunta-head .status-badge{
@@ -389,10 +390,10 @@
   ========================= */
   .forum-publico-btn{
     padding:16px 18px;
-    display:flex;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
     align-items:center;
-    justify-content:flex-start;
-    gap:12px;
+    column-gap:12px;
     text-align:left;
   }
 
@@ -401,8 +402,7 @@
     align-items:center;
     justify-content:flex-start;
     min-width:0;
-    flex:1 1 auto;
-    width:0;
+    width:100%;
     text-align:left;
   }
 
@@ -412,6 +412,7 @@
     font-weight:700;
     line-height:1.35;
     text-align:left;
+    min-width:0;
   }
 
   .forum-publico-autor{
@@ -512,14 +513,12 @@
     .minha-pergunta-head{
       flex-wrap:wrap;
       gap:8px;
-      width:0;
-      flex:1 1 auto;
+      width:100%;
     }
 
     .forum-publico-head{
       display:block;
-      width:0;
-      flex:1 1 auto;
+      width:100%;
     }
 
     .forum-publico-autor{
