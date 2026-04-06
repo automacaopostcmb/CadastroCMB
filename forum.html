@@ -33,13 +33,7 @@
       text-align:center;
     }
 
-    .forum-card .forum-desc{
-      margin:0 0 16px;
-      color:#444;
-      font-size:14px;
-      line-height:1.5;
-      text-align:center;
-    }
+
 
     .forum-field{
       display:flex;
@@ -71,35 +65,8 @@
       resize:vertical;
     }
 
-    .forum-check{
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      margin:10px 0 16px;
-      font-size:14px;
-      line-height:1.45;
-      color:#333;
-    }
 
-    .forum-check input{
-      margin-top:3px;
-      transform:scale(1.15);
-      flex:0 0 auto;
-    }
 
-    .forum-actions{
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .forum-note{
-      font-size:13px;
-      color:#666;
-      text-align:center;
-      margin-top:10px;
-    }
 
     .forum-list{
       display:flex;
@@ -319,13 +286,62 @@
       padding:14px 0 4px;
     }
 
-    @media (max-width:640px){
-      .forum-card{ padding:16px; }
-      .question-top{ flex-direction:column; align-items:flex-start; }
-      .status-badge{ align-self:flex-start; }
-      .accordion-btn{ padding:13px 14px; }
-      .accordion-content{ padding:0 14px 14px; }
-    }
+    .forum-card .forum-desc{
+  margin:0 0 16px;
+  color:#444;
+  font-size:14px;
+  line-height:1.5;
+  text-align:left;
+}
+
+.forum-actions{
+  display:block;
+}
+
+.forum-note{
+  font-size:13px;
+  color:#666;
+  text-align:left;
+  margin-top:10px;
+}
+
+.forum-check{
+  display:flex;
+  align-items:flex-start;
+  justify-content:flex-start;
+  gap:8px;
+  margin:10px 0 16px;
+  font-size:14px;
+  line-height:1.45;
+  color:#333;
+}
+
+.forum-check input{
+  margin:2px 0 0 0;
+  transform:none;
+  flex:0 0 auto;
+}
+
+.forum-check span{
+  flex:1;
+}
+
+@media (max-width:640px){
+  .forum-card{ padding:16px; }
+  .question-top{ flex-direction:column; align-items:flex-start; }
+  .status-badge{ align-self:flex-start; }
+  .accordion-btn{ padding:13px 14px; }
+  .accordion-content{ padding:0 14px 14px; }
+
+  .forum-check{
+    gap:8px;
+    align-items:flex-start;
+  }
+
+  .forum-check input{
+    margin-top:2px;
+  }
+}
   </style>
 </head>
 
