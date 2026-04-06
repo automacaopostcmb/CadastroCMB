@@ -9,428 +9,465 @@
 
   <link rel="stylesheet" href="style.css?v=16">
 
-  <style>
-    .forum-stack{
-      width:100%;
-      max-width:900px;
-      margin:0 auto;
-      display:flex;
-      flex-direction:column;
-      gap:18px;
-    }
+<style>
+  /* =========================
+     1) ESTRUTURA GERAL
+  ========================= */
+  .forum-stack{
+    width:100%;
+    max-width:900px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
 
-    .forum-card{
-      background:#fff;
-      border:1px solid #d9e7ff;
-      border-radius:16px;
-      padding:18px;
-      box-shadow:0 6px 14px rgba(0,0,0,.04);
-    }
+  .forum-card{
+    background:#fff;
+    border:1px solid #d9e7ff;
+    border-radius:16px;
+    padding:18px;
+    box-shadow:0 6px 14px rgba(0,0,0,.04);
+  }
 
-.forum-card h2{
-  margin:0 0 10px;
-  font-size:22px;
-  text-align:left;
-}
+  .forum-card h2{
+    margin:0 0 10px;
+    font-size:22px;
+    text-align:left;
+  }
 
+  .forum-card .forum-desc{
+    margin:0 0 16px;
+    color:#444;
+    font-size:14px;
+    line-height:1.5;
+    text-align:left;
+  }
 
+  .forum-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
 
-    .forum-field{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      margin-bottom:14px;
-    }
+  .empty-state{
+    text-align:center;
+    font-size:14px;
+    color:#666;
+    padding:10px 4px;
+  }
 
-    .forum-field label{
-      font-weight:700;
-      color:#111;
-      font-size:15px;
-    }
+  .loading-box{
+    text-align:center;
+    color:#667085;
+    font-size:14px;
+    padding:14px 0 4px;
+  }
 
-    .forum-field input[type="text"],
-    .forum-field textarea{
-      width:100%;
-      border:1px solid #cfdcf7;
-      border-radius:12px;
-      padding:12px 14px;
-      font-size:15px;
-      font-family:inherit;
-      background:#fff;
-      box-sizing:border-box;
-    }
+  /* =========================
+     2) CARD ENVIAR PERGUNTA
+  ========================= */
+  .forum-field{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:14px;
+    width:100%;
+  }
 
-    .forum-field textarea{
-      min-height:130px;
-      resize:vertical;
-    }
+  .forum-field label{
+    font-weight:700;
+    color:#111;
+    font-size:15px;
+  }
 
-
-
-
-    .forum-list{
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-    }
-
-    .question-card{
-      border:1px solid #e3ebfb;
-      border-radius:14px;
-      background:#fcfdff;
-      padding:14px;
-    }
-
-    .question-top{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      margin-bottom:8px;
-    }
-.bubble-title-inline{
-  font-size:14px;
-  font-weight:700;
-  color:#111;
-  margin-bottom:2px;
-  line-height:1.3;
-}
-.bubble-text{
-  line-height:1.35;
-}
-
-.bubble-meta{
-  margin-top:4px !important;
-  margin-bottom:0 !important;
-}
-    
-    .question-title{
-      font-size:18px;
-      font-weight:700;
-      line-height:1.25;
-      color:#111;
-      margin:0;
-      word-break:break-word;
-    }
-
-    .status-badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:700;
-      white-space:nowrap;
-      border:1px solid #d5def1;
-      background:#f4f7ff;
-      color:#234;
-    }
-
-    .status-pendente{
-      background:#fff7e8;
-      color:#8a5a00;
-      border-color:#f1d291;
-    }
-
-    .status-respondida{
-      background:#eaf8ef;
-      color:#20613a;
-      border-color:#b8e1c7;
-    }
-
-    .question-meta{
-      font-size:12px;
-      color:#777;
-      margin-bottom:10px;
-    }
-
-  .bubble{
-  padding:10px 12px;
-  border-radius:12px;
-  margin-top:10px;
-  white-space:pre-wrap;
-  word-break:break-word;
-  line-height:1.35;
-  font-size:13px;
-}
-
-
-.bubble-label{
-  display:block;
-  font-size:11px;
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:.04em;
-  margin-bottom:4px;
-  opacity:.82;
-}
-
-    .bubble-pergunta{
-      background:#f7faff;
-      border:1px solid #dce8ff;
-    }
-
-    .bubble-resposta{
-      background:#eefaf1;
-      border:1px solid #c9e8d0;
-    }
-
-    .bubble-replica{
-      background:#fff8ec;
-      border:1px solid #f0dab0;
-    }
-
-    .bubble-treplica{
-      background:#f5f0ff;
-      border:1px solid #ddd1ff;
-    }
-
-    .replica-box{
-      margin-top:12px;
-      padding-top:12px;
-      border-top:1px dashed #d6dfef;
-    }
-
-    .replica-box textarea{
-      width:100%;
-      min-height:100px;
-      border:1px solid #cfdcf7;
-      border-radius:12px;
-      padding:12px 14px;
-      font-size:14px;
-      font-family:inherit;
-      box-sizing:border-box;
-      resize:vertical;
-      margin-bottom:10px;
-    }
-
-    .empty-state{
-      text-align:center;
-      font-size:14px;
-      color:#666;
-      padding:10px 4px;
-    }
-
-    .inline-msg{
-      display:none;
-      margin-top:12px;
-      text-align:center;
-      font-size:14px;
-      font-weight:600;
-    }
-
-    .inline-msg.success{ color:#1f7a40; }
-    .inline-msg.error{ color:#b42318; }
-
-    .accordion{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
-    .accordion-item{
-      border:1px solid #e3ebfb;
-      border-radius:14px;
-      overflow:hidden;
-      background:#fcfdff;
-    }
-
-    .accordion-btn{
-      width:100%;
-      border:none;
-      background:#fff;
-      cursor:pointer;
-      text-align:left;
-      padding:14px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      font:inherit;
-    }
-
-    .accordion-btn span:first-child{
-      font-size:16px;
-      font-weight:700;
-      color:#111;
-      line-height:1.35;
-    }
-
-    .accordion-arrow{
-      font-size:18px;
-      font-weight:700;
-      color:#666;
-      transition:transform .18s ease;
-      flex:0 0 auto;
-    }
-
-    .accordion-item.open .accordion-arrow{
-      transform:rotate(180deg);
-    }
-
-    .accordion-content{
-      display:none;
-      padding:0 16px 16px;
-      border-top:1px solid #eef2fb;
-    }
-
-    .accordion-item.open .accordion-content{
-      display:block;
-    }
-
-    .btn-full{
-      width:100%;
-    }
-
-    .btn-nav[disabled]{
-      opacity:.55;
-      cursor:not-allowed;
-      pointer-events:none;
-    }
-
-    .forum-visibility{
-      font-size:12px;
-      color:#667085;
-      margin-top:8px;
-    }
-
-    .loading-box{
-      text-align:center;
-      color:#667085;
-      font-size:14px;
-      padding:14px 0 4px;
-    }
-
-    .forum-card .forum-desc{
-  margin:0 0 16px;
-  color:#444;
-  font-size:14px;
-  line-height:1.5;
-  text-align:left;
-}
-
-.forum-actions{
-  display:block;
-}
-
-.forum-note{
-  font-size:13px;
-  color:#666;
-  text-align:left;
-  margin-top:10px;
-}
-
-.forum-check{
-  display:flex;
-  align-items:flex-start;
-  justify-content:flex-start;
-  gap:8px;
-  margin:10px 0 16px;
-  font-size:14px;
-  line-height:1.45;
-  color:#333;
-}
-
-.forum-check input{
-  margin:2px 0 0 0;
-  transform:none;
-  flex:0 0 auto;
-}
-
-.forum-check span{
-  flex:1;
-}
-
-.minha-pergunta-btn{
-  background:#fff;
-  padding:14px 16px;
-}
-
-.minha-pergunta-head{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
-  flex:1;
-}
-.forum-publico-btn{
-  padding:14px 16px;
-}
-
-.forum-publico-head{
-  display:flex;
-  align-items:center;
-  min-width:0;
-  flex:1;
-  text-align:left;
-}
-
-.forum-publico-titulo{
-  color:#111;
-  font-size:16px;
-  font-weight:700;
-  line-height:1.35;
-}
-
-.forum-publico-autor{
-  color:#777;
-  font-size:14px;
-  margin-left:4px;
-  line-height:1.35;
-}
-
-@media (max-width:640px){
-  .forum-publico-head{
+  .forum-field input[type="text"],
+  .forum-field textarea,
+  .replica-box textarea{
     display:block;
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    margin:0;
+    border:1px solid #cfdcf7;
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:15px;
+    font-family:inherit;
+    background:#fff;
+    box-sizing:border-box;
   }
 
-  .forum-publico-autor{
-    display:inline;
-    margin-left:4px;
+  .forum-field textarea,
+  .replica-box textarea{
+    min-height:130px;
+    resize:vertical;
   }
-}
-    
-@media (max-width:640px){
-  .minha-pergunta-head{
-    flex-wrap:wrap;
-    gap:8px;
-  }
-}
-    
-.minha-pergunta-head .question-title{
-  font-size:16px;
-  margin:0;
-}
-    
-@media (max-width:640px){
-  .forum-card{ padding:16px; }
-  .question-top{ flex-direction:column; align-items:flex-start; }
-  .status-badge{ align-self:flex-start; }
-  .accordion-btn{ padding:13px 14px; }
-  .accordion-content{ padding:0 14px 14px; }
 
+  .forum-actions{
+    display:block;
+    width:100%;
+  }
+
+  .forum-actions .btn-full,
+  .replica-box .btn-full{
+    display:block;
+    width:100%;
+    max-width:100%;
+    box-sizing:border-box;
+    margin:0;
+  }
+
+  .forum-note{
+    font-size:13px;
+    color:#666;
+    text-align:left;
+    margin-top:10px;
+  }
+
+  /* =========================
+     3) CHECKBOX AUTORIZAÇÃO
+  ========================= */
   .forum-check{
-    gap:8px;
+    display:flex;
     align-items:flex-start;
+    justify-content:flex-start;
+    gap:10px;
+    width:100%;
+    margin:10px 0 16px;
+    font-size:14px;
+    line-height:1.4;
+    color:#333;
   }
 
   .forum-check input{
-    margin-top:2px;
+    flex:0 0 16px;
+    width:16px;
+    height:16px;
+    margin:2px 0 0 0;
+    transform:none;
   }
-}
-    .forum-check{
-  width:100%;
-}
 
-.forum-check span{
-  flex:1;
-  min-width:0;
-}
-    .minha-pergunta-head .status-badge{
-  flex:0 0 auto;
-}
-  </style>
+  .forum-check span{
+    flex:1 1 auto;
+    min-width:0;
+  }
+
+  /* =========================
+     4) STATUS / META
+  ========================= */
+  .status-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+    white-space:nowrap;
+    border:1px solid #d5def1;
+    background:#f4f7ff;
+    color:#234;
+  }
+
+  .status-pendente{
+    background:#fff7e8;
+    color:#8a5a00;
+    border-color:#f1d291;
+  }
+
+  .status-respondida{
+    background:#eaf8ef;
+    color:#20613a;
+    border-color:#b8e1c7;
+  }
+
+  .question-title{
+    font-size:18px;
+    font-weight:700;
+    line-height:1.25;
+    color:#111;
+    margin:0;
+    word-break:break-word;
+  }
+
+  .question-meta{
+    font-size:12px;
+    color:#777;
+    margin-bottom:10px;
+  }
+
+  .forum-visibility{
+    font-size:12px;
+    color:#667085;
+    margin-top:8px;
+  }
+
+  /* =========================
+     5) BLOCOS INTERNOS
+     PERGUNTA / RESPOSTA / RÉPLICA / TRÉPLICA
+  ========================= */
+  .bubble{
+    padding:10px 12px;
+    border-radius:12px;
+    margin-top:10px;
+    white-space:normal;
+    word-break:break-word;
+    line-height:1.25;
+    font-size:13px;
+  }
+
+  .bubble-label{
+    display:block;
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    margin:0 0 6px 0;
+    opacity:.82;
+  }
+
+  .bubble-title-inline{
+    font-size:14px;
+    font-weight:700;
+    color:#111;
+    margin:0 0 4px 0;
+    line-height:1.25;
+  }
+
+  .bubble-text{
+    line-height:1.3;
+    margin:0;
+  }
+
+  .bubble-meta{
+    margin-top:6px !important;
+    margin-bottom:0 !important;
+  }
+
+  .bubble-pergunta{
+    background:#f7faff;
+    border:1px solid #dce8ff;
+  }
+
+  .bubble-resposta{
+    background:#eefaf1;
+    border:1px solid #c9e8d0;
+  }
+
+  .bubble-replica{
+    background:#fff8ec;
+    border:1px solid #f0dab0;
+  }
+
+  .bubble-treplica{
+    background:#f5f0ff;
+    border:1px solid #ddd1ff;
+  }
+
+  /* =========================
+     6) BLOCO DE RÉPLICA
+  ========================= */
+  .replica-box{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px dashed #d6dfef;
+    width:100%;
+  }
+
+  .replica-box > div{
+    width:100%;
+  }
+
+  .replica-box textarea,
+  .replica-box button{
+    width:100%;
+    max-width:100%;
+    box-sizing:border-box;
+  }
+
+  /* =========================
+     7) MENSAGENS INLINE
+  ========================= */
+  .inline-msg{
+    display:none;
+    margin-top:12px;
+    text-align:center;
+    font-size:14px;
+    font-weight:600;
+  }
+
+  .inline-msg.success{ color:#1f7a40; }
+  .inline-msg.error{ color:#b42318; }
+
+  /* =========================
+     8) ACORDEÃO BASE
+  ========================= */
+  .accordion{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .accordion-item{
+    border:1px solid #e3ebfb;
+    border-radius:14px;
+    overflow:hidden;
+    background:#fcfdff;
+  }
+
+  .accordion-btn{
+    width:100%;
+    border:none;
+    background:#fff;
+    cursor:pointer;
+    text-align:left;
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    font:inherit;
+    box-sizing:border-box;
+  }
+
+  .accordion-arrow{
+    font-size:18px;
+    font-weight:700;
+    color:#666;
+    transition:transform .18s ease;
+    flex:0 0 auto;
+    margin-left:auto;
+  }
+
+  .accordion-item.open .accordion-arrow{
+    transform:rotate(180deg);
+  }
+
+  .accordion-content{
+    display:none;
+    padding:0 16px 16px;
+    border-top:1px solid #eef2fb;
+  }
+
+  .accordion-item.open .accordion-content{
+    display:block;
+  }
+
+  /* =========================
+     9) ACORDEÃO - SUAS PERGUNTAS
+  ========================= */
+  .minha-pergunta-btn{
+    background:#fff;
+    padding:14px 16px;
+  }
+
+  .minha-pergunta-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+    flex:1;
+    justify-content:flex-start;
+  }
+
+  .minha-pergunta-head .question-title{
+    flex:0 1 auto;
+    font-size:16px;
+    margin:0;
+  }
+
+  .minha-pergunta-head .status-badge{
+    flex:0 0 auto;
+  }
+
+  /* =========================
+     10) ACORDEÃO - OUTRAS PERGUNTAS
+  ========================= */
+  .forum-publico-btn{
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+
+  .forum-publico-head{
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    min-width:0;
+    flex:1;
+    text-align:left;
+  }
+
+  .forum-publico-titulo{
+    color:#111;
+    font-size:16px;
+    font-weight:700;
+    line-height:1.35;
+  }
+
+  .forum-publico-autor{
+    color:#777;
+    font-size:14px;
+    margin-left:4px;
+    line-height:1.35;
+  }
+
+  /* =========================
+     11) BOTÕES GERAIS
+  ========================= */
+  .btn-full{
+    width:100%;
+  }
+
+  .btn-nav[disabled]{
+    opacity:.55;
+    cursor:not-allowed;
+    pointer-events:none;
+  }
+
+  /* =========================
+     12) RESPONSIVO
+  ========================= */
+  @media (max-width:640px){
+    .forum-card{
+      padding:16px;
+    }
+
+    .accordion-btn{
+      padding:13px 14px;
+    }
+
+    .accordion-content{
+      padding:0 14px 14px;
+    }
+
+    .forum-check{
+      gap:8px;
+    }
+
+    .forum-check input{
+      margin-top:3px;
+    }
+
+    .minha-pergunta-head{
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .forum-publico-head{
+      display:block;
+    }
+
+    .forum-publico-autor{
+      display:inline;
+      margin-left:4px;
+    }
+  }
+</style>
+   
 </head>
 
 <body>
