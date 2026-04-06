@@ -290,9 +290,9 @@ function renderMinhasPerguntas(items) {
       ? 'status-respondida'
       : statusClass(status);
 
-    return `
-      <div class="accordion-item minha-pergunta-item" data-minha-acc="${index}">
-        <button class="accordion-btn minha-pergunta-btn" type="button" onclick="toggleMinhaPergunta(${index})">
+return `
+  <div class="accordion-item minha-pergunta-item ${classeStatus}" data-minha-acc="${index}">
+    <button class="accordion-btn minha-pergunta-btn" type="button" onclick="toggleMinhaPergunta(${index})">
           <span class="minha-pergunta-head">
             <span class="question-title">${escapeHtml(item.titulo || 'Sem título')}</span>
             <span class="status-badge ${classeStatus}">${escapeHtml(labelStatus)}</span>
@@ -420,7 +420,11 @@ ${montarBolha(
 async function carregarPerguntasUsuario() {
   const container = document.getElementById('listaMinhasPerguntas');
   if (container) {
-    container.innerHTML = `<div class="loading-box">Carregando suas perguntas...</div>`;
+    container.innerHTML = `
+  <div class="loading-box">
+    <span>Carregando suas perguntas...</span>
+  </div>
+`;
   }
 
   try {
@@ -445,7 +449,11 @@ async function carregarPerguntasUsuario() {
 async function carregarPerguntasPublicas() {
   const container = document.getElementById('listaPublicas');
   if (container) {
-    container.innerHTML = `<div class="loading-box">Carregando perguntas públicas...</div>`;
+    container.innerHTML = `
+  <div class="loading-box">
+    <span>Carregando perguntas públicas...</span>
+  </div>
+`;
   }
 
   try {
