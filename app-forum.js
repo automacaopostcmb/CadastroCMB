@@ -370,7 +370,11 @@ function renderPerguntasPublicas(items) {
   if (!container) return;
 
   if (!items || !items.length) {
-    container.innerHTML = `<div class="empty-state">Ainda não existem perguntas públicas respondidas.</div>`;
+container.innerHTML = `
+  <div class="loading-box loading-publico">
+    <span>Carregando perguntas públicas...</span>
+  </div>
+`;
     return;
   }
 
