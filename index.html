@@ -33,9 +33,9 @@
 
 <body class="is-index">
   <div class="page-center" style="--center-offset: -60px;">
-  <a href="https://comicmarketbrasil.com.br/" target="_blank" rel="noopener noreferrer">
-  <img src="assets/logo-cmb.png" alt="Comic Market Brasil" class="header-logo">
-</a>
+    <a href="https://comicmarketbrasil.com.br/" target="_blank" rel="noopener noreferrer">
+      <img src="assets/logo-cmb.png" alt="Comic Market Brasil" class="header-logo">
+    </a>
 
     <!-- LOGIN -->
     <div id="login-area" class="auth-card">
@@ -46,39 +46,51 @@
     <!-- LINKS (somem após login) -->
     <div id="login-links" class="btn-light-text">
       <a href="" target="_blank" rel="noopener noreferrer">
-  Seja um expositor
-</a>
+        Seja um expositor
+      </a>
 
-<a href="" target="_blank" rel="noopener noreferrer">
-  Participe da área dos Artistas
-</a>
+      <a href="" target="_blank" rel="noopener noreferrer">
+        Participe da área dos Artistas
+      </a>
     </div>
 
     <!-- MENU (aparece após login) -->
-<div id="menu" class="auth-card" style="display:none;">
-  <h3>Suas Páginas</h3>
+    <div id="menu" class="auth-card" style="display:none;">
+      <h3>Suas Páginas</h3>
 
-  <p class="menu-hint">
-    Nesse painel você criará sua divulgação para o evento. Seja bem vindo ao CMB!!!
-  </p>
+      <p class="menu-hint">
+        Nesse painel você criará sua divulgação para o evento. Seja bem vindo ao CMB!!!
+      </p>
 
-  <div id="botoes"></div>
-</div>
+      <div id="botoes"></div>
+    </div>
 
-<div id="forum-card" class="auth-card" style="display:none; margin-top:18px;">
-  <h3>Fórum da Área dos Artistas</h3>
+    <!-- CARD FÓRUM ARTISTA -->
+    <div id="forum-card" class="auth-card" style="display:none; margin-top:18px;">
+      <h3>Fórum da Área dos Artistas</h3>
 
-  <p class="menu-hint">
-    Espaço exclusivo para tirar dúvidas, acompanhar respostas e ver perguntas públicas de outros artistas.
-  </p>
+      <p class="menu-hint">
+        Espaço exclusivo para tirar dúvidas, acompanhar respostas e ver perguntas públicas de outros artistas.
+      </p>
 
-  <div id="forum-botoes"></div>
-</div>
+      <div id="forum-botoes"></div>
+    </div>
 
+    <!-- CARD FÓRUM ADMIN -->
+    <div id="forum-admin-card" class="auth-card" style="display:none; margin-top:18px;">
+      <h3>Administração do Fórum</h3>
 
-<!-- Sair fora do box -->
-<div id="logoutOutside" class="logout-outside" onclick="logout()">Sair</div>
-  </div>  
+      <p class="menu-hint">
+        Área exclusiva para responder dúvidas, compartilhar perguntas públicas e acompanhar o fórum administrativo.
+      </p>
+
+      <div id="forum-admin-botoes"></div>
+    </div>
+
+    <!-- Sair fora do box -->
+    <div id="logoutOutside" class="logout-outside" onclick="logout()">Sair</div>
+  </div>
+
   <!-- Overlay de loading -->
   <div id="loading">
     <div class="loading-bubble">Carregando páginas…</div>
@@ -88,18 +100,18 @@
     // Endpoint do seu Apps Script de auth/menu
     const API_URL = "https://script.google.com/macros/s/AKfycbyMbkkFdzYC_BfMsi5WKW6xbOKdjbNbW635vovOLYHGXdso2S_1a2Wdfvur790y0BM46g/exec";
 
-    // CORES DOS BOTÕES (ajuste aqui no HTML, sem CSS)
-const BUTTON_COLORS = ["#f1c40f", "#3498db", "#2ecc71", "#ff9ff3", "#e67e22", "#9b59b6"];
-    
+    // CORES DOS BOTÕES
+    const BUTTON_COLORS = ["#f1c40f", "#3498db", "#2ecc71", "#ff9ff3", "#e67e22", "#9b59b6"];
+
     // Definição das páginas do menu
     const paginas = [
-      { nome: "expo_artistas",          label: "Área dos Artistas",        href: "artistas.html" },
-      { nome: "expo_business",         label: "Expositor Área Business",  href: "expo_business.html" },
-      { nome: "expo_market",           label: "Expositor Área Market",    href: "expo_market.html" },
-      { nome: "cadastro_masterclass",  label: "Cadastro Masterclass",     href: "comic_learning.html" },
-      { nome: "eu_vou",  label: "Eu vou CMB 2026!",     href: "euvou.html" },
-      { nome: "convidado",  label: "Sou convidado!",     href: "convidado.html" },
-      { nome: "lancamento",  label: "Lançamento no evento",     href: "lancamento.html" },
+      { nome: "expo_artistas",         label: "Área dos Artistas",       href: "artistas.html" },
+      { nome: "expo_business",         label: "Expositor Área Business", href: "expo_business.html" },
+      { nome: "expo_market",           label: "Expositor Área Market",   href: "expo_market.html" },
+      { nome: "cadastro_masterclass",  label: "Cadastro Masterclass",    href: "comic_learning.html" },
+      { nome: "eu_vou",                label: "Eu vou CMB 2026!",        href: "euvou.html" },
+      { nome: "convidado",             label: "Sou convidado!",          href: "convidado.html" },
+      { nome: "lancamento",            label: "Lançamento no evento",    href: "lancamento.html" },
     ];
 
     let isLoading = false;
@@ -113,49 +125,58 @@ const BUTTON_COLORS = ["#f1c40f", "#3498db", "#2ecc71", "#ff9ff3", "#e67e22", "#
       }
     }
 
-function showLoginUI() {
-  const loginAr = document.getElementById("login-area");
-  const loginLinks = document.getElementById("login-links");
-  const menu = document.getElementById("menu");
-  const area = document.getElementById("botoes");
-  const chaveEl = document.getElementById("chave");
-  const logoutOutside = document.getElementById("logoutOutside");
+    function showLoginUI() {
+      const loginAr = document.getElementById("login-area");
+      const loginLinks = document.getElementById("login-links");
+      const menu = document.getElementById("menu");
+      const area = document.getElementById("botoes");
+      const chaveEl = document.getElementById("chave");
+      const logoutOutside = document.getElementById("logoutOutside");
 
-  const forumCard = document.getElementById("forum-card");
-  const forumBotoes = document.getElementById("forum-botoes");
+      const forumCard = document.getElementById("forum-card");
+      const forumBotoes = document.getElementById("forum-botoes");
 
-  if (menu) menu.style.display = "none";
-  if (area) area.innerHTML = "";
+      const forumAdminCard = document.getElementById("forum-admin-card");
+      const forumAdminBotoes = document.getElementById("forum-admin-botoes");
 
-  if (forumCard) forumCard.style.display = "none";
-  if (forumBotoes) forumBotoes.innerHTML = "";
+      if (menu) menu.style.display = "none";
+      if (area) area.innerHTML = "";
 
-  if (loginAr) loginAr.style.display = "block";
+      if (forumCard) forumCard.style.display = "none";
+      if (forumBotoes) forumBotoes.innerHTML = "";
 
-  if (loginLinks) {
-    loginLinks.classList.remove("hidden");
-    loginLinks.style.display = "block";
-  }
+      if (forumAdminCard) forumAdminCard.style.display = "none";
+      if (forumAdminBotoes) forumAdminBotoes.innerHTML = "";
 
-  if (logoutOutside) logoutOutside.style.display = "none";
-  if (chaveEl) chaveEl.value = "";
-  setLoading(false);
-}
-function showMenuLoadingUI() {
-  const loginAr = document.getElementById("login-area");
-  const loginLinks = document.getElementById("login-links");
-  const menu = document.getElementById("menu");
-  const loading = document.getElementById("loading");
-  const logoutOutside = document.getElementById("logoutOutside");
-  const forumCard = document.getElementById("forum-card");
+      if (loginAr) loginAr.style.display = "block";
 
-  if (loginAr) loginAr.style.display = "none";
-  if (loginLinks) loginLinks.classList.add("hidden");
-  if (menu) menu.style.display = "none";
-  if (forumCard) forumCard.style.display = "none";
-  if (loading) loading.style.display = "grid";
-  if (logoutOutside) logoutOutside.style.display = "none";
-}
+      if (loginLinks) {
+        loginLinks.classList.remove("hidden");
+        loginLinks.style.display = "block";
+      }
+
+      if (logoutOutside) logoutOutside.style.display = "none";
+      if (chaveEl) chaveEl.value = "";
+      setLoading(false);
+    }
+
+    function showMenuLoadingUI() {
+      const loginAr = document.getElementById("login-area");
+      const loginLinks = document.getElementById("login-links");
+      const menu = document.getElementById("menu");
+      const loading = document.getElementById("loading");
+      const logoutOutside = document.getElementById("logoutOutside");
+      const forumCard = document.getElementById("forum-card");
+      const forumAdminCard = document.getElementById("forum-admin-card");
+
+      if (loginAr) loginAr.style.display = "none";
+      if (loginLinks) loginLinks.classList.add("hidden");
+      if (menu) menu.style.display = "none";
+      if (forumCard) forumCard.style.display = "none";
+      if (forumAdminCard) forumAdminCard.style.display = "none";
+      if (loading) loading.style.display = "grid";
+      if (logoutOutside) logoutOutside.style.display = "none";
+    }
 
     function hideOverlay() {
       const loading = document.getElementById("loading");
@@ -167,7 +188,6 @@ function showMenuLoadingUI() {
       const isBack = params.get("back") === "1";
       const chave = (localStorage.getItem("chave") || "").trim();
 
-      // Enter no campo
       const chaveEl = document.getElementById("chave");
       if (chaveEl) {
         chaveEl.addEventListener("keydown", (e) => {
@@ -175,16 +195,13 @@ function showMenuLoadingUI() {
         });
       }
 
-      // Estado inicial
       if (isBack && chave) {
-        // voltando de outra página com sessão salva -> carrega menu direto
         const loginAr = document.getElementById("login-area");
         const loginLinks = document.getElementById("login-links");
         if (loginAr) loginAr.style.display = "none";
         if (loginLinks) loginLinks.classList.add("hidden");
         carregarMenu();
       } else {
-        // primeira entrada -> limpa sessão e mostra login
         localStorage.removeItem("chave");
         showLoginUI();
       }
@@ -202,7 +219,6 @@ function showMenuLoadingUI() {
     function logout() {
       localStorage.removeItem("chave");
 
-      // limpa URL se voltou com back=1
       if (window.location.search.includes("back=1")) {
         window.history.replaceState({}, "", "index.html");
       }
@@ -210,114 +226,133 @@ function showMenuLoadingUI() {
       showLoginUI();
     }
 
-async function carregarMenu() {
-  if (isLoading) return;
+    async function carregarMenu() {
+      if (isLoading) return;
 
-  const chave = (localStorage.getItem("chave") || "").trim();
-  if (!chave) return;
+      const chave = (localStorage.getItem("chave") || "").trim();
+      if (!chave) return;
 
-  setLoading(true);
-  showMenuLoadingUI();
+      setLoading(true);
+      showMenuLoadingUI();
 
-  const menu = document.getElementById("menu");
-  const area = document.getElementById("botoes");
-  const logoutOutside = document.getElementById("logoutOutside");
-  const forumCard = document.getElementById("forum-card");
-  const forumBotoes = document.getElementById("forum-botoes");
+      const menu = document.getElementById("menu");
+      const area = document.getElementById("botoes");
+      const logoutOutside = document.getElementById("logoutOutside");
 
-  let algumPermitido = false;
+      const forumCard = document.getElementById("forum-card");
+      const forumBotoes = document.getElementById("forum-botoes");
 
-  try {
-    const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}&menu=1`);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const forumAdminCard = document.getElementById("forum-admin-card");
+      const forumAdminBotoes = document.getElementById("forum-admin-botoes");
 
-    const data = await resp.json();
+      let algumPermitido = false;
 
-    // Aceita dois formatos: {permissoes:{...}} OU {paginas:{...}}
-    const perms = data.permissoes || data.paginas || {};
+      try {
+        const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}&menu=1`);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
-    area.innerHTML = "";
-    if (forumBotoes) forumBotoes.innerHTML = "";
+        const data = await resp.json();
+        const perms = data.permissoes || data.paginas || {};
 
-    if (perms.mestre) {
-      algumPermitido = true;
+        area.innerHTML = "";
+        if (forumBotoes) forumBotoes.innerHTML = "";
+        if (forumAdminBotoes) forumAdminBotoes.innerHTML = "";
 
-      const btnAdmin = document.createElement("button");
-      btnAdmin.textContent = "CRIAR NOVO CÓDIGO";
-      btnAdmin.className = "menu-btn";
-      btnAdmin.style.backgroundColor = "#000";
-      btnAdmin.style.color = "#fff";
-      btnAdmin.style.marginBottom = "14px";
+        if (perms.mestre) {
+          algumPermitido = true;
 
-      btnAdmin.addEventListener("click", () => {
-        window.location.href = "admin_codigos.html";
-      });
+          const btnAdmin = document.createElement("button");
+          btnAdmin.textContent = "CRIAR NOVO CÓDIGO";
+          btnAdmin.className = "menu-btn";
+          btnAdmin.style.backgroundColor = "#000";
+          btnAdmin.style.color = "#fff";
+          btnAdmin.style.marginBottom = "14px";
 
-      area.appendChild(btnAdmin);
-    }
+          btnAdmin.addEventListener("click", () => {
+            window.location.href = "admin_codigos.html";
+          });
 
-    paginas.forEach((pag, idx) => {
-      if (perms[pag.nome]) {
-        algumPermitido = true;
+          area.appendChild(btnAdmin);
+        }
 
-        const btn = document.createElement("button");
-        btn.textContent = pag.label;
-        btn.className = "menu-btn";
+        paginas.forEach((pag, idx) => {
+          if (perms[pag.nome]) {
+            algumPermitido = true;
 
-        const color = BUTTON_COLORS[idx % BUTTON_COLORS.length];
-        btn.style.backgroundColor = color;
+            const btn = document.createElement("button");
+            btn.textContent = pag.label;
+            btn.className = "menu-btn";
 
-        btn.addEventListener("click", () => {
-          window.location.href = pag.href || `${pag.nome}.html`;
+            const color = BUTTON_COLORS[idx % BUTTON_COLORS.length];
+            btn.style.backgroundColor = color;
+
+            btn.addEventListener("click", () => {
+              window.location.href = pag.href || `${pag.nome}.html`;
+            });
+
+            area.appendChild(btn);
+          }
         });
 
-        area.appendChild(btn);
+        // Fórum do artista
+        if (perms.expo_artistas && !perms.mestre && forumCard && forumBotoes) {
+          const btnForum = document.createElement("button");
+          btnForum.textContent = "Fórum da Área dos Artistas";
+          btnForum.className = "menu-btn";
+          btnForum.style.backgroundColor = "#ffffff";
+          btnForum.style.color = "#111";
+          btnForum.style.border = "2px solid #e5e5e5";
+
+          btnForum.addEventListener("click", () => {
+            window.location.href = "forum.html";
+          });
+
+          forumBotoes.appendChild(btnForum);
+          forumCard.style.display = "block";
+        } else if (forumCard) {
+          forumCard.style.display = "none";
+        }
+
+        // Fórum admin
+        if (perms.mestre && forumAdminCard && forumAdminBotoes) {
+          const btnForumAdmin = document.createElement("button");
+          btnForumAdmin.textContent = "Abrir administração do fórum";
+          btnForumAdmin.className = "menu-btn";
+          btnForumAdmin.style.backgroundColor = "#ffffff";
+          btnForumAdmin.style.color = "#111";
+          btnForumAdmin.style.border = "2px solid #e5e5e5";
+
+          btnForumAdmin.addEventListener("click", () => {
+            window.location.href = "forum_admin.html";
+          });
+
+          forumAdminBotoes.appendChild(btnForumAdmin);
+          forumAdminCard.style.display = "block";
+        } else if (forumAdminCard) {
+          forumAdminCard.style.display = "none";
+        }
+
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao carregar. Tente novamente.");
+        logout();
+        return;
+      } finally {
+        hideOverlay();
+        setLoading(false);
       }
-    });
 
-    // FÓRUM: só aparece para quem tem expo_artistas e NÃO tem mestre
-    if (perms.expo_artistas && !perms.mestre && forumCard && forumBotoes) {
-      const btnForum = document.createElement("button");
-      btnForum.textContent = "Fórum da Área dos Artistas";
-      btnForum.className = "menu-btn";
-      btnForum.style.backgroundColor = "#ffffff";
-      btnForum.style.color = "#111";
-      btnForum.style.border = "2px solid #e5e5e5";
-
-      btnForum.addEventListener("click", () => {
-        window.location.href = "forum.html";
-      });
-
-      forumBotoes.appendChild(btnForum);
-      forumCard.style.display = "block";
-    } else if (forumCard) {
-      forumCard.style.display = "none";
+      if (algumPermitido) {
+        if (menu) menu.style.display = "block";
+        if (logoutOutside) logoutOutside.style.display = "block";
+      } else {
+        alert("Acesso inválido.");
+        logout();
+      }
     }
-
-  } catch (err) {
-    console.error(err);
-    alert("Erro ao carregar. Tente novamente.");
-    logout();
-    return;
-
-  } finally {
-    hideOverlay();
-    setLoading(false);
-  }
-
-  if (algumPermitido) {
-    if (menu) menu.style.display = "block";
-    if (logoutOutside) logoutOutside.style.display = "block";
-  } else {
-    alert("Acesso inválido.");
-    logout();
-  }
-}
-    
   </script>
 
   <script>
-    // mede a altura real útil da janela e salva em --vh
     function setRealVh() {
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
@@ -327,14 +362,6 @@ async function carregarMenu() {
     window.addEventListener('orientationchange', setRealVh);
   </script>
 
- <script src="footer-loader.js"></script>
+  <script src="footer-loader.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
