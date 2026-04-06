@@ -275,7 +275,8 @@ const status = getStatusEfetivo(item);
 const mostrarConfirmacao =
   hasResposta &&
   !hasReplica &&
-  status === 'aguardando_confirmacao';
+  !hasTreplica &&
+  (status === 'aguardando_confirmacao' || status === 'pendente');
 
     const visibilityText = String(item.visibilidade || '').toUpperCase() === 'SIM'
       ? 'Autorizada para possível publicação pública'
@@ -285,9 +286,19 @@ const mostrarConfirmacao =
       <div class="question-card">
         <div class="question-top">
           <h3 class="question-title">${escapeHtml(item.titulo || 'Sem título')}</h3>
-          <span class="status-badge ${statusClass(status)}">${escapeHtml(
-  status === 'aguardando_confirmacao' ? 'respondida' : status
-)}</span>
+          ${(() => {
+  const labelStatus = mostrarConfirmacao
+    ? 'respondida'
+    : (status === 'aguardando_confirmacao' ? 'respondida' : status);
+
+  const classeStatus = mostrarConfirmacao
+    ? 'status-respondida'
+    : statusClass(status);
+
+  return `
+    <span class="status-badge ${classeStatus}">${escapeHtml(labelStatus)}</span>
+  `;
+})()}
         </div>
 
         <div class="question-meta">
