@@ -207,11 +207,11 @@ function montarBolha(label, classe, conteudo, extraMeta = '', tituloExtra = '') 
   if (!conteudo && !tituloExtra) return '';
 
   return `
-    <div class="bubble ${classe}" style="padding:10px 12px; margin-top:10px;">
-      <span class="bubble-label" style="margin-bottom:8px;">${label}</span>
-      ${tituloExtra ? `<div style="font-size:14px; font-weight:700; color:#111; margin-bottom:6px; line-height:1.35;">${escapeHtml(tituloExtra)}</div>` : ''}
-      <div style="line-height:1.45;">${nl2brSafe(conteudo || '')}</div>
-      ${extraMeta ? `<div class="question-meta" style="margin-top:8px; margin-bottom:0;">${escapeHtml(extraMeta)}</div>` : ''}
+    <div class="bubble ${classe}">
+      <span class="bubble-label">${label}</span>
+      ${tituloExtra ? `<div class="bubble-title-inline">${escapeHtml(tituloExtra)}</div>` : ''}
+      <div class="bubble-text">${nl2brSafe(conteudo || '')}</div>
+      ${extraMeta ? `<div class="question-meta bubble-meta">${escapeHtml(extraMeta)}</div>` : ''}
     </div>
   `;
 }
@@ -266,97 +266,103 @@ function renderMinhasPerguntas(items) {
     return;
   }
 
-  container.innerHTML = items.map((item) => {
-const hasResposta = !!String(item.resposta || '').trim();
-const hasReplica = !!String(item.replica || '').trim();
-const hasTreplica = !!String(item.treplica || '').trim();
-const status = getStatusEfetivo(item);
+  container.innerHTML = items.map((item, index) => {
+    const hasResposta = !!String(item.resposta || '').trim();
+    const hasReplica = !!String(item.replica || '').trim();
+    const hasTreplica = !!String(item.treplica || '').trim();
+    const status = getStatusEfetivo(item);
 
-const mostrarConfirmacao =
-  hasResposta &&
-  !hasReplica &&
-  !hasTreplica &&
-  (status === 'aguardando_confirmacao' || status === 'pendente');
+    const mostrarConfirmacao =
+      hasResposta &&
+      !hasReplica &&
+      !hasTreplica &&
+      (status === 'aguardando_confirmacao' || status === 'pendente');
 
     const visibilityText = String(item.visibilidade || '').toUpperCase() === 'SIM'
       ? 'Autorizada para possível publicação pública'
       : 'Não autorizada para publicação pública';
 
+    const labelStatus = mostrarConfirmacao
+      ? 'respondida'
+      : (status === 'aguardando_confirmacao' ? 'respondida' : status);
+
+    const classeStatus = mostrarConfirmacao
+      ? 'status-respondida'
+      : statusClass(status);
+
     return `
-      <div class="question-card">
-        <div class="question-top">
-          <h3 class="question-title">${escapeHtml(item.titulo || 'Sem título')}</h3>
-          ${(() => {
-  const labelStatus = mostrarConfirmacao
-    ? 'respondida'
-    : (status === 'aguardando_confirmacao' ? 'respondida' : status);
+      <div class="accordion-item minha-pergunta-item" data-minha-acc="${index}">
+        <button class="accordion-btn minha-pergunta-btn" type="button" onclick="toggleMinhaPergunta(${index})">
+          <span class="minha-pergunta-head">
+            <span class="question-title">${escapeHtml(item.titulo || 'Sem título')}</span>
+            <span class="status-badge ${classeStatus}">${escapeHtml(labelStatus)}</span>
+          </span>
+          <span class="accordion-arrow">⌄</span>
+        </button>
 
-  const classeStatus = mostrarConfirmacao
-    ? 'status-respondida'
-    : statusClass(status);
+        <div class="accordion-content minha-pergunta-content">
+          <div class="question-meta">
+            Enviada em: ${escapeHtml(formatDateBr(item.data_pergunta || ''))}
+          </div>
 
-  return `
-    <span class="status-badge ${classeStatus}">${escapeHtml(labelStatus)}</span>
-  `;
-})()}
-        </div>
+          ${montarBolha(
+            'Pergunta',
+            'bubble-pergunta',
+            item.descricao,
+            item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
+            ''
+          )}
 
-        <div class="question-meta">
-          Enviada em: ${escapeHtml(formatDateBr(item.data_pergunta || ''))}
-        </div>
+          ${montarBolha(
+            'Resposta',
+            'bubble-resposta',
+            item.resposta,
+            getMetaResposta(item)
+          )}
 
-        ${montarBolha(
-          'Pergunta',
-          'bubble-pergunta',
-          item.descricao,
-          item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
-          item.titulo || ''
-        )}
+          ${montarBolha(
+            'Réplica',
+            'bubble-replica',
+            item.replica,
+            item.data_replica ? `Enviada em ${item.data_replica}` : ''
+          )}
 
-        ${montarBolha(
-          'Resposta',
-          'bubble-resposta',
-          item.resposta,
-          getMetaResposta(item)
-        )}
+          ${montarBolha(
+            'Tréplica',
+            'bubble-treplica',
+            item.treplica,
+            getMetaTreplica(item)
+          )}
 
-        ${montarBolha(
-          'Réplica',
-          'bubble-replica',
-          item.replica,
-          item.data_replica ? `Enviada em ${item.data_replica}` : ''
-        )}
+          <div class="forum-visibility">${escapeHtml(visibilityText)}</div>
 
-        ${montarBolha(
-          'Tréplica',
-          'bubble-treplica',
-          item.treplica,
-          getMetaTreplica(item)
-        )}
+          ${mostrarConfirmacao ? `
+            <div class="replica-box">
+              <div id="confirmacaoBox_${escapeHtml(item.id)}">
+                <div style="font-weight:700; margin-bottom:10px;">Sua dúvida foi respondida?</div>
 
-        <div class="forum-visibility">${escapeHtml(visibilityText)}</div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+                  <button class="btn-nav btn-proximo" type="button" onclick="confirmarResposta('${escapeHtml(item.id)}', true)">Sim</button>
+                  <button class="btn-nav btn-voltar" type="button" onclick="confirmarResposta('${escapeHtml(item.id)}', false)">Não</button>
+                </div>
+              </div>
 
-        ${mostrarConfirmacao ? `
-          <div class="replica-box">
-            <div id="confirmacaoBox_${escapeHtml(item.id)}">
-              <div style="font-weight:700; margin-bottom:10px;">Sua dúvida foi respondida?</div>
-
-              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
-                <button class="btn-nav btn-proximo" type="button" onclick="confirmarResposta('${escapeHtml(item.id)}', true)">Sim</button>
-                <button class="btn-nav btn-voltar" type="button" onclick="confirmarResposta('${escapeHtml(item.id)}', false)">Não</button>
+              <div id="replicaBox_${escapeHtml(item.id)}" style="display:none; margin-top:10px;">
+                <div style="font-weight:700; margin-bottom:10px;">Complemente a sua pergunta</div>
+                <textarea id="replica_${escapeHtml(item.id)}" maxlength="3000" placeholder="Explique por que sua dúvida ainda não foi respondida"></textarea>
+                <button class="btn-nav btn-proximo btn-full" onclick="salvarReplica('${escapeHtml(item.id)}')">Enviar réplica</button>
               </div>
             </div>
-
-            <div id="replicaBox_${escapeHtml(item.id)}" style="display:none; margin-top:10px;">
-              <div style="font-weight:700; margin-bottom:10px;">Complemente a sua pergunta</div>
-              <textarea id="replica_${escapeHtml(item.id)}" maxlength="3000" placeholder="Explique por que sua dúvida ainda não foi respondida"></textarea>
-              <button class="btn-nav btn-proximo btn-full" onclick="salvarReplica('${escapeHtml(item.id)}')">Enviar réplica</button>
-            </div>
-          </div>
-        ` : ''}
+          ` : ''}
+        </div>
       </div>
     `;
   }).join('');
+}
+function toggleMinhaPergunta(index) {
+  const item = document.querySelector(`.minha-pergunta-item[data-minha-acc="${index}"]`);
+  if (!item) return;
+  item.classList.toggle('open');
 }
 
 function renderPerguntasPublicas(items) {
@@ -519,3 +525,4 @@ window.salvarReplica = salvarReplica;
 window.toggleAccordion = toggleAccordion;
 window.confirmarResposta = confirmarResposta;
 window.abrirComplementoPergunta = abrirComplementoPergunta;
+window.toggleMinhaPergunta = toggleMinhaPergunta;
