@@ -84,7 +84,7 @@ function formatarDataForum(value) {
 
   const horaStr = String(horas).padStart(2, '0');
 
-  return `Mensagem enviada em ${dia}/${mes}/${ano} - ${horaStr}:${minutos}${ampm}`;
+return `${dia}/${mes}/${ano} - ${horaStr}:${minutos}${ampm}`;
 }
 
 function getMetaResposta(item) {
