@@ -425,7 +425,7 @@ async function carregarPerguntasUsuario() {
   const container = document.getElementById('listaMinhasPerguntas');
   if (container) {
     container.innerHTML = `
-  <div class="loading-box">
+  <div class="loading-box loading-publico">
     <span>Carregando suas perguntas...</span>
   </div>
 `;
@@ -454,7 +454,7 @@ async function carregarPerguntasPublicas() {
   const container = document.getElementById('listaPublicas');
   if (container) {
     container.innerHTML = `
-  <div class="loading-box">
+  <div class="loading-box loading-publico">
     <span>Carregando perguntas públicas...</span>
   </div>
 `;
