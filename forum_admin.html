@@ -55,35 +55,49 @@
       padding:10px 4px;
     }
 
-    /* perguntas para responder */
-.responder-item{
+   /* perguntas para responder */
+.accordion-item.responder-item{
   background:#fbe4df;
   border-color:#e69a8c;
 }
 
-.responder-item .responder-btn{
-  background:#fbe4df;
+.accordion-item.responder-item > .accordion-btn.responder-btn{
+  display:grid;
+  width:100%;
+  background:#fbe4df !important;
 }
 
-.responder-item .question-title,
-.responder-item .question-meta,
-.responder-item .accordion-arrow{
+.accordion-item.responder-item > .accordion-content{
+  background:#fbe4df;
+  border-top:1px solid #e69a8c;
+}
+
+.accordion-item.responder-item .question-title,
+.accordion-item.responder-item .question-meta,
+.accordion-item.responder-item .accordion-arrow{
   color:#111;
 }
 
-    /* compartilhar perguntas */
-.compartilhar-item-liberado{
+/* compartilhar perguntas */
+.accordion-item.compartilhar-item-liberado{
   background:#dff4df;
   border-color:#94d39a;
 }
 
-.compartilhar-item-liberado .compartilhar-btn-liberado{
-  background:#dff4df;
+.accordion-item.compartilhar-item-liberado > .accordion-btn.compartilhar-btn-liberado{
+  display:grid;
+  width:100%;
+  background:#dff4df !important;
 }
 
-.compartilhar-item-liberado .question-title,
-.compartilhar-item-liberado .question-meta,
-.compartilhar-item-liberado .accordion-arrow{
+.accordion-item.compartilhar-item-liberado > .accordion-content{
+  background:#dff4df;
+  border-top:1px solid #94d39a;
+}
+
+.accordion-item.compartilhar-item-liberado .question-title,
+.accordion-item.compartilhar-item-liberado .question-meta,
+.accordion-item.compartilhar-item-liberado .accordion-arrow{
   color:#111;
 }
     
