@@ -483,7 +483,30 @@
     font-weight:500;
     padding:14px 16px;
   }
+.forum-pagination{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:14px;
+}
 
+.forum-pagination-buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.forum-pagination-buttons .btn-nav{
+  width:100%;
+}
+
+.forum-pagination-info{
+  text-align:center;
+  font-size:14px;
+  font-weight:500;
+  color:#111;
+}
+  
   /* =========================
      14) RESPONSIVO
   ========================= */
@@ -525,7 +548,16 @@
       display:inline;
       margin-left:4px;
     }
+
+     .forum-pagination-buttons{
+    gap:10px;
   }
+
+  .forum-pagination-info{
+    font-size:13px;
+  }
+  }
+  
 </style>
    
 </head>
