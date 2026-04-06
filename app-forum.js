@@ -298,9 +298,6 @@ return `
         </button>
 
         <div class="accordion-content minha-pergunta-content">
-          <div class="question-meta">
-            Enviada em: ${escapeHtml(formatDateBr(item.data_pergunta || ''))}
-          </div>
 
 ${montarBolha(
   'Pergunta',
