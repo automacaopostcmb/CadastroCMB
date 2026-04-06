@@ -331,19 +331,26 @@ function renderCompartilhar(items) {
             item.titulo || ''
           )}
 
-          ${montarBolha(
-            'Resposta',
-            'bubble-resposta',
-            item.treplica || item.resposta,
-            item.treplica ? getMetaTreplica(item) : getMetaResposta(item)
-          )}
+         ${montarBolha(
+  'Resposta',
+  'bubble-resposta',
+  item.resposta,
+  getMetaResposta(item)
+)}
 
-          ${item.replica ? montarBolha(
-            'Réplica',
-            'bubble-replica',
-            item.replica,
-            item.data_replica ? formatarDataForum(item.data_replica) : ''
-          ) : ''}
+${item.replica ? montarBolha(
+  'Réplica',
+  'bubble-replica',
+  item.replica,
+  item.data_replica ? formatarDataForum(item.data_replica) : ''
+) : ''}
+
+${item.treplica ? montarBolha(
+  'Tréplica',
+  'bubble-treplica',
+  item.treplica,
+  getMetaTreplica(item)
+) : ''}
 
           <div style="margin-top:12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
             <span class="status-badge ${podeCompartilhar ? 'status-respondida' : 'status-bloqueado'}">
@@ -411,18 +418,25 @@ function renderPublicas(items) {
           )}
 
           ${montarBolha(
-            'Resposta',
-            'bubble-resposta',
-            item.treplica || item.resposta,
-            item.treplica ? getMetaTreplica(item) : getMetaResposta(item)
-          )}
+  'Resposta',
+  'bubble-resposta',
+  item.resposta,
+  getMetaResposta(item)
+)}
 
-          ${item.replica ? montarBolha(
-            'Réplica',
-            'bubble-replica',
-            item.replica,
-            item.data_replica ? formatarDataForum(item.data_replica) : ''
-          ) : ''}
+${item.replica ? montarBolha(
+  'Réplica',
+  'bubble-replica',
+  item.replica,
+  item.data_replica ? formatarDataForum(item.data_replica) : ''
+) : ''}
+
+${item.treplica ? montarBolha(
+  'Tréplica',
+  'bubble-treplica',
+  item.treplica,
+  getMetaTreplica(item)
+) : ''}
         </div>
       </div>
     `;
