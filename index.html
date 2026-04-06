@@ -55,8 +55,7 @@
     </div>
 
     <!-- MENU (aparece após login) -->
-
- <div id="menu" class="auth-card" style="display:none;">
+<div id="menu" class="auth-card" style="display:none;">
   <h3>Suas Páginas</h3>
 
   <p class="menu-hint">
@@ -65,6 +64,17 @@
 
   <div id="botoes"></div>
 </div>
+
+<div id="forum-card" class="auth-card" style="display:none; margin-top:18px;">
+  <h3>Fórum da Área dos Artistas</h3>
+
+  <p class="menu-hint">
+    Espaço exclusivo para tirar dúvidas, acompanhar respostas e ver perguntas públicas de outros artistas.
+  </p>
+
+  <div id="forum-botoes"></div>
+</div>
+
 
 <!-- Sair fora do box -->
 <div id="logoutOutside" class="logout-outside" onclick="logout()">Sair</div>
@@ -111,8 +121,14 @@ function showLoginUI() {
   const chaveEl = document.getElementById("chave");
   const logoutOutside = document.getElementById("logoutOutside");
 
+  const forumCard = document.getElementById("forum-card");
+  const forumBotoes = document.getElementById("forum-botoes");
+
   if (menu) menu.style.display = "none";
   if (area) area.innerHTML = "";
+
+  if (forumCard) forumCard.style.display = "none";
+  if (forumBotoes) forumBotoes.innerHTML = "";
 
   if (loginAr) loginAr.style.display = "block";
 
@@ -121,7 +137,7 @@ function showLoginUI() {
     loginLinks.style.display = "block";
   }
 
-  if (logoutOutside) logoutOutside.style.display = "none";  // <-- ADD
+  if (logoutOutside) logoutOutside.style.display = "none";
   if (chaveEl) chaveEl.value = "";
   setLoading(false);
 }
@@ -131,12 +147,14 @@ function showMenuLoadingUI() {
   const menu = document.getElementById("menu");
   const loading = document.getElementById("loading");
   const logoutOutside = document.getElementById("logoutOutside");
+  const forumCard = document.getElementById("forum-card");
 
   if (loginAr) loginAr.style.display = "none";
   if (loginLinks) loginLinks.classList.add("hidden");
   if (menu) menu.style.display = "none";
+  if (forumCard) forumCard.style.display = "none";
   if (loading) loading.style.display = "grid";
-  if (logoutOutside) logoutOutside.style.display = "none"; // <-- ADD
+  if (logoutOutside) logoutOutside.style.display = "none";
 }
 
     function hideOverlay() {
@@ -192,7 +210,7 @@ function showMenuLoadingUI() {
       showLoginUI();
     }
 
- async function carregarMenu() {
+async function carregarMenu() {
   if (isLoading) return;
 
   const chave = (localStorage.getItem("chave") || "").trim();
@@ -204,6 +222,8 @@ function showMenuLoadingUI() {
   const menu = document.getElementById("menu");
   const area = document.getElementById("botoes");
   const logoutOutside = document.getElementById("logoutOutside");
+  const forumCard = document.getElementById("forum-card");
+  const forumBotoes = document.getElementById("forum-botoes");
 
   let algumPermitido = false;
 
@@ -217,23 +237,24 @@ function showMenuLoadingUI() {
     const perms = data.permissoes || data.paginas || {};
 
     area.innerHTML = "";
+    if (forumBotoes) forumBotoes.innerHTML = "";
+
     if (perms.mestre) {
-   algumPermitido = true;
+      algumPermitido = true;
 
-  const btnAdmin = document.createElement("button");
-  btnAdmin.textContent = "CRIAR NOVO CÓDIGO";
-  btnAdmin.className = "menu-btn";
-  btnAdmin.style.backgroundColor = "#000";
-  btnAdmin.style.color = "#fff";
-  btnAdmin.style.marginBottom = "14px";
+      const btnAdmin = document.createElement("button");
+      btnAdmin.textContent = "CRIAR NOVO CÓDIGO";
+      btnAdmin.className = "menu-btn";
+      btnAdmin.style.backgroundColor = "#000";
+      btnAdmin.style.color = "#fff";
+      btnAdmin.style.marginBottom = "14px";
 
-  btnAdmin.addEventListener("click", () => {
-    window.location.href = "admin_codigos.html";
-  });
+      btnAdmin.addEventListener("click", () => {
+        window.location.href = "admin_codigos.html";
+      });
 
-  area.appendChild(btnAdmin);
-}
-
+      area.appendChild(btnAdmin);
+    }
 
     paginas.forEach((pag, idx) => {
       if (perms[pag.nome]) {
@@ -243,7 +264,6 @@ function showMenuLoadingUI() {
         btn.textContent = pag.label;
         btn.className = "menu-btn";
 
-        // Cor do botão (ajuste as cores no array BUTTON_COLORS)
         const color = BUTTON_COLORS[idx % BUTTON_COLORS.length];
         btn.style.backgroundColor = color;
 
@@ -254,6 +274,25 @@ function showMenuLoadingUI() {
         area.appendChild(btn);
       }
     });
+
+    // FÓRUM: só aparece para quem tem expo_artistas e NÃO tem mestre
+    if (perms.expo_artistas && !perms.mestre && forumCard && forumBotoes) {
+      const btnForum = document.createElement("button");
+      btnForum.textContent = "Fórum da Área dos Artistas";
+      btnForum.className = "menu-btn";
+      btnForum.style.backgroundColor = "#ffffff";
+      btnForum.style.color = "#111";
+      btnForum.style.border = "2px solid #e5e5e5";
+
+      btnForum.addEventListener("click", () => {
+        window.location.href = "forum.html";
+      });
+
+      forumBotoes.appendChild(btnForum);
+      forumCard.style.display = "block";
+    } else if (forumCard) {
+      forumCard.style.display = "none";
+    }
 
   } catch (err) {
     console.error(err);
@@ -266,7 +305,6 @@ function showMenuLoadingUI() {
     setLoading(false);
   }
 
-  // ✅ Agora SIM: decide depois de montar tudo
   if (algumPermitido) {
     if (menu) menu.style.display = "block";
     if (logoutOutside) logoutOutside.style.display = "block";
