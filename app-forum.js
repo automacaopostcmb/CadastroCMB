@@ -4,6 +4,14 @@ let forumUser = {
   codigo: "",
   nome: ""
 };
+const PAGE_SIZE = 5;
+
+const forumState = {
+  minhasPerguntas: [],
+  perguntasPublicas: [],
+  paginaMinhas: 1,
+  paginaPublicas: 1
+};
 
 function setOverlayText(text) {
   const el = document.querySelector('#overlay .loader-text');
@@ -256,7 +264,89 @@ async function confirmarResposta(id, confirmado) {
 
   abrirComplementoPergunta(id);
 }
+function getPageItems(items, page, pageSize = PAGE_SIZE) {
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+  return items.slice(start, end);
+}
 
+function getTotalPages(items, pageSize = PAGE_SIZE) {
+  return Math.max(1, Math.ceil((items?.length || 0) / pageSize));
+}
+
+function renderPaginacao({
+  totalItems,
+  currentPage,
+  type
+}) {
+  if (totalItems <= PAGE_SIZE) return '';
+
+  const totalPages = getTotalPages(new Array(totalItems));
+
+  return `
+    <div class="forum-pagination">
+      <div class="forum-pagination-buttons">
+        <button
+          class="btn-nav btn-voltar"
+          type="button"
+          onclick="irPaginaAnterior('${type}')"
+          ${currentPage <= 1 ? 'disabled' : ''}
+        >
+          Anteriores
+        </button>
+
+        <button
+          class="btn-nav btn-proximo"
+          type="button"
+          onclick="irProximaPagina('${type}')"
+          ${currentPage >= totalPages ? 'disabled' : ''}
+        >
+          Próximas
+        </button>
+      </div>
+
+      <div class="forum-pagination-info">
+        Página ${currentPage} de ${totalPages}
+      </div>
+    </div>
+  `;
+}
+
+function irProximaPagina(type) {
+  if (type === 'minhas') {
+    const totalPages = getTotalPages(forumState.minhasPerguntas);
+    if (forumState.paginaMinhas < totalPages) {
+      forumState.paginaMinhas++;
+      renderMinhasPerguntas(forumState.minhasPerguntas);
+    }
+    return;
+  }
+
+  if (type === 'publicas') {
+    const totalPages = getTotalPages(forumState.perguntasPublicas);
+    if (forumState.paginaPublicas < totalPages) {
+      forumState.paginaPublicas++;
+      renderPerguntasPublicas(forumState.perguntasPublicas);
+    }
+  }
+}
+
+function irPaginaAnterior(type) {
+  if (type === 'minhas') {
+    if (forumState.paginaMinhas > 1) {
+      forumState.paginaMinhas--;
+      renderMinhasPerguntas(forumState.minhasPerguntas);
+    }
+    return;
+  }
+
+  if (type === 'publicas') {
+    if (forumState.paginaPublicas > 1) {
+      forumState.paginaPublicas--;
+      renderPerguntasPublicas(forumState.perguntasPublicas);
+    }
+  }
+}
 function renderMinhasPerguntas(items) {
   const container = document.getElementById('listaMinhasPerguntas');
   if (!container) return;
@@ -266,7 +356,21 @@ function renderMinhasPerguntas(items) {
     return;
   }
 
-  container.innerHTML = items.map((item, index) => {
+  const totalPages = getTotalPages(items);
+
+  if (forumState.paginaMinhas > totalPages) {
+    forumState.paginaMinhas = totalPages;
+  }
+
+  if (forumState.paginaMinhas < 1) {
+    forumState.paginaMinhas = 1;
+  }
+
+  const pageItems = getPageItems(items, forumState.paginaMinhas);
+
+  const listaHtml = pageItems.map((item, index) => {
+    const globalIndex = (forumState.paginaMinhas - 1) * PAGE_SIZE + index;
+
     const hasResposta = !!String(item.resposta || '').trim();
     const hasReplica = !!String(item.replica || '').trim();
     const hasTreplica = !!String(item.treplica || '').trim();
@@ -278,7 +382,6 @@ function renderMinhasPerguntas(items) {
       !hasTreplica &&
       (status === 'aguardando_confirmacao' || status === 'pendente');
 
-
     const labelStatus = mostrarConfirmacao
       ? 'respondida'
       : (status === 'aguardando_confirmacao' ? 'respondida' : status);
@@ -287,9 +390,9 @@ function renderMinhasPerguntas(items) {
       ? 'status-respondida'
       : statusClass(status);
 
-return `
-  <div class="accordion-item minha-pergunta-item ${classeStatus}" data-minha-acc="${index}">
-    <button class="accordion-btn minha-pergunta-btn" type="button" onclick="toggleMinhaPergunta(${index})">
+    return `
+      <div class="accordion-item minha-pergunta-item ${classeStatus}" data-minha-acc="${globalIndex}">
+        <button class="accordion-btn minha-pergunta-btn" type="button" onclick="toggleMinhaPergunta(${globalIndex})">
           <span class="minha-pergunta-head">
             <span class="question-title">${escapeHtml(item.titulo || 'Sem título')}</span>
             <span class="status-badge ${classeStatus}">${escapeHtml(labelStatus)}</span>
@@ -298,14 +401,13 @@ return `
         </button>
 
         <div class="accordion-content minha-pergunta-content">
-
-${montarBolha(
-  'Pergunta',
-  'bubble-pergunta',
-  item.descricao,
-  item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
-  item.titulo || ''
-)}
+          ${montarBolha(
+            'Pergunta',
+            'bubble-pergunta',
+            item.descricao,
+            item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
+            item.titulo || ''
+          )}
 
           ${montarBolha(
             'Resposta',
@@ -327,7 +429,6 @@ ${montarBolha(
             item.treplica,
             getMetaTreplica(item)
           )}
-
 
           ${mostrarConfirmacao ? `
             <div class="replica-box">
@@ -351,6 +452,15 @@ ${montarBolha(
       </div>
     `;
   }).join('');
+
+  const paginacaoHtml = renderPaginacao({
+    totalItems: items.length,
+    currentPage: forumState.paginaMinhas,
+    type: 'minhas',
+    label: 'perguntas'
+  });
+
+  container.innerHTML = listaHtml + paginacaoHtml;
 }
 function toggleMinhaPergunta(index) {
   const item = document.querySelector(`.minha-pergunta-item[data-minha-acc="${index}"]`);
@@ -367,47 +477,72 @@ function renderPerguntasPublicas(items) {
     return;
   }
 
-  container.innerHTML = items.map((item, index) => `
-    <div class="accordion-item" data-acc="${index}">
-      <button class="accordion-btn forum-publico-btn" type="button" onclick="toggleAccordion(${index})">
-        <span class="forum-publico-head">
-          <span class="forum-publico-titulo">${escapeHtml(item.titulo || 'Sem título')}</span>
-          <span class="forum-publico-autor"> - ${escapeHtml(item.nome || 'Anônimo')}</span>
-        </span>
-        <span class="accordion-arrow">⌄</span>
-      </button>
-      <div class="accordion-content">
-${montarBolha(
-  'Pergunta',
-  'bubble-pergunta',
-  item.descricao,
-  item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
-  item.titulo || ''
-)}
+  const totalPages = getTotalPages(items);
 
-        ${montarBolha(
-          'Resposta',
-          'bubble-resposta',
-          item.resposta,
-          getMetaResposta(item)
-        )}
+  if (forumState.paginaPublicas > totalPages) {
+    forumState.paginaPublicas = totalPages;
+  }
 
-        ${montarBolha(
-          'Réplica',
-          'bubble-replica',
-          item.replica,
-          item.data_replica ? `Enviada em ${item.data_replica}` : ''
-        )}
+  if (forumState.paginaPublicas < 1) {
+    forumState.paginaPublicas = 1;
+  }
 
-        ${montarBolha(
-          'Tréplica',
-          'bubble-treplica',
-          item.treplica,
-          getMetaTreplica(item)
-        )}
+  const pageItems = getPageItems(items, forumState.paginaPublicas);
+
+  const listaHtml = pageItems.map((item, index) => {
+    const globalIndex = (forumState.paginaPublicas - 1) * PAGE_SIZE + index;
+
+    return `
+      <div class="accordion-item" data-acc="${globalIndex}">
+        <button class="accordion-btn forum-publico-btn" type="button" onclick="toggleAccordion(${globalIndex})">
+          <span class="forum-publico-head">
+            <span class="forum-publico-titulo">${escapeHtml(item.titulo || 'Sem título')}</span>
+            <span class="forum-publico-autor"> - ${escapeHtml(item.nome || 'Anônimo')}</span>
+          </span>
+          <span class="accordion-arrow">⌄</span>
+        </button>
+        <div class="accordion-content">
+          ${montarBolha(
+            'Pergunta',
+            'bubble-pergunta',
+            item.descricao,
+            item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
+            item.titulo || ''
+          )}
+
+          ${montarBolha(
+            'Resposta',
+            'bubble-resposta',
+            item.resposta,
+            getMetaResposta(item)
+          )}
+
+          ${montarBolha(
+            'Réplica',
+            'bubble-replica',
+            item.replica,
+            item.data_replica ? `Enviada em ${item.data_replica}` : ''
+          )}
+
+          ${montarBolha(
+            'Tréplica',
+            'bubble-treplica',
+            item.treplica,
+            getMetaTreplica(item)
+          )}
+        </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
+
+  const paginacaoHtml = renderPaginacao({
+    totalItems: items.length,
+    currentPage: forumState.paginaPublicas,
+    type: 'publicas',
+    label: 'perguntas'
+  });
+
+  container.innerHTML = listaHtml + paginacaoHtml;
 }
 
 async function carregarPerguntasUsuario() {
@@ -430,8 +565,12 @@ async function carregarPerguntasUsuario() {
       throw new Error(result.message || 'Erro ao carregar suas perguntas.');
     }
 
-    renderMinhasPerguntas(result.perguntas || []);
-  } catch (error) {
+        forumState.minhasPerguntas = result.perguntas || [];
+    forumState.paginaMinhas = 1;
+    renderMinhasPerguntas(forumState.minhasPerguntas);
+  } 
+  
+  catch (error) {
     console.error(error);
     if (container) {
       container.innerHTML = `<div class="empty-state">Não foi possível carregar suas perguntas.</div>`;
@@ -458,7 +597,9 @@ async function carregarPerguntasPublicas() {
       throw new Error(result.message || 'Erro ao carregar perguntas públicas.');
     }
 
-    renderPerguntasPublicas(result.perguntas || []);
+    forumState.perguntasPublicas = result.perguntas || [];
+    forumState.paginaPublicas = 1;
+    renderPerguntasPublicas(forumState.perguntasPublicas);
   } catch (error) {
     console.error(error);
     if (container) {
@@ -530,3 +671,5 @@ window.toggleAccordion = toggleAccordion;
 window.confirmarResposta = confirmarResposta;
 window.abrirComplementoPergunta = abrirComplementoPergunta;
 window.toggleMinhaPergunta = toggleMinhaPergunta;
+window.irProximaPagina = irProximaPagina;
+window.irPaginaAnterior = irPaginaAnterior;
