@@ -1,4 +1,4 @@
-const FORUM_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1A1guXNDwoNoD_3fvy3b-8l4ZDLC9gXS_Yl_lXEwDeMfThITYRzP3l77Li6t_8LifJg/exec";
+const FORUM_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxbGyybng6XMTGwAIbDCrZPFLQkbKyoYwegRbDBog-1DmYaoswskb3tzsO4adRm0ZE/exec";
 
 let forumAdminUser = {
   codigo: "",
