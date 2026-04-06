@@ -64,6 +64,30 @@ function statusClass(status) {
   return s === 'respondida' ? 'status-respondida' : 'status-pendente';
 }
 
+function getStatusEfetivo(item) {
+  const resposta = String(item.resposta || '').trim();
+  const replica = String(item.replica || '').trim();
+  const treplica = String(item.treplica || '').trim();
+
+  if (!resposta) return 'pendente';
+  if (replica && !treplica) return 'pendente';
+  return 'respondida';
+}
+
+function getMetaResposta(item) {
+  if (item.quem_respondeu) {
+    return `Respondido por ${item.quem_respondeu}${item.data_resposta ? ' em ' + item.data_resposta : ''}`;
+  }
+  return item.data_resposta ? `Respondido em ${item.data_resposta}` : '';
+}
+
+function getMetaTreplica(item) {
+  if (item.quem_respondeu_treplica) {
+    return `Respondido por ${item.quem_respondeu_treplica}${item.data_treplica ? ' em ' + item.data_treplica : ''}`;
+  }
+  return item.data_treplica ? `Respondido em ${item.data_treplica}` : '';
+}
+
 function updateSendButtonState() {
   const titulo = (document.getElementById('tituloPergunta')?.value || '').trim();
   const descricao = (document.getElementById('descricaoPergunta')?.value || '').trim();
@@ -181,15 +205,58 @@ async function enviarPergunta() {
   }
 }
 
-function montarBolha(label, classe, conteudo, extraMeta = '') {
-  if (!conteudo) return '';
+function montarBolha(label, classe, conteudo, extraMeta = '', tituloExtra = '') {
+  if (!conteudo && !tituloExtra) return '';
+
   return `
-    <div class="bubble ${classe}">
-      <span class="bubble-label">${label}</span>
-      ${extraMeta ? `<div class="question-meta">${escapeHtml(extraMeta)}</div>` : ''}
-      ${nl2brSafe(conteudo)}
+    <div class="bubble ${classe}" style="padding:10px 12px; margin-top:10px;">
+      <span class="bubble-label" style="margin-bottom:8px;">${label}</span>
+      ${tituloExtra ? `<div style="font-size:14px; font-weight:700; color:#111; margin-bottom:6px; line-height:1.35;">${escapeHtml(tituloExtra)}</div>` : ''}
+      <div style="line-height:1.45;">${nl2brSafe(conteudo || '')}</div>
+      ${extraMeta ? `<div class="question-meta" style="margin-top:8px; margin-bottom:0;">${escapeHtml(extraMeta)}</div>` : ''}
     </div>
   `;
+}
+
+function toggleReplicaBox(id) {
+  const box = document.getElementById(`replicaBox_${id}`);
+  if (!box) return;
+
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
+async function confirmarResposta(id, confirmado) {
+  if (confirmado) {
+    showOverlay('Confirmando resposta...');
+
+    try {
+      const result = await postJSON({
+        action: 'confirmarRespostaUsuario',
+        codigo: forumUser.codigo,
+        id,
+        confirmado: true
+      });
+
+      if (result.status !== 'success') {
+        throw new Error(result.message || 'Erro ao confirmar resposta.');
+      }
+
+      await Promise.all([
+        carregarPerguntasUsuario(),
+        carregarPerguntasPublicas()
+      ]);
+    } catch (error) {
+      console.error(error);
+      alert(error.message || 'Erro ao confirmar resposta.');
+    } finally {
+      hideOverlay();
+    }
+
+    return;
+  }
+
+  const box = document.getElementById(`replicaBox_${id}`);
+  if (!box) return;
+  box.style.display = 'block';
 }
 
 function renderMinhasPerguntas(items) {
@@ -204,6 +271,7 @@ function renderMinhasPerguntas(items) {
   container.innerHTML = items.map((item) => {
     const hasResposta = !!String(item.resposta || '').trim();
     const hasReplica = !!String(item.replica || '').trim();
+    const status = getStatusEfetivo(item);
     const podeReplicar = hasResposta && !hasReplica;
 
     const visibilityText = String(item.visibilidade || '').toUpperCase() === 'SIM'
@@ -214,26 +282,59 @@ function renderMinhasPerguntas(items) {
       <div class="question-card">
         <div class="question-top">
           <h3 class="question-title">${escapeHtml(item.titulo || 'Sem título')}</h3>
-          <span class="status-badge ${statusClass(item.status)}">${escapeHtml(item.status || 'pendente')}</span>
+          <span class="status-badge ${statusClass(status)}">${escapeHtml(status)}</span>
         </div>
 
         <div class="question-meta">
           Enviada em: ${escapeHtml(formatDateBr(item.data_pergunta || ''))}
         </div>
 
-        ${montarBolha('Pergunta', 'bubble-pergunta', item.descricao)}
-        ${montarBolha('Resposta', 'bubble-resposta', item.resposta, item.quem_respondeu ? `Respondido por ${item.quem_respondeu}${item.data_resposta ? ' em ' + item.data_resposta : ''}` : (item.data_resposta ? `Respondido em ${item.data_resposta}` : ''))}
-        ${montarBolha('Réplica', 'bubble-replica', item.replica, item.data_replica ? `Enviada em ${item.data_replica}` : '')}
-        ${montarBolha('Tréplica', 'bubble-treplica', item.treplica, item.quem_respondeu_treplica ? `Respondido por ${item.quem_respondeu_treplica}${item.data_treplica ? ' em ' + item.data_treplica : ''}` : (item.data_treplica ? `Respondido em ${item.data_treplica}` : ''))}
+        ${montarBolha(
+          'Pergunta',
+          'bubble-pergunta',
+          item.descricao,
+          item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
+          item.titulo || ''
+        )}
+
+        ${montarBolha(
+          'Resposta',
+          'bubble-resposta',
+          item.resposta,
+          getMetaResposta(item)
+        )}
+
+        ${montarBolha(
+          'Réplica',
+          'bubble-replica',
+          item.replica,
+          item.data_replica ? `Enviada em ${item.data_replica}` : ''
+        )}
+
+        ${montarBolha(
+          'Tréplica',
+          'bubble-treplica',
+          item.treplica,
+          getMetaTreplica(item)
+        )}
 
         <div class="forum-visibility">${escapeHtml(visibilityText)}</div>
 
-        ${podeReplicar ? `
-          <div class="replica-box">
-            <textarea id="replica_${escapeHtml(item.id)}" maxlength="3000" placeholder="Escreva sua réplica"></textarea>
-            <button class="btn-nav btn-proximo btn-full" onclick="salvarReplica('${escapeHtml(item.id)}')">Enviar réplica</button>
-          </div>
-        ` : ''}
+${podeReplicar ? `
+  <div class="replica-box">
+    <div style="font-weight:700; margin-bottom:10px;">Sua dúvida foi respondida?</div>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+      <button class="btn-nav btn-proximo" type="button" onclick="confirmarResposta('${escapeHtml(item.id)}', true)">Sim</button>
+      <button class="btn-nav btn-voltar" type="button" onclick="confirmarResposta('${escapeHtml(item.id)}', false)">Não</button>
+    </div>
+
+    <div id="replicaBox_${escapeHtml(item.id)}" style="display:none; margin-top:10px;">
+      <textarea id="replica_${escapeHtml(item.id)}" maxlength="3000" placeholder="Explique por que sua dúvida ainda não foi respondida"></textarea>
+      <button class="btn-nav btn-proximo btn-full" onclick="salvarReplica('${escapeHtml(item.id)}')">Enviar réplica</button>
+    </div>
+  </div>
+` : ''}
       </div>
     `;
   }).join('');
@@ -255,10 +356,34 @@ function renderPerguntasPublicas(items) {
         <span class="accordion-arrow">⌄</span>
       </button>
       <div class="accordion-content">
-        ${montarBolha('Pergunta', 'bubble-pergunta', item.descricao)}
-        ${montarBolha('Resposta', 'bubble-resposta', item.resposta, item.quem_respondeu ? `Respondido por ${item.quem_respondeu}${item.data_resposta ? ' em ' + item.data_resposta : ''}` : (item.data_resposta ? `Respondido em ${item.data_resposta}` : ''))}
-        ${montarBolha('Réplica', 'bubble-replica', item.replica, item.data_replica ? `Enviada em ${item.data_replica}` : '')}
-        ${montarBolha('Tréplica', 'bubble-treplica', item.treplica, item.quem_respondeu_treplica ? `Respondido por ${item.quem_respondeu_treplica}${item.data_treplica ? ' em ' + item.data_treplica : ''}` : (item.data_treplica ? `Respondido em ${item.data_treplica}` : ''))}
+        ${montarBolha(
+          'Pergunta',
+          'bubble-pergunta',
+          item.descricao,
+          item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
+          item.titulo || ''
+        )}
+
+        ${montarBolha(
+          'Resposta',
+          'bubble-resposta',
+          item.resposta,
+          getMetaResposta(item)
+        )}
+
+        ${montarBolha(
+          'Réplica',
+          'bubble-replica',
+          item.replica,
+          item.data_replica ? `Enviada em ${item.data_replica}` : ''
+        )}
+
+        ${montarBolha(
+          'Tréplica',
+          'bubble-treplica',
+          item.treplica,
+          getMetaTreplica(item)
+        )}
       </div>
     </div>
   `).join('');
@@ -318,11 +443,11 @@ async function salvarReplica(id) {
   const replica = (textarea?.value || '').trim();
 
   if (!replica) {
-    alert('Escreva sua réplica antes de enviar.');
+    alert('Escreva sua resposta antes de enviar.');
     return;
   }
 
-  showOverlay('Enviando réplica...');
+  showOverlay('Enviando resposta...');
 
   try {
     const result = await postJSON({
@@ -333,7 +458,7 @@ async function salvarReplica(id) {
     });
 
     if (result.status !== 'success') {
-      throw new Error(result.message || 'Erro ao salvar a réplica.');
+      throw new Error(result.message || 'Erro ao salvar a resposta.');
     }
 
     await Promise.all([
@@ -342,7 +467,7 @@ async function salvarReplica(id) {
     ]);
   } catch (error) {
     console.error(error);
-    alert(error.message || 'Erro ao salvar a réplica.');
+    alert(error.message || 'Erro ao salvar a resposta.');
   } finally {
     hideOverlay();
   }
@@ -373,3 +498,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 window.salvarReplica = salvarReplica;
 window.toggleAccordion = toggleAccordion;
+window.toggleReplicaBox = toggleReplicaBox;
+window.confirmarResposta = confirmarResposta;
