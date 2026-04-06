@@ -278,9 +278,6 @@ function renderMinhasPerguntas(items) {
       !hasTreplica &&
       (status === 'aguardando_confirmacao' || status === 'pendente');
 
-    const visibilityText = String(item.visibilidade || '').toUpperCase() === 'SIM'
-      ? 'Autorizada para possível publicação pública'
-      : 'Não autorizada para publicação pública';
 
     const labelStatus = mostrarConfirmacao
       ? 'respondida'
