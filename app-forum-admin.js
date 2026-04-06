@@ -482,10 +482,10 @@ async function carregarPerguntasAdmin() {
   }
 
   try {
-const result = await postJSON({
-  action: 'listarPerguntasAdmin',
-  codigo: forumAdminUser.codigo
-});
+    const result = await postJSON({
+      action: 'listarPerguntasAdmin',
+      codigo: forumAdminUser.codigo
+    });
 
     if (result.status !== 'success') {
       throw new Error(result.message || 'Erro ao carregar perguntas do admin.');
