@@ -57,12 +57,7 @@
     padding:10px 4px;
   }
 
-  .loading-box{
-    text-align:center;
-    color:#667085;
-    font-size:14px;
-    padding:14px 0 4px;
-  }
+
 
   /* =========================
      2) CARD ENVIAR PERGUNTA
@@ -357,19 +352,34 @@
   /* =========================
      9) ACORDEÃO - SUAS PERGUNTAS
   ========================= */
-  .minha-pergunta-btn{
-    background:#fff;
-    padding:14px 16px;
-  }
+.minha-pergunta-btn{
+  background:#fff;
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  width:100%;
+  text-align:left;
+}
 
-  .minha-pergunta-head{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    min-width:0;
-    flex:1;
-    justify-content:flex-start;
-  }
+.minha-pergunta-item.status-pendente .minha-pergunta-btn{
+  background:#f4d7a8;
+}
+
+.minha-pergunta-item.status-respondida .minha-pergunta-btn{
+  background:#a8efaa;
+}
+
+.minha-pergunta-head{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:10px;
+  min-width:0;
+  flex:1;
+  text-align:left;
+}
 
   .minha-pergunta-head .question-title{
     flex:0 1 auto;
@@ -428,6 +438,27 @@
     pointer-events:none;
   }
 
+/* =========================
+   9.1) CORES DO ACORDEÃO - SUAS PERGUNTAS
+========================= */
+.minha-pergunta-item.status-pendente{
+  background:#f3d6a8;
+  border-color:#e4be7f;
+}
+
+.minha-pergunta-item.status-pendente .minha-pergunta-btn{
+  background:#f3d6a8;
+}
+
+.minha-pergunta-item.status-respondida{
+  background:#a9f0a9;
+  border-color:#86d986;
+}
+
+.minha-pergunta-item.status-respondida .minha-pergunta-btn{
+  background:#a9f0a9;
+}
+  
   /* =========================
      12) RESPONSIVO
   ========================= */
@@ -466,6 +497,22 @@
       margin-left:4px;
     }
   }
+
+  /* =========================
+   13) LOADING MAIOR
+========================= */
+.loading-box{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:90px;
+  text-align:center;
+  color:#667085;
+  font-size:14px;
+  padding:0 8px;
+  box-sizing:border-box;
+}
 </style>
    
 </head>
@@ -536,9 +583,9 @@
         Perguntas públicas respondidas pela equipe. Clique para abrir e visualizar a conversa.
       </p>
 
-      <div id="listaPublicas" class="accordion">
-        <div class="loading-box">Carregando perguntas públicas...</div>
-      </div>
+ <div id="listaPublicas" class="accordion">
+  <div class="loading-box">Carregando perguntas públicas...</div>
+</div>
     </section>
 
     <a class="btn-light-text" href="index.html?back=1">Menu</a>
