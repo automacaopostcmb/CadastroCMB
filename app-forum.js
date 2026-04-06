@@ -218,12 +218,14 @@ function montarBolha(label, classe, conteudo, extraMeta = '', tituloExtra = '') 
   `;
 }
 
-function toggleReplicaBox(id) {
-  const box = document.getElementById(`replicaBox_${id}`);
-  if (!box) return;
+function abrirComplementoPergunta(id) {
+  const questionBox = document.getElementById(`confirmacaoBox_${id}`);
+  const replicaBox = document.getElementById(`replicaBox_${id}`);
 
-  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  if (questionBox) questionBox.style.display = 'none';
+  if (replicaBox) replicaBox.style.display = 'block';
 }
+
 async function confirmarResposta(id, confirmado) {
   if (confirmado) {
     showOverlay('Confirmando resposta...');
@@ -254,9 +256,7 @@ async function confirmarResposta(id, confirmado) {
     return;
   }
 
-  const box = document.getElementById(`replicaBox_${id}`);
-  if (!box) return;
-  box.style.display = 'block';
+  abrirComplementoPergunta(id);
 }
 
 function renderMinhasPerguntas(items) {
@@ -272,7 +272,9 @@ function renderMinhasPerguntas(items) {
     const hasResposta = !!String(item.resposta || '').trim();
     const hasReplica = !!String(item.replica || '').trim();
     const status = getStatusEfetivo(item);
-    const podeReplicar = hasResposta && !hasReplica;
+
+    const statusPlanilha = String(item.status || '').trim().toLowerCase();
+    const mostrarConfirmacao = hasResposta && !hasReplica && statusPlanilha !== 'respondida';
 
     const visibilityText = String(item.visibilidade || '').toUpperCase() === 'SIM'
       ? 'Autorizada para possível publicação pública'
@@ -320,21 +322,24 @@ function renderMinhasPerguntas(items) {
 
         <div class="forum-visibility">${escapeHtml(visibilityText)}</div>
 
-${podeReplicar ? `
-  <div class="replica-box">
-    <div style="font-weight:700; margin-bottom:10px;">Sua dúvida foi respondida?</div>
+        ${mostrarConfirmacao ? `
+          <div class="replica-box">
+            <div id="confirmacaoBox_${escapeHtml(item.id)}">
+              <div style="font-weight:700; margin-bottom:10px;">Sua dúvida foi respondida?</div>
 
-    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
-      <button class="btn-nav btn-proximo" type="button" onclick="confirmarResposta('${escapeHtml(item.id)}', true)">Sim</button>
-      <button class="btn-nav btn-voltar" type="button" onclick="confirmarResposta('${escapeHtml(item.id)}', false)">Não</button>
-    </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+                <button class="btn-nav btn-proximo" type="button" onclick="confirmarResposta('${escapeHtml(item.id)}', true)">Sim</button>
+                <button class="btn-nav btn-voltar" type="button" onclick="confirmarResposta('${escapeHtml(item.id)}', false)">Não</button>
+              </div>
+            </div>
 
-    <div id="replicaBox_${escapeHtml(item.id)}" style="display:none; margin-top:10px;">
-      <textarea id="replica_${escapeHtml(item.id)}" maxlength="3000" placeholder="Explique por que sua dúvida ainda não foi respondida"></textarea>
-      <button class="btn-nav btn-proximo btn-full" onclick="salvarReplica('${escapeHtml(item.id)}')">Enviar réplica</button>
-    </div>
-  </div>
-` : ''}
+            <div id="replicaBox_${escapeHtml(item.id)}" style="display:none; margin-top:10px;">
+              <div style="font-weight:700; margin-bottom:10px;">Complemente a sua pergunta</div>
+              <textarea id="replica_${escapeHtml(item.id)}" maxlength="3000" placeholder="Explique por que sua dúvida ainda não foi respondida"></textarea>
+              <button class="btn-nav btn-proximo btn-full" onclick="salvarReplica('${escapeHtml(item.id)}')">Enviar réplica</button>
+            </div>
+          </div>
+        ` : ''}
       </div>
     `;
   }).join('');
@@ -443,11 +448,11 @@ async function salvarReplica(id) {
   const replica = (textarea?.value || '').trim();
 
   if (!replica) {
-    alert('Escreva sua resposta antes de enviar.');
+    alert('Escreva sua réplica antes de enviar.');
     return;
   }
 
-  showOverlay('Enviando resposta...');
+  showOverlay('Enviando réplica...');
 
   try {
     const result = await postJSON({
@@ -458,7 +463,7 @@ async function salvarReplica(id) {
     });
 
     if (result.status !== 'success') {
-      throw new Error(result.message || 'Erro ao salvar a resposta.');
+      throw new Error(result.message || 'Erro ao salvar a réplica.');
     }
 
     await Promise.all([
@@ -467,7 +472,7 @@ async function salvarReplica(id) {
     ]);
   } catch (error) {
     console.error(error);
-    alert(error.message || 'Erro ao salvar a resposta.');
+    alert(error.message || 'Erro ao salvar a réplica.');
   } finally {
     hideOverlay();
   }
@@ -498,5 +503,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 window.salvarReplica = salvarReplica;
 window.toggleAccordion = toggleAccordion;
-window.toggleReplicaBox = toggleReplicaBox;
 window.confirmarResposta = confirmarResposta;
+window.abrirComplementoPergunta = abrirComplementoPergunta;
