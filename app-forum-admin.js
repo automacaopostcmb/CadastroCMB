@@ -313,8 +313,8 @@ function renderCompartilhar(items) {
     const podeCompartilhar = String(item.status || '').trim().toLowerCase() === 'respondida';
 
     return `
-      <div class="accordion-item" data-type="compartilhar" data-acc="${globalIndex}">
-        <button class="accordion-btn" type="button" onclick="toggleAccordionByType('compartilhar', ${globalIndex})">
+      <div class="accordion-item compartilhar-item ${podeCompartilhar ? 'compartilhar-item-liberado' : ''}" data-type="compartilhar" data-acc="${globalIndex}">
+  <button class="accordion-btn compartilhar-btn ${podeCompartilhar ? 'compartilhar-btn-liberado' : ''}" type="button" onclick="toggleAccordionByType('compartilhar', ${globalIndex})">
           <span>
             <div class="question-title">${escapeHtml(item.titulo || 'Sem título')}</div>
             <div class="question-meta">${escapeHtml(item.nome || '')} • Código ${escapeHtml(item.codigo || '')}</div>
