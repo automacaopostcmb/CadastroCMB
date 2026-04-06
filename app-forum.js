@@ -61,17 +61,15 @@ function formatDateBr(value) {
 
 function statusClass(status) {
   const s = String(status || '').trim().toLowerCase();
-  return s === 'respondida' ? 'status-respondida' : 'status-pendente';
+
+  if (s === 'respondida') return 'status-respondida';
+  if (s === 'aguardando_confirmacao') return 'status-respondida';
+
+  return 'status-pendente';
 }
 
 function getStatusEfetivo(item) {
-  const resposta = String(item.resposta || '').trim();
-  const replica = String(item.replica || '').trim();
-  const treplica = String(item.treplica || '').trim();
-
-  if (!resposta) return 'pendente';
-  if (replica && !treplica) return 'pendente';
-  return 'respondida';
+  return String(item.status || 'pendente').trim().toLowerCase();
 }
 
 function getMetaResposta(item) {
@@ -269,12 +267,15 @@ function renderMinhasPerguntas(items) {
   }
 
   container.innerHTML = items.map((item) => {
-    const hasResposta = !!String(item.resposta || '').trim();
-    const hasReplica = !!String(item.replica || '').trim();
-    const status = getStatusEfetivo(item);
+const hasResposta = !!String(item.resposta || '').trim();
+const hasReplica = !!String(item.replica || '').trim();
+const hasTreplica = !!String(item.treplica || '').trim();
+const status = getStatusEfetivo(item);
 
-    const statusPlanilha = String(item.status || '').trim().toLowerCase();
-    const mostrarConfirmacao = hasResposta && !hasReplica && statusPlanilha !== 'respondida';
+const mostrarConfirmacao =
+  hasResposta &&
+  !hasReplica &&
+  status === 'aguardando_confirmacao';
 
     const visibilityText = String(item.visibilidade || '').toUpperCase() === 'SIM'
       ? 'Autorizada para possível publicação pública'
@@ -284,7 +285,9 @@ function renderMinhasPerguntas(items) {
       <div class="question-card">
         <div class="question-top">
           <h3 class="question-title">${escapeHtml(item.titulo || 'Sem título')}</h3>
-          <span class="status-badge ${statusClass(status)}">${escapeHtml(status)}</span>
+          <span class="status-badge ${statusClass(status)}">${escapeHtml(
+  status === 'aguardando_confirmacao' ? 'respondida' : status
+)}</span>
         </div>
 
         <div class="question-meta">
