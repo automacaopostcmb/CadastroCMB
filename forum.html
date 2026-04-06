@@ -318,6 +318,7 @@
     padding:16px 18px;
     display:flex;
     align-items:center;
+    justify-content:flex-start;
     gap:12px;
     font:inherit;
     box-sizing:border-box;
@@ -355,6 +356,7 @@
     padding:16px 18px;
     display:flex;
     align-items:center;
+    justify-content:flex-start;
     gap:12px;
     width:100%;
     text-align:left;
@@ -363,9 +365,11 @@
   .minha-pergunta-head{
     display:flex;
     align-items:center;
+    justify-content:flex-start;
     gap:10px;
     min-width:0;
-    flex:0 1 auto;
+    flex:1 1 auto;
+    width:0;
     text-align:left;
   }
 
@@ -387,6 +391,7 @@
     padding:16px 18px;
     display:flex;
     align-items:center;
+    justify-content:flex-start;
     gap:12px;
     text-align:left;
   }
@@ -394,8 +399,10 @@
   .forum-publico-head{
     display:flex;
     align-items:center;
+    justify-content:flex-start;
     min-width:0;
-    flex:0 1 auto;
+    flex:1 1 auto;
+    width:0;
     text-align:left;
   }
 
@@ -505,10 +512,14 @@
     .minha-pergunta-head{
       flex-wrap:wrap;
       gap:8px;
+      width:0;
+      flex:1 1 auto;
     }
 
     .forum-publico-head{
       display:block;
+      width:0;
+      flex:1 1 auto;
     }
 
     .forum-publico-autor{
