@@ -376,8 +376,11 @@ function renderPerguntasPublicas(items) {
 
   container.innerHTML = items.map((item, index) => `
     <div class="accordion-item" data-acc="${index}">
-      <button class="accordion-btn" type="button" onclick="toggleAccordion(${index})">
-        <span>${escapeHtml(item.titulo || 'Sem título')}</span>
+      <button class="accordion-btn forum-publico-btn" type="button" onclick="toggleAccordion(${index})">
+        <span class="forum-publico-head">
+          <span class="forum-publico-titulo">${escapeHtml(item.titulo || 'Sem título')}</span>
+          <span class="forum-publico-autor"> - ${escapeHtml(item.nome || 'Anônimo')}</span>
+        </span>
         <span class="accordion-arrow">⌄</span>
       </button>
       <div class="accordion-content">
@@ -386,7 +389,7 @@ function renderPerguntasPublicas(items) {
           'bubble-pergunta',
           item.descricao,
           item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
-          item.titulo || ''
+          ''
         )}
 
         ${montarBolha(
