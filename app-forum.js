@@ -210,7 +210,7 @@ function montarBolha(label, classe, conteudo, extraMeta = '', tituloExtra = '') 
     <div class="bubble ${classe}">
       <span class="bubble-label">${label}</span>
       ${tituloExtra ? `<div class="bubble-title-inline">${escapeHtml(tituloExtra)}</div>` : ''}
-      <div class="bubble-text">${nl2brSafe(conteudo || '')}</div>
+<div class="bubble-text">${nl2brSafe(String(conteudo || '').trim())}</div>
       ${extraMeta ? `<div class="question-meta bubble-meta">${escapeHtml(extraMeta)}</div>` : ''}
     </div>
   `;
@@ -305,13 +305,13 @@ function renderMinhasPerguntas(items) {
             Enviada em: ${escapeHtml(formatDateBr(item.data_pergunta || ''))}
           </div>
 
-          ${montarBolha(
-            'Pergunta',
-            'bubble-pergunta',
-            item.descricao,
-            item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
-            ''
-          )}
+${montarBolha(
+  'Pergunta',
+  'bubble-pergunta',
+  item.descricao,
+  item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
+  item.titulo || ''
+)}
 
           ${montarBolha(
             'Resposta',
@@ -392,12 +392,13 @@ function renderPerguntasPublicas(items) {
           ''
         )}
 
-        ${montarBolha(
-          'Resposta',
-          'bubble-resposta',
-          item.resposta,
-          getMetaResposta(item)
-        )}
+${montarBolha(
+  'Pergunta',
+  'bubble-pergunta',
+  item.descricao,
+  item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
+  item.titulo || ''
+)}
 
         ${montarBolha(
           'Réplica',
