@@ -235,8 +235,8 @@ function renderResponder(items) {
     const precisaTreplica = !!String(item.replica || '').trim() && !String(item.treplica || '').trim();
 
     return `
-      <div class="accordion-item" data-type="responder" data-acc="${globalIndex}">
-        <button class="accordion-btn" type="button" onclick="toggleAccordionByType('responder', ${globalIndex})">
+      <div class="accordion-item responder-item" data-type="responder" data-acc="${globalIndex}">
+  <button class="accordion-btn responder-btn" type="button" onclick="toggleAccordionByType('responder', ${globalIndex})">
           <span>
             <div class="question-title">${escapeHtml(item.titulo || 'Sem título')}</div>
             <div class="question-meta">${escapeHtml(item.nome || '')} • Código ${escapeHtml(item.codigo || '')}</div>
