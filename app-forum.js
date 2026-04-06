@@ -1,5 +1,4 @@
-const FORUM_WEBAPP_URL = "Chttps://script.google.com/macros/s/AKfycbw1A1guXNDwoNoD_3fvy3b-8l4ZDLC9gXS_Yl_lXEwDeMfThITYRzP3l77Li6t_8LifJg/exec";
-const PAGE_PERMISSION = "expo_artistas";
+const FORUM_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1A1guXNDwoNoD_3fvy3b-8l4ZDLC9gXS_Yl_lXEwDeMfThITYRzP3l77Li6t_8LifJg/exec";
 
 let forumUser = {
   codigo: "",
@@ -115,9 +114,8 @@ async function checkForumAccess() {
 
   try {
     const result = await postJSON({
-      action: 'checkForumAccess',
-      codigo,
-      pagina: PAGE_PERMISSION
+      action: 'validarAcessoForum',
+      codigo
     });
 
     if (result.status !== 'success' || !result.permitido) {
@@ -141,9 +139,9 @@ async function checkForumAccess() {
 async function enviarPergunta() {
   const titulo = (document.getElementById('tituloPergunta')?.value || '').trim();
   const descricao = (document.getElementById('descricaoPergunta')?.value || '').trim();
-  const autorizadaPublica = !!document.getElementById('checkPublica')?.checked;
+  const autorizoPublica = !!document.getElementById('checkPublica')?.checked;
 
-  if (!titulo || !descricao || !autorizadaPublica) {
+  if (!titulo || !descricao || !autorizoPublica) {
     showMessage('msgPergunta', 'error', 'Preencha título, descrição e marque a autorização.');
     return;
   }
@@ -154,30 +152,21 @@ async function enviarPergunta() {
   try {
     const result = await postJSON({
       action: 'inserirPergunta',
-      codigo: forumUser.codigo
-    });
-
-    if (result.status === 'error' && result.message === 'NOME_NAO_ENCONTRADO') {
-      throw new Error('Não foi possível localizar seu nome na planilha de acessos.');
-    }
-
-    const resultInsert = await postJSON({
-      action: 'inserirPergunta',
       codigo: forumUser.codigo,
       titulo,
       descricao,
-      autorizadaPublica
+      autorizoPublica
     });
 
-    if (resultInsert.status !== 'success') {
-      throw new Error(resultInsert.message || 'Erro ao enviar a pergunta.');
+    if (result.status !== 'success') {
+      throw new Error(result.message || 'Erro ao enviar a pergunta.');
     }
 
     document.getElementById('tituloPergunta').value = '';
     document.getElementById('descricaoPergunta').value = '';
     document.getElementById('checkPublica').checked = false;
-    updateSendButtonState();
 
+    updateSendButtonState();
     showMessage('msgPergunta', 'success', 'Pergunta enviada com sucesso.');
 
     await Promise.all([
@@ -215,7 +204,6 @@ function renderMinhasPerguntas(items) {
   container.innerHTML = items.map((item) => {
     const hasResposta = !!String(item.resposta || '').trim();
     const hasReplica = !!String(item.replica || '').trim();
-    const hasTreplica = !!String(item.treplica || '').trim();
     const podeReplicar = hasResposta && !hasReplica;
 
     const visibilityText = String(item.visibilidade || '').toUpperCase() === 'SIM'
@@ -292,7 +280,7 @@ async function carregarPerguntasUsuario() {
       throw new Error(result.message || 'Erro ao carregar suas perguntas.');
     }
 
-    renderMinhasPerguntas(result.items || []);
+    renderMinhasPerguntas(result.perguntas || []);
   } catch (error) {
     console.error(error);
     if (container) {
@@ -316,7 +304,7 @@ async function carregarPerguntasPublicas() {
       throw new Error(result.message || 'Erro ao carregar perguntas públicas.');
     }
 
-    renderPerguntasPublicas(result.items || []);
+    renderPerguntasPublicas(result.perguntas || []);
   } catch (error) {
     console.error(error);
     if (container) {
@@ -376,6 +364,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('btnEnviarPergunta')?.addEventListener('click', enviarPergunta);
 
   updateSendButtonState();
+
   await Promise.all([
     carregarPerguntasUsuario(),
     carregarPerguntasPublicas()
