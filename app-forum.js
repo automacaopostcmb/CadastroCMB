@@ -331,7 +331,6 @@ ${montarBolha(
             getMetaTreplica(item)
           )}
 
-          <div class="forum-visibility">${escapeHtml(visibilityText)}</div>
 
           ${mostrarConfirmacao ? `
             <div class="replica-box">
