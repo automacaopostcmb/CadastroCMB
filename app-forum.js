@@ -400,6 +400,13 @@ ${montarBolha(
   item.titulo || ''
 )}
 
+          ${montarBolha(
+            'Resposta',
+            'bubble-resposta',
+            item.resposta,
+            getMetaResposta(item)
+          )}
+
         ${montarBolha(
           'Réplica',
           'bubble-replica',
