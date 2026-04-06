@@ -384,14 +384,6 @@ function renderPerguntasPublicas(items) {
         <span class="accordion-arrow">⌄</span>
       </button>
       <div class="accordion-content">
-        ${montarBolha(
-          'Pergunta',
-          'bubble-pergunta',
-          item.descricao,
-          item.data_pergunta ? `Enviada em ${item.data_pergunta}` : '',
-          ''
-        )}
-
 ${montarBolha(
   'Pergunta',
   'bubble-pergunta',
