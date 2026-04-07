@@ -673,7 +673,7 @@ body.is-index .page-center{
 .logout-outside{
   display: none;
   margin-top: 14px;
-  margin-bottom: 24px;
+  margin-bottom: calc(var(--footer-h) + 20px); /* 👈 AQUI resolve */
   text-align: center;
   font-weight: 800;
   color: #fff;
