@@ -620,6 +620,13 @@ canvas {
   margin: 8px 0 6px;
 }
 
+body.is-index .site-footer{
+  position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  margin-top: 24px;
+}
 body.is-index{
   padding-top: 0 !important;
   padding-bottom: calc(var(--footer-h) + 24px) !important;
@@ -636,14 +643,25 @@ body.is-index .page-center{
   padding-bottom: 24px;
 }
 
-/* quando tiver menu (conteúdo grande), vira layout normal */
 body.is-index .page-center.menu-open{
   justify-content: flex-start;
   padding-top: 32px;
-  padding-bottom: calc(var(--footer-h) + 120px);
+  padding-bottom: 24px;
+}
+
+.logout-outside{
+  display: none;
+  margin-top: 14px;
+  margin-bottom: 24px;
+  text-align: center;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  text-shadow: 0 2px 10px rgba(0,0,0,.25);
 }
  
-
 .auth-card > :first-child{ margin-top: 0 !important; }
 .auth-card input,
 .auth-card button{
@@ -685,19 +703,6 @@ body.is-index .page-center.menu-open{
 }
 
 
-
-.logout-outside{
-  display: none;
-  margin-top: 14px;
-  margin-bottom: 80px;
-  text-align: center;
-  font-weight: 800;
-  color: #fff;
-  cursor: pointer;
-  user-select: none;
-  text-decoration: none;
-  text-shadow: 0 2px 10px rgba(0,0,0,.25);
-}
 .logout-outside:hover{ opacity: .92; }
 
 .menu-hint{
