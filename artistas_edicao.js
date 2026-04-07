@@ -1,4 +1,4 @@
-const WEBAPP_URL = "COLE_AQUI_SUA_URL_DO_WEBAPP"; 
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbz3PYKBtve9BvPSONcwTY35H53qpzaLL14RUCkDyFbV4s3wxRb_X-gVpX3fsNGOIu4G/exec"; 
 // mesma base que você usa, só adicionando ?action=listArtists
 
 async function fetchArtists() {
