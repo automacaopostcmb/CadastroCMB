@@ -667,68 +667,6 @@ const estandeInsta = instaNorm.handle ? '@' + instaNorm.handle : '';
   ].join('\n');
 }
 
-function getCanvasBlob() {
-  return new Promise((resolve) => {
-    if (!canvas) return resolve(null);
-    canvas.toBlob((blob) => resolve(blob), 'image/png');
-  });
-}
-
-async function shareNative() {
-  const text = (qs('captionBox')?.value || '').trim() || buildCaptionFromForm();
-
-  let copied = false;
-  try {
-    await navigator.clipboard.writeText(text);
-    copied = true;
-  } catch (e) {}
-
-  try {
-    const blob = await getCanvasBlob();
-
-    if (blob && window.File && navigator.canShare) {
-      const file = new File([blob], 'convidado-cmb-2026.png', { type: 'image/png' });
-
-      if (navigator.canShare({ files: [file] })) {
-        await navigator.share({ text, files: [file] });
-      } else if (navigator.share) {
-        await navigator.share({ text });
-      } else {
-        throw new Error('Web Share não suportado');
-      }
-    } else if (navigator.share) {
-      await navigator.share({ text });
-    } else {
-      throw new Error('Web Share não suportado');
-    }
-  } catch (err) {
-    alert('Seu navegador não suporta compartilhamento direto. A legenda já foi copiada; compartilhe a imagem e cole o texto.');
-    return;
-  }
-
-  const btn = qs('btnShareNative');
-  if (btn) {
-    const old = btn.textContent;
-    btn.textContent = copied ? 'Compartilhar (texto copiado ✔)' : 'Compartilhar';
-    setTimeout(() => (btn.textContent = old), 1800);
-  }
-}
-
-function baixarImagem() {
-  if (!canvas) return;
-
-  const link = document.createElement('a');
-  link.download = 'convidado-cmb-2026.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-
-  const wrap = qs('captionWrap');
-  const box = qs('captionBox');
-
-  if (box) box.value = buildCaptionFromForm();
-  if (wrap) wrap.style.display = 'block';
-}
-
 async function enviarParaGoogle() {
   const nome = (qs('nome')?.value || '').trim();
   const rotulo = (qs('rotulo')?.value || '').trim();
@@ -964,7 +902,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  const btnCopy = qs('btnCopyCaption');
+
   if (btnCopy) {
     btnCopy.addEventListener('click', async () => {
       const box = qs('captionBox');
@@ -983,7 +921,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  const btnShare = qs('btnShareNative');
+
   if (btnShare) btnShare.addEventListener('click', shareNative);
 
   showStep(1);
