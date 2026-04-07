@@ -85,45 +85,6 @@
       box-shadow: 0 8px 24px rgba(0,0,0,.12);
     }
 
-    .caption-wrap{
-      max-width: 720px;
-      margin: 16px auto 0;
-      display: none;
-      background: #fff;
-      border: 1px solid #d9e7ff;
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 6px 14px rgba(0,0,0,.04);
-    }
-
-    .caption-wrap h3{
-      margin: 0 0 8px;
-      font-size: 18px;
-      text-align: center;
-    }
-
-    .caption-wrap textarea{
-      width: 100%;
-      min-height: 220px;
-      font-size: 15px;
-      padding: 10px;
-      border: 1px solid #cfd8e3;
-      border-radius: 8px;
-      resize: vertical;
-    }
-
-    .btn-copy{
-      margin-top: 10px;
-      min-width: 180px;
-      padding: 10px 14px;
-      border: none;
-      border-radius: 8px;
-      background: #4dafff;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
     .final-screen{
       display: none;
       text-align: center;
@@ -358,27 +319,19 @@
       <a class="btn-light-text" href="index.html?back=1">Menu</a>
     </section>
 
-    <section id="final-screen" class="final-screen">
-      <div class="final-card">
-        <h2>✅ Imagem criada!</h2>
-        <p>Baixe e divulgue a sua presença no CMB 2026.</p>
+<section id="final-screen" class="final-screen">
+  <div class="final-card">
+    <h2>✅ Informações enviadas com sucesso!</h2>
+    <p style="text-align:center;">
+      Em breve anunciaremos sua participação no evento em nossas redes sociais e faremos um post colaborativo com você. Fique atento para aceitar o convite de colaboração no Instagram.
+    </p>
+    <p style="text-align:center;">
+      O CMB possui um cronograma oficial de anúncios dos convidados, por isso pedimos que aguarde a publicação do nosso post confirmando sua presença!
+    </p>
+  </div>
 
-        <img id="finalPreview"
-             style="max-width:320px; width:100%; height:auto; margin:20px auto; display:block;">
-
-        <button class="btn-download" id="btn-final-download" onclick="baixarImagem()">
-          Baixar imagem
-        </button>
-
-        <div id="captionWrap" class="caption-wrap">
-          <h3>Ajuste e use essa descrição nas suas redes:</h3>
-          <textarea id="captionBox"></textarea>
-          <div style="text-align:center">
-            <button class="btn-copy" id="btnCopyCaption" type="button">Copiar</button>
-            <button class="btn-copy" id="btnShareNative" type="button">Compartilhar</button>
-          </div>
-        </div>
-      </div>
+  <a class="btn-light-text" href="index.html?back=1">Voltar para o Menu</a>
+</section>
 
       <a class="btn-light-text" href="index.html?back=1">Voltar para o Menu</a>
     </section>
