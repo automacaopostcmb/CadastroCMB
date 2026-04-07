@@ -3,7 +3,7 @@
    ========================================================= */
 const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbw2hOGrOITFbi3Lg8wS5TroZvwlO6r2K5fJ9YEnhN2i6reFL7STT5p1L3Cz3XTDCc7e/exec';
 const FRAME_URL =
-  'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_learning.png';
+  'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_learning3.png';
 
 const TARJAS = {
   professor: { src: 'assets/learning_professor.png', x: 28, y: 37, scale: 0.2 },
