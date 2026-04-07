@@ -628,14 +628,18 @@ body.is-index{
 
 body.is-index .page-center{
   min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
 }
 
-body.is-index .page-center:has(#menu){
+/* quando tiver menu (conteúdo grande), vira layout normal */
+body.is-index .page-center.menu-open{
   justify-content: flex-start;
+  padding-top: 60px; /* 👈 controla altura do logo */
 }
-  min-height: auto;
-}
+ 
 
 .auth-card > :first-child{ margin-top: 0 !important; }
 .auth-card input,
