@@ -632,12 +632,14 @@ body.is-index .page-center{
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding-bottom: 24px;
 }
 
 /* quando tiver menu (conteúdo grande), vira layout normal */
 body.is-index .page-center.menu-open{
   justify-content: flex-start;
-  padding-top: 60px; /* 👈 controla altura do logo */
+  padding-top: 60px;
+  padding-bottom: calc(var(--footer-h) + 56px);
 }
  
 
