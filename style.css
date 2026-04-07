@@ -28,7 +28,7 @@ body{
   margin: 0;
   padding-inline: var(--gutter);
   padding-top: calc(var(--topbar-h) + 14px);
-  padding-bottom: calc(var(--footer-h) + 14px);
+padding-bottom: calc(var(--footer-h) + 80px);
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
