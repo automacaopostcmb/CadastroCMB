@@ -352,7 +352,7 @@ function initCanvas() {
   frameImg.onerror = () => {
     frameLoaded = false;
     frameError = true;
-    console.error('Não foi possível carregar assets/lancamento.png');
+    console.error('Não foi possível carregar assets/lancamento3.png');
 
     const msg = qs('mensagem');
     if (msg) {
@@ -362,7 +362,7 @@ function initCanvas() {
     }
   };
 
-  frameImg.src = 'assets/lancamento.png';
+  frameImg.src = 'assets/lancamento3.png';
 
   const fotoInput = qs('imagemDivulgacao');
   if (fotoInput) {
