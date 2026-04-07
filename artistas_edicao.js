@@ -69,27 +69,18 @@ function buildPhoto(url) {
 
   const finalUrl = convertDriveUrl(url);
 
-  return `<img class="artist-photo" src="${finalUrl}" alt="Artista" loading="lazy" />`;
+  return `
+    <img
+      class="artist-photo"
+      src="${finalUrl}"
+      alt="Artista"
+      loading="lazy"
+      onerror="this.parentElement.innerHTML='<div class=&quot;artist-fallback&quot;>Sem imagem</div>'"
+    />
+  `;
 }
 
 function buildSocial(insta) {
-  if (!insta) return '';
-
-  let username = insta.trim();
-
-  // remove @ se tiver
-  username = username.replace('@', '');
-
-  const link = `https://instagram.com/${username}`;
-
-  return `
-    <div class="artist-social">
-      <a href="${link}" target="_blank" rel="noopener">
-        @${username}
-      </a>
-    </div>
-  `;
-}
 
 function convertDriveUrl(url) {
   try {
