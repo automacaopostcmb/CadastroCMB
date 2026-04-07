@@ -343,6 +343,8 @@
       }
 
       if (algumPermitido) {
+        document.querySelector('.page-center').classList.add('menu-open');
+        
         if (menu) menu.style.display = "block";
         if (logoutOutside) logoutOutside.style.display = "block";
       } else {
