@@ -626,7 +626,14 @@ body.is-index{
   overflow-y: auto;
 }
 
-body.is-index .page-center{
+body.is-index .page-center{body.is-index .page-center{
+  min-height: 100dvh;
+  justify-content: center;
+}
+
+body.is-index .page-center:has(#menu){
+  justify-content: flex-start;
+}
   min-height: auto;
 }
 
