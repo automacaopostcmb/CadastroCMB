@@ -640,7 +640,7 @@ body.is-index .page-center{
 body.is-index .page-center.menu-open{
   justify-content: flex-start;
   padding-top: 32px;
-  padding-bottom: 24px;
+  padding-bottom: calc(var(--footer-h) + 120px);
 }
  
 
@@ -689,7 +689,7 @@ body.is-index .page-center.menu-open{
 .logout-outside{
   display: none;
   margin-top: 14px;
-  margin-bottom: 24px;
+  margin-bottom: 80px;
   text-align: center;
   font-weight: 800;
   color: #fff;
