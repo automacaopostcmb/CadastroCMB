@@ -639,7 +639,7 @@ body.is-index .page-center{
 body.is-index .page-center.menu-open{
   justify-content: flex-start;
   padding-top: 60px;
-  padding-bottom: calc(var(--footer-h) + 56px);
+padding-bottom: calc(var(--footer-h) + 80px);
 }
  
 
@@ -688,7 +688,7 @@ body.is-index .page-center.menu-open{
 .logout-outside{
   display: none;
   margin-top: 14px;
-  margin-bottom: calc(var(--footer-h) + 20px); /* 👈 AQUI resolve */ 
+  margin-bottom: 0;
   text-align: center;
   font-weight: 800;
   color: #fff;
