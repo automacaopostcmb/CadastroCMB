@@ -261,7 +261,7 @@ function renderResponder(items) {
           )}
 
           ${montarBolha(
-            'Réplica',
+            'Complemento',
             'bubble-replica',
             item.replica,
             item.data_replica ? formatarDataForum(item.data_replica) : ''
@@ -339,14 +339,14 @@ function renderCompartilhar(items) {
 )}
 
 ${item.replica ? montarBolha(
-  'Réplica',
+  'Complemento',
   'bubble-replica',
   item.replica,
   item.data_replica ? formatarDataForum(item.data_replica) : ''
 ) : ''}
 
 ${item.treplica ? montarBolha(
-  'Tréplica',
+  'Resposta Complemento',
   'bubble-treplica',
   item.treplica,
   getMetaTreplica(item)
@@ -425,14 +425,14 @@ function renderPublicas(items) {
 )}
 
 ${item.replica ? montarBolha(
-  'Réplica',
+  'Complemento',
   'bubble-replica',
   item.replica,
   item.data_replica ? formatarDataForum(item.data_replica) : ''
 ) : ''}
 
 ${item.treplica ? montarBolha(
-  'Tréplica',
+  'Resposta Complemento',
   'bubble-treplica',
   item.treplica,
   getMetaTreplica(item)
