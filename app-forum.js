@@ -475,7 +475,7 @@ const classeStatus = mostrarConfirmacao
               <div id="replicaBox_${escapeHtml(item.id)}" style="display:none; margin-top:10px;">
                 <div style="font-weight:700; margin-bottom:10px;">Complemente a sua pergunta</div>
                 <textarea id="replica_${escapeHtml(item.id)}" maxlength="3000" placeholder="Explique por que sua dúvida ainda não foi respondida"></textarea>
-                <button class="btn-nav btn-proximo btn-full" onclick="salvarReplica('${escapeHtml(item.id)}')">Enviar réplica</button>
+                <button class="btn-nav btn-proximo btn-full" onclick="salvarReplica('${escapeHtml(item.id)}')">Enviar complemento</button>
               </div>
             </div>
           ` : ''}
@@ -644,11 +644,11 @@ async function salvarReplica(id) {
   const replica = (textarea?.value || '').trim();
 
   if (!replica) {
-    alert('Escreva sua réplica antes de enviar.');
+    alert('Escreva seu complemento antes de enviar.');
     return;
   }
 
-  showOverlay('Enviando réplica...');
+  showOverlay('Enviando complemento...');
 
   try {
     const result = await postJSON({
@@ -659,7 +659,7 @@ async function salvarReplica(id) {
     });
 
     if (result.status !== 'success') {
-      throw new Error(result.message || 'Erro ao salvar a réplica.');
+      throw new Error(result.message || 'Erro ao salvar o complemento.');
     }
 
     await Promise.all([
@@ -668,7 +668,7 @@ async function salvarReplica(id) {
     ]);
   } catch (error) {
     console.error(error);
-    alert(error.message || 'Erro ao salvar a réplica.');
+    alert(error.message || 'Erro ao salvar o complemento.');
   } finally {
     hideOverlay();
   }
