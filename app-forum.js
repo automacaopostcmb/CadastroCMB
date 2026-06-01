@@ -448,14 +448,14 @@ const classeStatus = mostrarConfirmacao
           )}
 
           ${montarBolha(
-            'Réplica',
+            'Complemento',
             'bubble-replica',
             item.replica,
             item.data_replica ? formatarDataForum(item.data_replica) : ''
           )}
 
           ${montarBolha(
-            'Tréplica',
+            'Resposta Complemento',
             'bubble-treplica',
             item.treplica,
             getMetaTreplica(item)
@@ -549,14 +549,14 @@ function renderPerguntasPublicas(items) {
           )}
 
           ${montarBolha(
-            'Réplica',
+            'Complemento',
             'bubble-replica',
             item.replica,
             item.data_replica ? formatarDataForum(item.data_replica) : ''
           )}
 
           ${montarBolha(
-            'Tréplica',
+            'Resposta complemento',
             'bubble-treplica',
             item.treplica,
             getMetaTreplica(item)
