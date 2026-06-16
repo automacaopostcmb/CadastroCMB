@@ -2,7 +2,7 @@
    CONFIGURAÇÃO
    ========================================================= */
 const FRAME_URL =
-  'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_expo_market3.png';
+  'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_expo_market4.png';
 
 /* ===== TARJAS (AJUSTE AQUI) =====
    x e y = posição em px (0,0 no canto superior esquerdo do canvas)
