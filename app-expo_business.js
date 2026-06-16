@@ -2,7 +2,7 @@
    CONFIGURAÇÃO
    ========================================================= */
 const FRAME_URL =
-  'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_expo_business3.png';
+  'https://cdn.jsdelivr.net/gh/automacaopostcmb-bit/CadastroCMB@main/assets/Framee_expo_business4.png';
 
 /* ===== TARJA FIXA ===== */
 const TARJA_FIXA = { src: 'assets/tarja-empresa.png', x: 28, y: 57, scale: 0.2 };
