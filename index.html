@@ -336,7 +336,7 @@ const extraArtistaCard = document.getElementById("extra-artista-card");
 const extraArtistaCard = document.getElementById("extra-artista-card");
 const extraArtistaBotoes = document.getElementById("extra-artista-botoes");
 
-if (perms.expo_artistas && !perms.mestre && extraArtistaCard && extraArtistaBotoes) {
+if ((perms.expo_artistas || perms.mestre) && extraArtistaCard && extraArtistaBotoes) {
   const btnExtraArtista = document.createElement("button");
   btnExtraArtista.textContent = "📖 Clique e veja o manual";
   btnExtraArtista.className = "menu-btn";
