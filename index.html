@@ -65,6 +65,21 @@
       <div id="botoes"></div>
     </div>
 
+    
+<!-- CARD Manual Expositor -->
+<div id="extra-artista-card" class="auth-card" style="display:none; margin-top:18px;">
+  <h3>Manual do expositor dos artistas</h3>
+
+  <p class="menu-hint">
+    Acesse o link abaixo e veja nosso manual. Se surgir alguma dúvida você pode nos perguntar no nosso fórum abaixo.
+  </p>
+
+
+  <div id="extra-artista-botoes"></div>
+</div>
+
+    
+    
     <!-- CARD FÓRUM ARTISTA -->
     <div id="forum-card" class="auth-card" style="display:none; margin-top:18px;">
       <h3>Fórum da Área dos Artistas</h3>
@@ -312,7 +327,29 @@
         } else if (forumCard) {
           forumCard.style.display = "none";
         }
+// Novo bloco para os mesmos acessos do fórum do artista
+const extraArtistaCard = document.getElementById("extra-artista-card");
+const extraArtistaBotoes = document.getElementById("extra-artista-botoes");
 
+if (perms.expo_artistas && !perms.mestre && extraArtistaCard && extraArtistaBotoes) {
+  const btnExtraArtista = document.createElement("button");
+  btnExtraArtista.textContent = "📖 Clique e veja o manual";
+  btnExtraArtista.className = "menu-btn";
+  btnExtraArtista.style.backgroundColor = "#ffffff";
+  btnExtraArtista.style.color = "#111";
+  btnExtraArtista.style.border = "2px solid #e5e5e5";
+
+  btnExtraArtista.addEventListener("click", () => {
+window.open("https://docs.google.com/document/d/SEU_ID_DO_DOCUMENTO/edit", "_blank");
+  });
+
+  extraArtistaBotoes.appendChild(btnExtraArtista);
+  extraArtistaCard.style.display = "block";
+} else if (extraArtistaCard) {
+  extraArtistaCard.style.display = "none";
+}
+
+        
         // Fórum admin
         if (perms.mestre && forumAdminCard && forumAdminBotoes) {
           const btnForumAdmin = document.createElement("button");
