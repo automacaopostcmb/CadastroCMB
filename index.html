@@ -144,6 +144,9 @@
       const area = document.getElementById("botoes");
       const chaveEl = document.getElementById("chave");
       const logoutOutside = document.getElementById("logoutOutside");
+      
+      const extraArtistaCard = document.getElementById("extra-artista-card");
+const extraArtistaBotoes = document.getElementById("extra-artista-botoes");
 
       const forumCard = document.getElementById("forum-card");
       const forumBotoes = document.getElementById("forum-botoes");
@@ -160,6 +163,9 @@
       if (forumAdminCard) forumAdminCard.style.display = "none";
       if (forumAdminBotoes) forumAdminBotoes.innerHTML = "";
 
+if (extraArtistaCard) extraArtistaCard.style.display = "none";
+if (extraArtistaBotoes) extraArtistaBotoes.innerHTML = "";
+      
       if (loginAr) loginAr.style.display = "block";
 
       if (loginLinks) {
@@ -180,12 +186,14 @@
       const logoutOutside = document.getElementById("logoutOutside");
       const forumCard = document.getElementById("forum-card");
       const forumAdminCard = document.getElementById("forum-admin-card");
-
+const extraArtistaCard = document.getElementById("extra-artista-card");
+      
       if (loginAr) loginAr.style.display = "none";
       if (loginLinks) loginLinks.classList.add("hidden");
       if (menu) menu.style.display = "none";
       if (forumCard) forumCard.style.display = "none";
       if (forumAdminCard) forumAdminCard.style.display = "none";
+      if (extraArtistaCard) extraArtistaCard.style.display = "none";
       if (loading) loading.style.display = "grid";
       if (logoutOutside) logoutOutside.style.display = "none";
     }
