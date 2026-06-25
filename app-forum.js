@@ -522,13 +522,15 @@ function renderPerguntasPublicas(items) {
 
   const listaHtml = pageItems.map((item, index) => {
     const globalIndex = (forumState.paginaPublicas - 1) * PAGE_SIZE + index;
-
+const nomeExibicao = (item.nome || '')
+  .replace(/\s*•\s*Código\s+.*$/i, '')
+  .trim();
     return `
       <div class="accordion-item" data-acc="${globalIndex}">
         <button class="accordion-btn forum-publico-btn" type="button" onclick="toggleAccordion(${globalIndex})">
           <span class="forum-publico-head">
             <span class="forum-publico-titulo">${escapeHtml(item.titulo || 'Sem título')}</span>
-            <span class="forum-publico-autor"> - ${escapeHtml(item.nome || 'Anônimo')}</span>
+            <span class="forum-publico-autor"> - ${escapeHtml(nomeExibicao || 'Anônimo')}</span>
           </span>
           <span class="accordion-arrow">⌄</span>
         </button>
