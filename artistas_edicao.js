@@ -23,7 +23,9 @@ async function fetchArtists() {
   const grid = document.getElementById('artistsGrid');
 
   try {
-    const resp = await fetch(WEBAPP_URL + '?action=listArtists');
+const resp = await fetch(WEBAPP_URL + '?action=listArtists&t=' + Date.now(), {
+  cache: 'no-store'
+});
     const data = await resp.json();
 
     if (data.status !== 'success') {
