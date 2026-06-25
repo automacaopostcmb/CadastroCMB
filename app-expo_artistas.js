@@ -418,7 +418,6 @@ async function enviarParaGoogle() {
   const emailAjudante = cleanEmailValue(document.getElementById('emailAjudante')?.value);
   const telRaw = document.getElementById('telefoneArtista')?.value || '';
   const telNorm = normalizePhone(telRaw);
-const instagram = normalizeInstagram(document.getElementById('instagram')?.value);
   const okEmailArtista = EMAIL_REGEX.test(emailArtista);
   showFieldError('emailArtista', okEmailArtista ? '' : 'Informe um e-mail válido.');
 
@@ -838,7 +837,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateWizardHeader();
 
   // revalida ao digitar/colar/blur/autofill nas etapas 3 e 4
-  ['nomeCompleto','nomeArtistico','emailArtista','telefoneArtista','nomeAjudante','emailAjudante'].forEach((id) => {
+  ['nomeCompleto','nomeArtistico','instagram','emailArtista','telefoneArtista','nomeAjudante','emailAjudante'].forEach((id) => {
     const el = document.getElementById(id);
     if (!el) return;
     ['input','change','blur','keyup'].forEach(evt =>
