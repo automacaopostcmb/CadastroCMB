@@ -1,5 +1,6 @@
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbz3PYKBtve9BvPSONcwTY35H53qpzaLL14RUCkDyFbV4s3wxRb_X-gVpX3fsNGOIu4G/exec"; 
-// mesma base que você usa, só adicionando ?action=listArtists
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbz3PYKBtve9BvPSONcwTY35H53qpzaLL14RUCkDyFbV4s3wxRb_X-gVpX3fsNGOIu4G/exec";
+
+let artistsData = [];
 
 async function fetchArtists() {
   const loading = document.getElementById('artistsLoading');
@@ -15,17 +16,16 @@ async function fetchArtists() {
       throw new Error(data.message || 'Erro ao carregar artistas');
     }
 
-    const artistas = data.artists || [];
-
+    artistsData = data.artists || [];
     loading.style.display = 'none';
 
-    if (!artistas.length) {
+    if (!artistsData.length) {
       emptyBox.style.display = 'block';
       return;
     }
 
     grid.style.display = 'grid';
-    renderArtists(artistas, grid);
+    renderArtists(artistsData, grid);
 
   } catch (err) {
     console.error(err);
@@ -38,27 +38,47 @@ async function fetchArtists() {
 function renderArtists(lista, container) {
   container.innerHTML = '';
 
-  lista.forEach((artista) => {
+  lista.forEach((artista, index) => {
     const card = document.createElement('div');
     card.className = 'artist-card';
 
     const photo = buildPhoto(artista.foto);
-    const name = `<h3 class="artist-name">${escapeHtml(artista.nome)}</h3>`;
-    const bio = `<p class="artist-bio">${escapeHtml(artista.bio || '')}</p>`;
-    const social = buildSocial(artista.insta);
+    const instaLabel = formatInstagramLabel(artista.insta);
 
     card.innerHTML = `
       <div class="artist-photo-wrap">
         ${photo}
       </div>
+
       <div class="artist-content">
-        ${name}
-        ${bio}
-        ${social}
+        <h3 class="artist-name">${escapeHtml(artista.nome)}</h3>
+
+        <p class="artist-bio">${escapeHtml(artista.bio || '')}</p>
+
+        <button class="artist-readmore" type="button" data-index="${index}" style="display:none;">
+          ler mais
+        </button>
+
+        ${buildSocial(artista.insta, instaLabel)}
       </div>
     `;
 
     container.appendChild(card);
+  });
+
+  requestAnimationFrame(checkReadMoreButtons);
+}
+
+function checkReadMoreButtons() {
+  document.querySelectorAll('.artist-card').forEach((card) => {
+    const bio = card.querySelector('.artist-bio');
+    const btn = card.querySelector('.artist-readmore');
+
+    if (!bio || !btn) return;
+
+    if (bio.scrollHeight > bio.clientHeight + 2) {
+      btn.style.display = 'block';
+    }
   });
 }
 
@@ -78,7 +98,7 @@ function buildPhoto(url) {
   `;
 }
 
-function buildSocial(insta) {
+function buildSocial(insta, label) {
   if (!insta) return '';
 
   let user = String(insta).trim();
@@ -93,11 +113,61 @@ function buildSocial(insta) {
 
   return `
     <div class="artist-social">
-      <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">
-        Instagram
+      <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(label)}">
+        ${escapeHtml(label)}
       </a>
     </div>
   `;
+}
+
+function formatInstagramLabel(insta) {
+  if (!insta) return 'Instagram';
+
+  let text = String(insta).trim();
+
+  if (text.includes('instagram.com')) {
+    text = text
+      .replace('https://', '')
+      .replace('http://', '')
+      .replace('www.', '')
+      .replace('instagram.com/', '')
+      .split(/[/?#]/)[0];
+  }
+
+  if (!text.startsWith('@')) {
+    text = '@' + text;
+  }
+
+  return text;
+}
+
+function openArtistModal(index) {
+  const artista = artistsData[index];
+  if (!artista) return;
+
+  const modal = document.getElementById('artistModal');
+  const modalImage = document.getElementById('artistModalImage');
+  const modalName = document.getElementById('artistModalName');
+  const modalBio = document.getElementById('artistModalBio');
+
+  modalImage.innerHTML = artista.foto
+    ? `<img class="artist-modal-img" src="${escapeHtml(artista.foto)}" alt="${escapeHtml(artista.nome)}">`
+    : `<div class="artist-modal-img artist-fallback">Sem imagem</div>`;
+
+  modalName.textContent = artista.nome || '';
+  modalBio.textContent = artista.bio || '';
+
+  modal.classList.add('is-open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeArtistModal() {
+  const modal = document.getElementById('artistModal');
+
+  modal.classList.remove('is-open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
 }
 
 function convertDriveUrl(url) {
@@ -121,4 +191,27 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-document.addEventListener('DOMContentLoaded', fetchArtists);
+document.addEventListener('DOMContentLoaded', () => {
+  fetchArtists();
+
+  document.addEventListener('click', (e) => {
+    const readMore = e.target.closest('.artist-readmore');
+    if (readMore) {
+      openArtistModal(readMore.dataset.index);
+      return;
+    }
+
+    if (
+      e.target.id === 'artistModal' ||
+      e.target.closest('.artist-modal-close')
+    ) {
+      closeArtistModal();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeArtistModal();
+    }
+  });
+});
