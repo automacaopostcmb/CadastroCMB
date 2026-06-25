@@ -43,7 +43,8 @@ function renderArtists(lista, container) {
     card.className = 'artist-card';
 
     const photo = buildPhoto(artista.foto);
-    const instaLabel = formatInstagramLabel(artista.insta);
+const instaValue = artista.insta || artista.instagram || artista.Instagram || artista['Instagram'] || artista['instagram'];
+const instaLabel = formatInstagramLabel(instaValue);
 
     card.innerHTML = `
       <div class="artist-photo-wrap">
@@ -55,11 +56,11 @@ function renderArtists(lista, container) {
 
         <p class="artist-bio">${escapeHtml(artista.bio || '')}</p>
 
-        <button class="artist-readmore" type="button" data-index="${index}" style="display:none;">
-          ler mais
-        </button>
+<button class="artist-readmore" type="button" data-index="${index}" style="display:none;">
+  ler mais
+</button>
 
-        ${buildSocial(artista.insta, instaLabel)}
+${buildSocial(instaValue, instaLabel)}
       </div>
     `;
 
