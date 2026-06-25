@@ -17,18 +17,20 @@
   z-index: 99999;
   display: grid;
   place-items: center;
-  background: rgba(255,255,255,.92);
+  background: rgba(0, 58, 82, .72);
+  backdrop-filter: blur(6px);
 }
 
 .loader {
+  background: #fff;
+  padding: 14px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.18);
   text-align: center;
 }
 
 .loader-gif {
-  width: 90px;
-  max-width: 30vw;
-  display: block;
-  margin: 0 auto 12px;
+  display: none;
 }
 
 .loader-text {
@@ -315,7 +317,7 @@
       </p>
     </section>
 
-    <div id="artistsLoading" class="artists-loading">Carregando artistas...</div>
+
     <div id="artistsError" class="artists-error" style="display:none;"></div>
     <div id="artistsEmpty" class="artists-empty" style="display:none;">
       Nenhum artista disponível no momento.
@@ -344,7 +346,7 @@
     </div>
   </div>
 </div>
-  <script src="artistas_edicao.js?v=10"></script>
+  <script src="artistas_edicao.js?v=12"></script>
 
 </body>
 </html>
