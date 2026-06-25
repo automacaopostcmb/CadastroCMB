@@ -11,7 +11,31 @@
 
   <style>
     /* ===== ESPECÍFICO DESTA PÁGINA ===== */
+#overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.92);
+}
 
+.loader {
+  text-align: center;
+}
+
+.loader-gif {
+  width: 90px;
+  max-width: 30vw;
+  display: block;
+  margin: 0 auto 12px;
+}
+
+.loader-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+}
     .artists-page {
       width: 100%;
       max-width: 1240px;
@@ -302,6 +326,12 @@
     <div class="artists-actions">
       <a class="btn-light-text" href="index.html?back=1">Menu</a>
     </div>
+    <div id="overlay">
+  <div class="loader">
+    <img src="assets/loading.gif" alt="Carregando" class="loader-gif">
+    <div class="loader-text">Carregando artistas...</div>
+  </div>
+</div>
   </main>
 
   <div id="artistModal" class="artist-modal" aria-hidden="true">
