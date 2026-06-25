@@ -465,11 +465,13 @@ async function enviarParaGoogle() {
 const instagram = normalizeInstagram(
   document.getElementById('instagram')?.value
 );
+   const chave = (localStorage.getItem('chave') || '').trim();
   // Observação (opcional)
   const obs = (document.getElementById('observacao')?.value || '').trim();
 
   const dados = {
-    nomeCompleto:   (document.getElementById('nomeCompleto')?.value || '').trim(),
+    chave,
+   nomeCompleto:   (document.getElementById('nomeCompleto')?.value || '').trim(),
     nomeArtistico:  (document.getElementById('nomeArtistico')?.value || '').trim(),
      instagram,
     emailArtista,
