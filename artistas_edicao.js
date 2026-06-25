@@ -67,12 +67,10 @@ function buildPhoto(url) {
     return `<div class="artist-fallback">Sem imagem</div>`;
   }
 
-  const finalUrl = convertDriveUrl(url);
-
   return `
     <img
       class="artist-photo"
-      src="${finalUrl}"
+      src="${escapeHtml(url)}"
       alt="Artista"
       loading="lazy"
       onerror="this.parentElement.innerHTML='<div class=&quot;artist-fallback&quot;>Sem imagem</div>'"
