@@ -11,6 +11,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 const REVIEW_FIELDS = [
   { id: 'nomeCompleto',    label: 'Nome completo' },
   { id: 'nomeArtistico',   label: 'Nome artístico' },
+   { id: 'instagram', label: 'Instagram' },
   { id: 'emailArtista',    label: 'E-mail do artista' },
   { id: 'telefoneArtista', label: 'Telefone do artista' },
   { id: 'nomeAjudante',    label: 'Nome do ajudante' },
@@ -115,6 +116,24 @@ function cleanEmailValue(raw) {
 // Telefone simples: mantém dígitos; válido se tiver >= 8 dígitos
 function normalizePhone(raw) {
   return (raw || '').replace(/\D+/g, '');
+}
+
+function normalizeInstagram(raw) {
+  let v = (raw || '').trim();
+
+  if (!v) return '';
+
+  v = v
+    .replace(/^https?:\/\/(www\.)?instagram\.com\//i, '')
+    .replace(/^www\.instagram\.com\//i, '')
+    .replace(/^instagram\.com\//i, '')
+    .replace(/^@/, '')
+    .split(/[/?#]/)[0]
+    .trim();
+
+  if (!v) return '';
+
+  return `https://www.instagram.com/${v}`;
 }
 
 /* ===========================
@@ -399,7 +418,7 @@ async function enviarParaGoogle() {
   const emailAjudante = cleanEmailValue(document.getElementById('emailAjudante')?.value);
   const telRaw = document.getElementById('telefoneArtista')?.value || '';
   const telNorm = normalizePhone(telRaw);
-
+const instagram = normalizeInstagram(document.getElementById('instagram')?.value);
   const okEmailArtista = EMAIL_REGEX.test(emailArtista);
   showFieldError('emailArtista', okEmailArtista ? '' : 'Informe um e-mail válido.');
 
@@ -444,13 +463,16 @@ async function enviarParaGoogle() {
   }
 
   const legenda = buildCaptionFromForm();
-
+const instagram = normalizeInstagram(
+  document.getElementById('instagram')?.value
+);
   // Observação (opcional)
   const obs = (document.getElementById('observacao')?.value || '').trim();
 
   const dados = {
     nomeCompleto:   (document.getElementById('nomeCompleto')?.value || '').trim(),
     nomeArtistico:  (document.getElementById('nomeArtistico')?.value || '').trim(),
+     instagram,
     emailArtista,
     telefoneArtista: telNorm,
     nomeAjudante:    (document.getElementById('nomeAjudante')?.value || '').trim(),
