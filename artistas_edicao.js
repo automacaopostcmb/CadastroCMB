@@ -83,20 +83,18 @@ function buildPhoto(url) {
 function buildSocial(insta) {
   if (!insta) return '';
 
-  let user = String(insta).trim();
+  let value = String(insta).trim();
+  let url = value;
 
-  if (user.startsWith('@')) {
-    user = user.slice(1);
+  if (!value.startsWith('http')) {
+    value = value.replace('@', '');
+    url = `https://www.instagram.com/${value}`;
   }
-
-  const url = user.includes('instagram.com')
-    ? user
-    : `https://instagram.com/${user}`;
 
   return `
     <div class="artist-social">
       <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">
-        Instagram
+        Ver Instagram
       </a>
     </div>
   `;
