@@ -81,6 +81,26 @@ function buildPhoto(url) {
 }
 
 function buildSocial(insta) {
+  if (!insta) return '';
+
+  let user = String(insta).trim();
+
+  if (user.startsWith('@')) {
+    user = user.slice(1);
+  }
+
+  const url = user.includes('instagram.com')
+    ? user
+    : `https://instagram.com/${user}`;
+
+  return `
+    <div class="artist-social">
+      <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">
+        Instagram
+      </a>
+    </div>
+  `;
+}
 
 function convertDriveUrl(url) {
   try {
