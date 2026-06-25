@@ -17,7 +17,7 @@ function shuffleArtists(lista) {
   return arr;
 }
 async function fetchArtists() {
-  const loading = document.getElementById('artistsLoading');
+
   const errorBox = document.getElementById('artistsError');
   const emptyBox = document.getElementById('artistsEmpty');
   const grid = document.getElementById('artistsGrid');
@@ -32,7 +32,7 @@ async function fetchArtists() {
 
    artistsData = shuffleArtists(data.artists || []);
 
-loading.style.display = 'none';
+
 hideLoadingOverlay();
 
     if (!artistsData.length) {
@@ -45,7 +45,7 @@ hideLoadingOverlay();
 
 } catch (err) {
   console.error(err);
-  loading.style.display = 'none';
+
   hideLoadingOverlay();
   errorBox.style.display = 'block';
   errorBox.textContent = 'Erro ao carregar artistas.';
