@@ -1,7 +1,21 @@
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbz3PYKBtve9BvPSONcwTY35H53qpzaLL14RUCkDyFbV4s3wxRb_X-gVpX3fsNGOIu4G/exec";
 
 let artistsData = [];
+function hideLoadingOverlay() {
+  const overlay = document.getElementById('overlay');
+  if (overlay) overlay.style.display = 'none';
+}
 
+function shuffleArtists(lista) {
+  const arr = [...lista];
+
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+
+  return arr;
+}
 async function fetchArtists() {
   const loading = document.getElementById('artistsLoading');
   const errorBox = document.getElementById('artistsError');
@@ -16,8 +30,10 @@ async function fetchArtists() {
       throw new Error(data.message || 'Erro ao carregar artistas');
     }
 
-    artistsData = data.artists || [];
-    loading.style.display = 'none';
+   artistsData = shuffleArtists(data.artists || []);
+
+loading.style.display = 'none';
+hideLoadingOverlay();
 
     if (!artistsData.length) {
       emptyBox.style.display = 'block';
@@ -27,12 +43,13 @@ async function fetchArtists() {
     grid.style.display = 'grid';
     renderArtists(artistsData, grid);
 
-  } catch (err) {
-    console.error(err);
-    loading.style.display = 'none';
-    errorBox.style.display = 'block';
-    errorBox.textContent = 'Erro ao carregar artistas.';
-  }
+} catch (err) {
+  console.error(err);
+  loading.style.display = 'none';
+  hideLoadingOverlay();
+  errorBox.style.display = 'block';
+  errorBox.textContent = 'Erro ao carregar artistas.';
+}
 }
 
 function renderArtists(lista, container) {
