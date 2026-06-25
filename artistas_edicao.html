@@ -88,12 +88,17 @@
       color: #111;
     }
 
- .artist-bio {
+.artist-bio {
   margin: 0;
   color: #444;
   font-size: 15px;
   line-height: 1.6;
   text-align: center;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 7;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
     .artist-social {
