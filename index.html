@@ -25,10 +25,45 @@
   <!-- CSS global -->
   <link rel="stylesheet" href="style.css?v=52">
 
-  <style>
-    html, body { height: 100%; }
-    body { margin: 0; }
-  </style>
+<style>
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .codigos-entrada-lista {
+    display: grid;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .codigo-entrada-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 13px 15px;
+    border: 2px solid #e5e5e5;
+    border-radius: 10px;
+
+    background: #f8f8f8;
+    color: #111;
+
+    font-size: 16px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+
+  .codigo-entrada-numero {
+    flex-shrink: 0;
+    color: #0286ff;
+    font-weight: 900;
+  }
+</style>
 </head>
 
 <body class="is-index">
@@ -65,6 +100,26 @@
       <div id="botoes"></div>
     </div>
 
+    <!-- CARD CÓDIGOS DE ENTRADA -->
+<div id="codigos-entrada-card" class="auth-card" style="display:none; margin-top:18px;">
+  <h3>Expositor, libere a sua entrada no CMB!</h3>
+
+  <p class="menu-hint">
+    Clique no botão abaixo e use seus códigos para liberar seu cadastro e o de seus acompanhantes.
+    Cada código é único, então não compartilhe.
+  </p>
+
+  <div id="lista-codigos-entrada"></div>
+
+  <button
+    id="btn-liberar-entrada"
+    class="menu-btn"
+    type="button"
+    style="background-color:#0286ff; color:#ffffff; margin-top:16px;"
+  >
+    Liberar acesso
+  </button>
+</div>
     
 <!-- CARD Manual Expositor -->
 <div id="extra-artista-card" class="auth-card" style="display:none; margin-top:18px;">
@@ -144,7 +199,8 @@
       const area = document.getElementById("botoes");
       const chaveEl = document.getElementById("chave");
       const logoutOutside = document.getElementById("logoutOutside");
-      
+      const codigosEntradaCard = document.getElementById("codigos-entrada-card");
+const listaCodigosEntrada = document.getElementById("lista-codigos-entrada");
       const extraArtistaCard = document.getElementById("extra-artista-card");
 const extraArtistaBotoes = document.getElementById("extra-artista-botoes");
 
@@ -157,6 +213,14 @@ const extraArtistaBotoes = document.getElementById("extra-artista-botoes");
       if (menu) menu.style.display = "none";
       if (area) area.innerHTML = "";
 
+if (codigosEntradaCard) {
+  codigosEntradaCard.style.display = "none";
+}
+
+if (listaCodigosEntrada) {
+  listaCodigosEntrada.innerHTML = "";
+}
+      
       if (forumCard) forumCard.style.display = "none";
       if (forumBotoes) forumBotoes.innerHTML = "";
 
@@ -175,6 +239,11 @@ if (extraArtistaBotoes) extraArtistaBotoes.innerHTML = "";
 
       if (logoutOutside) logoutOutside.style.display = "none";
       if (chaveEl) chaveEl.value = "";
+      const pageCenter = document.querySelector(".page-center");
+
+if (pageCenter) {
+  pageCenter.classList.remove("menu-open");
+}
       setLoading(false);
     }
 
@@ -187,6 +256,7 @@ if (extraArtistaBotoes) extraArtistaBotoes.innerHTML = "";
       const forumCard = document.getElementById("forum-card");
       const forumAdminCard = document.getElementById("forum-admin-card");
 const extraArtistaCard = document.getElementById("extra-artista-card");
+      const codigosEntradaCard = document.getElementById("codigos-entrada-card");
       
       if (loginAr) loginAr.style.display = "none";
       if (loginLinks) loginLinks.classList.add("hidden");
@@ -194,6 +264,9 @@ const extraArtistaCard = document.getElementById("extra-artista-card");
       if (forumCard) forumCard.style.display = "none";
       if (forumAdminCard) forumAdminCard.style.display = "none";
       if (extraArtistaCard) extraArtistaCard.style.display = "none";
+      if (codigosEntradaCard) {
+  codigosEntradaCard.style.display = "none";
+}
       if (loading) loading.style.display = "grid";
       if (logoutOutside) logoutOutside.style.display = "none";
     }
@@ -265,19 +338,42 @@ const extraArtistaCard = document.getElementById("extra-artista-card");
       const forumAdminCard = document.getElementById("forum-admin-card");
       const forumAdminBotoes = document.getElementById("forum-admin-botoes");
 
+const codigosEntradaCard = document.getElementById("codigos-entrada-card");
+const listaCodigosEntrada = document.getElementById("lista-codigos-entrada");
+const btnLiberarEntrada = document.getElementById("btn-liberar-entrada");
+      
       let algumPermitido = false;
 
       try {
         const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}&menu=1`);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
-        const data = await resp.json();
-        const perms = data.permissoes || data.paginas || {};
+const data = await resp.json();
+
+if (!data.ok) {
+  throw new Error(data.erro || data.message || "Acesso inválido.");
+}
+
+const perms = data.permissoes || data.paginas || {};
+
+const codigosEntrada = Array.isArray(data.codigos)
+  ? data.codigos
+      .map((codigo) => String(codigo || "").trim())
+      .filter((codigo) => codigo !== "")
+  : [];
 
         area.innerHTML = "";
         if (forumBotoes) forumBotoes.innerHTML = "";
         if (forumAdminBotoes) forumAdminBotoes.innerHTML = "";
 
+if (listaCodigosEntrada) {
+  listaCodigosEntrada.innerHTML = "";
+}
+
+if (codigosEntradaCard) {
+  codigosEntradaCard.style.display = "none";
+}
+        
         if (perms.mestre) {
           algumPermitido = true;
 
@@ -314,6 +410,48 @@ const extraArtistaCard = document.getElementById("extra-artista-card");
           }
         });
 
+// CARD DOS CÓDIGOS DE ENTRADA
+if (
+  codigosEntrada.length > 0 &&
+  codigosEntradaCard &&
+  listaCodigosEntrada
+) {
+  listaCodigosEntrada.className = "codigos-entrada-lista";
+
+  codigosEntrada.forEach((codigo, index) => {
+    const item = document.createElement("div");
+    item.className = "codigo-entrada-item";
+
+    const numero = document.createElement("span");
+    numero.className = "codigo-entrada-numero";
+    numero.textContent = `${index + 1}.`;
+
+    const textoCodigo = document.createElement("span");
+    textoCodigo.textContent = codigo;
+
+    item.appendChild(numero);
+    item.appendChild(textoCodigo);
+
+    listaCodigosEntrada.appendChild(item);
+  });
+
+codigosEntradaCard.style.display = "block";
+algumPermitido = true;
+
+} else if (codigosEntradaCard) {
+  codigosEntradaCard.style.display = "none";
+}
+
+        if (btnLiberarEntrada) {
+  btnLiberarEntrada.onclick = () => {
+    window.open(
+      "https://comicmarketbrasilingreso.com.br/credenciamento/credenciamento.html",
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+}
+        
         // Fórum do artista
         if (perms.expo_artistas && !perms.mestre && forumCard && forumBotoes) {
           const btnForum = document.createElement("button");
