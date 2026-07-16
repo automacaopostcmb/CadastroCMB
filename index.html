@@ -360,7 +360,29 @@ const extraArtistaCard = document.getElementById("extra-artista-card");
 
       showLoginUI();
     }
+function copiarCodigoAlternativo(texto) {
+  const textarea = document.createElement("textarea");
 
+  textarea.value = texto;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.top = "-9999px";
+  textarea.style.left = "-9999px";
+
+  document.body.appendChild(textarea);
+
+  textarea.focus();
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+
+  const copiou = document.execCommand("copy");
+
+  document.body.removeChild(textarea);
+
+  if (!copiou) {
+    throw new Error("O navegador recusou a cópia.");
+  }
+}
     async function carregarMenu() {
       if (isLoading) return;
 
@@ -478,7 +500,11 @@ btnCopiar.className = "copiar-codigo-btn";
 
 btnCopiar.addEventListener("click", async () => {
   try {
-    await navigator.clipboard.writeText(codigo);
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(codigo);
+    } else {
+      copiarCodigoAlternativo(codigo);
+    }
 
     btnCopiar.textContent = "✓ Copiado!";
 
@@ -486,8 +512,23 @@ btnCopiar.addEventListener("click", async () => {
       btnCopiar.textContent = "Copiar";
     }, 2000);
 
-  } catch {
-    alert("Não foi possível copiar o código.");
+catch (err) {
+    console.error(err);
+    alert(err.name + "\n" + err.message);
+
+    try {
+      copiarCodigoAlternativo(codigo);
+
+      btnCopiar.textContent = "✓ Copiado!";
+
+      setTimeout(() => {
+        btnCopiar.textContent = "Copiar";
+      }, 2000);
+
+    } catch (erroAlternativo) {
+      console.error("Erro no método alternativo:", erroAlternativo);
+      alert("Não foi possível copiar o código.");
+    }
   }
 });
 
