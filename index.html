@@ -512,9 +512,8 @@ btnCopiar.addEventListener("click", async () => {
       btnCopiar.textContent = "Copiar";
     }, 2000);
 
-catch (err) {
-    console.error(err);
-    alert(err.name + "\n" + err.message);
+  } catch (err) {
+    console.error("Erro ao copiar:", err);
 
     try {
       copiarCodigoAlternativo(codigo);
