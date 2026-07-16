@@ -41,22 +41,22 @@
     margin-top: 18px;
   }
 
-  .codigo-entrada-item {
- display: flex;
-align-items: center;
-justify-content: space-between;
-gap: 14px;
+.codigo-entrada-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 10px;
 
-    padding: 13px 15px;
-    border: 2px solid #e5e5e5;
-    border-radius: 10px;
+  padding: 13px 15px;
+  border: 2px solid #e5e5e5;
+  border-radius: 10px;
 
-    background: #f8f8f8;
-    color: #111;
+  background: #f8f8f8;
+  color: #111;
 
-    font-size: 16px;
-    font-weight: 700;
-  }
+  font-size: 16px;
+  font-weight: 700;
+}
 
   .codigo-entrada-numero {
     flex-shrink: 0;
@@ -64,19 +64,29 @@ gap: 14px;
     font-weight: 900;
   }
 
-  #btn-liberar-entrada{
-    background:#1e88e5;
-    color:#fff;
+#btn-liberar-entrada {
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px 18px;
+
+  border: none;
+  border-radius: 15px;
+
+  background: #f1c40f;
+  color: #111;
+
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
-.texto-codigo{
-    flex:1;
+.texto-codigo {
   min-width: 0;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    overflow-wrap:normal;
-    word-break:normal;
+  color: #111;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .copiar-codigo-btn{
