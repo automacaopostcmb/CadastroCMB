@@ -63,6 +63,25 @@
     color: #0286ff;
     font-weight: 900;
   }
+
+  #btn-liberar-entrada{
+    background:#1e88e5;
+    color:#fff;
+}
+
+  .copiar-codigo-btn{
+    background:none;
+    border:none;
+    color:#0286ff;
+    font-weight:700;
+    cursor:pointer;
+    font-size:14px;
+    padding:4px 6px;
+}
+
+.copiar-codigo-btn:hover{
+    text-decoration:underline;
+}
 </style>
 </head>
 
@@ -115,10 +134,9 @@
     id="btn-liberar-entrada"
     class="menu-btn"
     type="button"
-    style="background-color:#0286ff; color:#ffffff; margin-top:16px;"
-  >
+>
     Liberar acesso
-  </button>
+</button>
 </div>
     
 <!-- CARD Manual Expositor -->
@@ -426,11 +444,32 @@ if (
     numero.className = "codigo-entrada-numero";
     numero.textContent = `${index + 1}.`;
 
-    const textoCodigo = document.createElement("span");
-    textoCodigo.textContent = codigo;
+const textoCodigo = document.createElement("span");
+textoCodigo.textContent = codigo;
+textoCodigo.style.flex = "1";
 
-    item.appendChild(numero);
-    item.appendChild(textoCodigo);
+const btnCopiar = document.createElement("button");
+btnCopiar.textContent = "Copiar";
+btnCopiar.className = "copiar-codigo-btn";
+
+btnCopiar.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(codigo);
+
+    btnCopiar.textContent = "✓ Copiado!";
+
+    setTimeout(() => {
+      btnCopiar.textContent = "Copiar";
+    }, 2000);
+
+  } catch {
+    alert("Não foi possível copiar o código.");
+  }
+});
+
+item.appendChild(numero);
+item.appendChild(textoCodigo);
+item.appendChild(btnCopiar);
 
     listaCodigosEntrada.appendChild(item);
   });
