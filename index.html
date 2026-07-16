@@ -42,9 +42,10 @@
   }
 
   .codigo-entrada-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+ display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 14px;
 
     padding: 13px 15px;
     border: 2px solid #e5e5e5;
@@ -55,7 +56,6 @@
 
     font-size: 16px;
     font-weight: 700;
-    overflow-wrap: anywhere;
   }
 
   .codigo-entrada-numero {
@@ -69,14 +69,25 @@
     color:#fff;
 }
 
-  .copiar-codigo-btn{
+.texto-codigo{
+    flex:1;
+  min-width: 0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    overflow-wrap:normal;
+    word-break:normal;
+}
+
+.copiar-codigo-btn{
+    flex-shrink:0;
     background:none;
     border:none;
     color:#0286ff;
     font-weight:700;
     cursor:pointer;
     font-size:14px;
-    padding:4px 6px;
+    padding:4px 0;
 }
 
 .copiar-codigo-btn:hover{
@@ -445,8 +456,8 @@ if (
     numero.textContent = `${index + 1}.`;
 
 const textoCodigo = document.createElement("span");
+textoCodigo.className = "texto-codigo";
 textoCodigo.textContent = codigo;
-textoCodigo.style.flex = "1";
 
 const btnCopiar = document.createElement("button");
 btnCopiar.textContent = "Copiar";
