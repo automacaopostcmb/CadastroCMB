@@ -15,6 +15,54 @@
     background: rgba(255,255,255,0.92);
     display: grid;
   }
+/* ===== INÍCIO MÓDULO CÓDIGOS DE ENTRADA ===== */
+
+.entradas-cmb-block {
+  text-align: center;
+}
+
+#listaEntradas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.entrada-cmb-input {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  font-size: 16px;
+  border: 1px solid #999;
+  box-sizing: border-box;
+}
+
+.entradas-controles {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.entradas-controles button {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 8px;
+  background: #13a34a;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.entradas-controles button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ===== FIM MÓDULO CÓDIGOS DE ENTRADA ===== */
+  
 </style>
   
   <meta charset="UTF-8" />
@@ -203,7 +251,36 @@
 
   <div id="adminFeedback" class="admin-feedback"></div>
 </div>
+<!-- ===== INÍCIO MÓDULO CÓDIGOS DE ENTRADA ===== -->
 
+<div id="blocoEntradas" class="step-box admin-result entradas-cmb-block">
+
+  <label class="title-label">
+    Códigos de liberação de entrada
+  </label>
+
+  <div id="listaEntradas"></div>
+
+  <div class="entradas-controles">
+    <button id="btnRemoverEntrada" type="button">−</button>
+    <button id="btnAdicionarEntrada" type="button">+</button>
+  </div>
+
+  <div class="button-row" style="margin-top:20px;">
+    <button
+      id="btnSalvarEntradas"
+      class="btn-nav btn-proximo"
+      type="button"
+    >
+      Salvar entradas
+    </button>
+  </div>
+
+  <div id="entradasFeedback" class="admin-feedback"></div>
+
+</div>
+
+<!-- ===== FIM MÓDULO CÓDIGOS DE ENTRADA ===== -->
 <div id="adminResult" class="step-box admin-result">
   <div class="admin-code-box">
     <div class="admin-code-label">Novo código:</div>
@@ -268,6 +345,13 @@ const PAGINA = "mestre";
 let permissoesDisponiveis = [];
 let codigoEmEdicao = "";
 
+  /* ===== INÍCIO MÓDULO CÓDIGOS DE ENTRADA ===== */
+
+let codigoRecemCriado = "";
+let quantidadeEntradas = 1;
+
+/* ===== FIM MÓDULO CÓDIGOS DE ENTRADA ===== */
+  
 function setOverlay(show, text) {
   const overlay = document.getElementById("overlay");
   const label = overlay?.querySelector(".loader-text");
@@ -525,14 +609,34 @@ overlayTimeout();
       throw new Error(data.message || "Erro ao criar código.");
     }
 
-    const codigo = data.codigo;
-    const mensagem = montarMensagem(codigo);
+const codigo = data.codigo;
+const mensagem = montarMensagem(codigo);
 
-    closeOverlayNow();
+closeOverlayNow();
 
-    document.getElementById("novoCodigo").textContent = codigo;
-    document.getElementById("mensagemPronta").value = mensagem;
-    document.getElementById("adminResult").style.display = "block";
+/* ===== MÓDULO CÓDIGOS DE ENTRADA ===== */
+
+codigoRecemCriado = codigo;
+quantidadeEntradas = 1;
+
+const listaEntradas = document.getElementById("listaEntradas");
+
+if (listaEntradas) {
+  listaEntradas.innerHTML = "";
+}
+
+renderEntradas();
+
+document.getElementById("blocoEntradas").style.display = "block";
+
+showEntradasFeedback("");
+
+/* ===== FIM MÓDULO ===== */
+
+document.getElementById("novoCodigo").textContent = codigo;
+document.getElementById("mensagemPronta").value = mensagem;
+document.getElementById("adminResult").style.display = "block";
+
 
     try {
       await navigator.clipboard.writeText(mensagem);
@@ -546,10 +650,10 @@ document.getElementById("nomeDestinatario").focus();
 
 adicionarCodigoAoDropdown(data.codigo, data.nome);
     setTimeout(() => {
-      document.getElementById("adminResult")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
+document.getElementById("blocoEntradas")?.scrollIntoView({
+  behavior: "smooth",
+  block: "start"
+});
     }, 50);
 
   } catch (e) {
@@ -805,7 +909,232 @@ function adicionarCodigoAoDropdown(codigo, nome) {
     option.remove();
   }
 }
+
+/* ===== INÍCIO MÓDULO CÓDIGOS DE ENTRADA ===== */
+
+function renderEntradas() {
+  const lista = document.getElementById("listaEntradas");
+  if (!lista) return;
+
+  const valoresAtuais = Array.from(
+    lista.querySelectorAll(".entrada-cmb-input")
+  ).map(input => input.value);
+
+  lista.innerHTML = "";
+
+  for (let i = 0; i < quantidadeEntradas; i++) {
+    const input = document.createElement("input");
+
+    input.type = "text";
+    input.className = "entrada-cmb-input";
+    input.placeholder = `Código de entrada ${i + 1}`;
+    input.value = valoresAtuais[i] || "";
+
+    input.addEventListener("input", atualizarBotoesEntradas);
+
+    lista.appendChild(input);
+  }
+
+  atualizarBotoesEntradas();
+}
+
+
+function atualizarBotoesEntradas() {
+  const inputs = Array.from(
+    document.querySelectorAll(".entrada-cmb-input")
+  );
+
+  const btnMais = document.getElementById("btnAdicionarEntrada");
+  const btnMenos = document.getElementById("btnRemoverEntrada");
+
+  if (!inputs.length) return;
+
+  const ultimoPreenchido =
+    inputs[inputs.length - 1].value.trim() !== "";
+
+  if (btnMais) {
+    btnMais.disabled =
+      !ultimoPreenchido ||
+      quantidadeEntradas >= 10;
+  }
+
+  if (btnMenos) {
+    btnMenos.disabled =
+      quantidadeEntradas <= 1;
+  }
+}
+
+
+function adicionarEntrada() {
+  const inputs = Array.from(
+    document.querySelectorAll(".entrada-cmb-input")
+  );
+
+  if (!inputs.length) return;
+
+  const ultimoInput = inputs[inputs.length - 1];
+
+  if (!ultimoInput.value.trim()) {
+    showEntradasFeedback(
+      "Preencha o código atual antes de adicionar outro."
+    );
+
+    ultimoInput.focus();
+    return;
+  }
+
+  if (quantidadeEntradas >= 10) {
+    showEntradasFeedback(
+      "O limite é de 10 códigos de entrada."
+    );
+    return;
+  }
+
+  showEntradasFeedback("");
+
+  quantidadeEntradas++;
+
+  renderEntradas();
+
+  const novosInputs = document.querySelectorAll(
+    ".entrada-cmb-input"
+  );
+
+  novosInputs[novosInputs.length - 1]?.focus();
+}
+
+
+function removerEntrada() {
+  if (quantidadeEntradas <= 1) return;
+
+  quantidadeEntradas--;
+
+  renderEntradas();
+
+  showEntradasFeedback("");
+}
+
+
+function showEntradasFeedback(msg, ok = false) {
+  const el = document.getElementById("entradasFeedback");
+  if (!el) return;
+
+  el.textContent = msg;
+  el.style.display = msg ? "block" : "none";
+  el.style.color = ok ? "green" : "red";
+}
+
+
+async function salvarEntradas() {
+  if (!codigoRecemCriado) {
+    showEntradasFeedback(
+      "Gere um código primeiro."
+    );
+    return;
+  }
+
+  const inputs = Array.from(
+    document.querySelectorAll(".entrada-cmb-input")
+  );
+
+  /*
+    Segurança extra:
+    nenhuma textbox visível pode estar vazia.
+  */
+  const vazio = inputs.find(
+    input => !input.value.trim()
+  );
+
+  if (vazio) {
+    showEntradasFeedback(
+      "Preencha todos os códigos de entrada antes de salvar."
+    );
+
+    vazio.focus();
+    return;
+  }
+
+  const entradas = inputs.map(
+    input => input.value.trim()
+  );
+
+  if (!entradas.length) {
+    showEntradasFeedback(
+      "Digite ao menos um código de entrada."
+    );
+    return;
+  }
+
+  const chaveAdmin = getChave();
+
+  setOverlay(true, "Salvando entradas...");
+  showEntradasFeedback("");
+
+  try {
+    const resp = await fetch(ADMIN_URL, {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+
+      body: JSON.stringify({
+        action: "salvarEntradas",
+        chaveAdmin,
+        codigo: codigoRecemCriado,
+        entradas
+      })
+    });
+
+    const data = await resp.json();
+
+    closeOverlayNow();
+
+    if (!data.ok) {
+      showEntradasFeedback(
+        data.message || "Erro ao salvar entradas."
+      );
+      return;
+    }
+
+    showEntradasFeedback(
+      "Entradas salvas com sucesso.",
+      true
+    );
+
+  } catch (e) {
+    console.error(e);
+
+    closeOverlayNow();
+
+    showEntradasFeedback(
+      "Erro ao salvar entradas."
+    );
+  }
+}
+
+/* ===== FIM MÓDULO CÓDIGOS DE ENTRADA ===== */
+  
 document.addEventListener("DOMContentLoaded", async () => {
+
+  /* ===== INÍCIO MÓDULO CÓDIGOS DE ENTRADA ===== */
+
+document.getElementById("btnAdicionarEntrada")?.addEventListener(
+  "click",
+  adicionarEntrada
+);
+
+document.getElementById("btnRemoverEntrada")?.addEventListener(
+  "click",
+  removerEntrada
+);
+
+document.getElementById("btnSalvarEntradas")?.addEventListener(
+  "click",
+  salvarEntradas
+);
+
+/* ===== FIM MÓDULO CÓDIGOS DE ENTRADA ===== */
   setOverlay(true, "Verificando acesso...");
 
   const ok = await checkAuth();
