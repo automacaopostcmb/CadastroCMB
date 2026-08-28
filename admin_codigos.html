@@ -408,8 +408,16 @@ function esconderConfirmacaoExclusao() {
   if (box) box.style.display = "none";
 }
 
+let chaveAdminSessao = "";
+
 function getChave() {
-  return (localStorage.getItem("chave") || "").trim();
+  const chaveLocal = (localStorage.getItem("chave") || "").trim();
+
+  if (chaveLocal) {
+    chaveAdminSessao = chaveLocal;
+  }
+
+  return chaveAdminSessao;
 }
 
 async function checkAuth() {
