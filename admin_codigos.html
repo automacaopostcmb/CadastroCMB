@@ -487,8 +487,16 @@ async function carregarPermissoes() {
 
   try {
     const url = `${ADMIN_URL}?action=listPermissoes&chave=${encodeURIComponent(chave)}&v=${Date.now()}`;
-    const resp = await fetch(url);
-    const data = await resp.json();
+const resp = await fetch(url);
+const raw = await resp.text();
+
+let data;
+
+try {
+  data = JSON.parse(raw);
+} catch (e) {
+  throw new Error("O servidor retornou uma resposta inválida. Recarregue a página.");
+}
 
     if (!data.ok) {
       throw new Error(data.message || "Erro ao carregar permissões.");
@@ -584,22 +592,9 @@ async function gerarCodigo() {
   document.querySelectorAll("#listaEntradas .entrada-cmb-input")
 );
 
-const entradaVazia = inputsEntradas.find(
-  input => !input.value.trim()
-);
-
-if (entradaVazia) {
-  showEntradasFeedback(
-    "Preencha todos os códigos de entrada."
-  );
-
-  entradaVazia.focus();
-  return;
-}
-
-const entradas = inputsEntradas.map(
-  input => input.value.trim()
-);
+const entradas = inputsEntradas
+  .map(input => input.value.trim())
+  .filter(valor => valor !== "");
 
   if (!nome) {
     showFeedback("Preencha o nome.");
@@ -739,8 +734,16 @@ async function buscarCodigoParaAlterar() {
   try {
     const url = `${ADMIN_URL}?action=buscarCodigo&chave=${encodeURIComponent(chave)}&codigo=${encodeURIComponent(codigo)}&v=${Date.now()}`;
 
-    const resp = await fetch(url);
-    const data = await resp.json();
+const resp = await fetch(url);
+const raw = await resp.text();
+
+let data;
+
+try {
+  data = JSON.parse(raw);
+} catch (e) {
+  throw new Error("O servidor retornou uma resposta inválida. Recarregue a página.");
+}
 
     closeOverlayNow();
 
@@ -1282,10 +1285,8 @@ document.getElementById("listaEntradasAlterar")?.addEventListener(
 
 setOverlay(true, "Carregando dados...");
 
-await Promise.all([
-  carregarPermissoes(),
-  carregarCodigosAlteraveis()
-]);
+await carregarPermissoes();
+await carregarCodigosAlteraveis();
 
   document.body.classList.remove("auth-pending");
   closeOverlayNow();
