@@ -749,8 +749,10 @@ async function excluirCodigo() {
       return;
     }
 
+removerCodigoDoDropdown(codigoEmEdicao);
+
 resetAlterarBloco();
-await carregarCodigosAlteraveis();
+
 showAlterarFeedback("Código apagado com sucesso.", true);
 
   } catch (e) {
@@ -788,6 +790,20 @@ function adicionarCodigoAoDropdown(codigo, nome) {
   opcoes.forEach(option => {
     select.appendChild(option);
   });
+}
+
+  function removerCodigoDoDropdown(codigo) {
+  const select = document.getElementById("codigoAlterar");
+
+  if (!select || !codigo) return;
+
+  const option = Array.from(select.options).find(
+    item => item.value === codigo
+  );
+
+  if (option) {
+    option.remove();
+  }
 }
 document.addEventListener("DOMContentLoaded", async () => {
   setOverlay(true, "Verificando acesso...");
