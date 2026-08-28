@@ -26,6 +26,16 @@
   <link rel="stylesheet" href="style.css?v=52">
 
   <style>
+
+    #codigoAlterar {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  font-size: 16px;
+  border: 1px solid #999;
+  background: #fff;
+  box-sizing: border-box;
+}
     .admin-list {
       display: flex;
       flex-direction: column;
@@ -210,12 +220,11 @@
     <div class="wizard-step-title admin-block-title">ALTERAR CÓDIGO</div>
 
     <div class="step-box">
-      <label class="title-label">Qual código você quer alterar?</label>
-      <input type="text" id="codigoAlterar" placeholder="Digite o código" />
+  <label class="title-label">Quem você quer alterar?</label>
 
-      <div class="button-row" style="margin-top:22px;">
-        <button id="btnBuscarCodigo" class="btn-nav btn-proximo">Atualizar</button>
-      </div>
+<select id="codigoAlterar">
+  <option value="">Selecione um nome</option>
+</select>
 
       <div id="alterarFeedback" class="admin-feedback"></div>
 
@@ -226,7 +235,7 @@
         <div id="listaPermissoesAlterar" class="admin-list"></div>
 
         <div class="button-row" style="margin-top:22px;">
-          <button id="btnAlterarCodigo" class="btn-nav btn-proximo">Alterar</button>
+          <button id="btnAlterarCodigo" class="btn-nav btn-proximo">Salvar alterações</button>
         </div>
 
         <div id="confirmarExclusaoBox" class="confirmar-exclusao-box">
@@ -412,6 +421,54 @@ async function carregarPermissoes() {
   }
 }
 
+async function carregarCodigosAlteraveis() {
+  const chave = getChave();
+  const select = document.getElementById("codigoAlterar");
+
+  if (!select) return;
+
+  select.innerHTML = '<option value="">Carregando...</option>';
+  select.disabled = true;
+
+  try {
+    const url = `${ADMIN_URL}?action=listCodigos&chave=${encodeURIComponent(chave)}&v=${Date.now()}`;
+
+    const resp = await fetch(url);
+    const data = await resp.json();
+
+    if (!data.ok) {
+      throw new Error(data.message || "Erro ao carregar códigos.");
+    }
+
+    select.innerHTML = '<option value="">Selecione um nome</option>';
+
+    const codigos = data.codigos || [];
+
+    codigos.forEach(item => {
+      const option = document.createElement("option");
+
+      // O código fica escondido como valor
+      option.value = item.codigo;
+
+      // O usuário vê apenas o nome
+      option.textContent = item.nome;
+
+      select.appendChild(option);
+    });
+
+    select.disabled = false;
+
+  } catch (e) {
+    console.error(e);
+
+    select.innerHTML = '<option value="">Erro ao carregar nomes</option>';
+
+    showAlterarFeedback(
+      e.message || "Erro ao carregar códigos."
+    );
+  }
+}
+  
 function getPermissoesMarcadas(containerId) {
   return Array.from(document.querySelectorAll(`#${containerId} input[type="checkbox"]:checked`))
     .map(el => el.value);
@@ -486,7 +543,7 @@ overlayTimeout();
 
     document.getElementById("nomeDestinatario").value = "";
     document.getElementById("nomeDestinatario").focus();
-
+await carregarCodigosAlteraveis();
     setTimeout(() => {
       document.getElementById("adminResult")?.scrollIntoView({
         behavior: "smooth",
@@ -522,51 +579,72 @@ async function copiarMensagem() {
 
 function resetAlterarBloco() {
   codigoEmEdicao = "";
+
   document.getElementById("codigoAlterar").value = "";
   document.getElementById("codigoEncontrado").textContent = "";
   document.getElementById("alterarBox").style.display = "none";
+
   showAlterarFeedback("");
   esconderConfirmacaoExclusao();
-  renderListaPermissoes("listaPermissoesAlterar", permissoesDisponiveis);
+
+  renderListaPermissoes(
+    "listaPermissoesAlterar",
+    permissoesDisponiveis
+  );
 }
 
 async function buscarCodigoParaAlterar() {
-  const codigo = (document.getElementById("codigoAlterar").value || "").trim();
+  const select = document.getElementById("codigoAlterar");
+  const codigo = (select.value || "").trim();
   const chave = getChave();
 
   showAlterarFeedback("");
   esconderConfirmacaoExclusao();
+
   document.getElementById("alterarBox").style.display = "none";
   document.getElementById("codigoEncontrado").textContent = "";
 
+  codigoEmEdicao = "";
+
   if (!codigo) {
-    showAlterarFeedback("Digite um código.");
     return;
   }
 
-  setOverlay(true, "Buscando código...");
-overlayTimeout();
+  setOverlay(true, "Carregando código...");
+  overlayTimeout();
+
   try {
     const url = `${ADMIN_URL}?action=buscarCodigo&chave=${encodeURIComponent(chave)}&codigo=${encodeURIComponent(codigo)}&v=${Date.now()}`;
+
     const resp = await fetch(url);
     const data = await resp.json();
 
     closeOverlayNow();
 
     if (!data.ok) {
-      showAlterarFeedback(data.message || "Esse código não existe!");
+      showAlterarFeedback(
+        data.message || "Esse código não existe!"
+      );
       return;
     }
 
     codigoEmEdicao = data.codigo || codigo;
-    document.getElementById("codigoEncontrado").textContent = `Código encontrado: ${codigoEmEdicao}`;
-    renderListaPermissoes("listaPermissoesAlterar", permissoesDisponiveis, data.paginas || []);
+
+    document.getElementById("codigoEncontrado").textContent =
+      `Código: ${codigoEmEdicao}`;
+
+    renderListaPermissoes(
+      "listaPermissoesAlterar",
+      permissoesDisponiveis,
+      data.paginas || []
+    );
+
     document.getElementById("alterarBox").style.display = "block";
 
   } catch (e) {
     console.error(e);
     closeOverlayNow();
-    showAlterarFeedback("Erro ao buscar código.");
+    showAlterarFeedback("Erro ao carregar código.");
   }
 }
 
@@ -670,8 +748,9 @@ async function excluirCodigo() {
       return;
     }
 
-    resetAlterarBloco();
-    showAlterarFeedback("Código apagado com sucesso.", true);
+resetAlterarBloco();
+await carregarCodigosAlteraveis();
+showAlterarFeedback("Código apagado com sucesso.", true);
 
   } catch (e) {
     console.error(e);
@@ -689,19 +768,46 @@ document.addEventListener("DOMContentLoaded", async () => {
   setOverlay(true, "Carregando permissões...");
   await carregarPermissoes();
 
+  setOverlay(true, "Carregando códigos...");
+  await carregarCodigosAlteraveis();
+
   document.body.classList.remove("auth-pending");
   closeOverlayNow();
 
-  document.getElementById("btnGerarCodigo")?.addEventListener("click", gerarCodigo);
-  document.getElementById("btnCopiarMensagem")?.addEventListener("click", copiarMensagem);
-  document.getElementById("btnBuscarCodigo")?.addEventListener("click", buscarCodigoParaAlterar);
-  document.getElementById("btnAlterarCodigo")?.addEventListener("click", alterarCodigo);
-  document.getElementById("btnConfirmarExcluirSim")?.addEventListener("click", excluirCodigo);
-  document.getElementById("btnConfirmarExcluirNao")?.addEventListener("click", () => {
-    esconderConfirmacaoExclusao();
-    showAlterarFeedback("");
-  });
+  document.getElementById("btnGerarCodigo")?.addEventListener(
+    "click",
+    gerarCodigo
+  );
+
+  document.getElementById("btnCopiarMensagem")?.addEventListener(
+    "click",
+    copiarMensagem
+  );
+
+  document.getElementById("codigoAlterar")?.addEventListener(
+    "change",
+    buscarCodigoParaAlterar
+  );
+
+  document.getElementById("btnAlterarCodigo")?.addEventListener(
+    "click",
+    alterarCodigo
+  );
+
+  document.getElementById("btnConfirmarExcluirSim")?.addEventListener(
+    "click",
+    excluirCodigo
+  );
+
+  document.getElementById("btnConfirmarExcluirNao")?.addEventListener(
+    "click",
+    () => {
+      esconderConfirmacaoExclusao();
+      showAlterarFeedback("");
+    }
+  );
 });
+
 </script>
 
 
