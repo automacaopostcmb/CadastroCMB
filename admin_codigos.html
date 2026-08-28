@@ -1133,6 +1133,13 @@ const inputs = Array.from(
       true
     );
 
+    document
+  .querySelectorAll("#listaEntradas .entrada-cmb-input")
+  .forEach(input => input.value = "");
+
+quantidadeEntradas = 1;
+renderEntradas();
+
   } catch (e) {
     console.error(e);
 
