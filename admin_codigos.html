@@ -21,7 +21,8 @@
   text-align: center;
 }
 
-#listaEntradas {
+#listaEntradas,
+#listaEntradasAlterar {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -310,7 +311,18 @@
 
         <label class="title-label" style="margin-top:20px;">Quais páginas esse código terá acesso?</label>
         <div id="listaPermissoesAlterar" class="admin-list"></div>
+<!-- CÓDIGOS DE ENTRADA - ALTERAR -->
 
+<label class="title-label" style="margin-top:26px;">
+  Códigos de liberação de entrada
+</label>
+
+<div id="listaEntradasAlterar"></div>
+
+<div class="entradas-controles">
+  <button id="btnRemoverEntradaAlterar" type="button">−</button>
+  <button id="btnAdicionarEntradaAlterar" type="button">+</button>
+</div>
         <div class="button-row" style="margin-top:22px;">
           <button id="btnAlterarCodigo" class="btn-nav btn-proximo">Salvar alterações</button>
         </div>
@@ -743,6 +755,7 @@ async function buscarCodigoParaAlterar() {
       permissoesDisponiveis,
       data.paginas || []
     );
+    renderEntradasAlterar(data.entradas || []);
 
     document.getElementById("alterarBox").style.display = "block";
 
@@ -757,6 +770,23 @@ async function alterarCodigo() {
   const chaveAdmin = getChave();
   const paginas = getPermissoesMarcadas("listaPermissoesAlterar");
 
+const inputsEntradas = Array.from(
+  document.querySelectorAll("#listaEntradasAlterar .entrada-cmb-input")
+);
+
+const entradaVazia = inputsEntradas.find(
+  input => !input.value.trim()
+);
+
+if (entradaVazia) {
+  entradaVazia.focus();
+  return;
+}
+
+const entradas = inputsEntradas.map(
+  input => input.value.trim()
+);
+  
   if (!codigoEmEdicao) {
     showAlterarFeedback("Busque um código primeiro.");
     return;
@@ -778,12 +808,13 @@ async function alterarCodigo() {
       headers: {
         "Content-Type": "text/plain;charset=utf-8"
       },
-      body: JSON.stringify({
-        action: "alterarCodigo",
-        chaveAdmin,
-        codigo: codigoEmEdicao,
-        paginas
-      })
+ body: JSON.stringify({
+  action: "alterarCodigo",
+  chaveAdmin,
+  codigo: codigoEmEdicao,
+  paginas,
+  entradas
+})
     });
 
     const raw = await resp.text();
@@ -941,7 +972,7 @@ function renderEntradas() {
 
 function atualizarBotoesEntradas() {
   const inputs = Array.from(
-    document.querySelectorAll(".entrada-cmb-input")
+document.querySelectorAll("#listaEntradas .entrada-cmb-input")
   );
 
   const btnMais = document.getElementById("btnAdicionarEntrada");
@@ -967,7 +998,7 @@ function atualizarBotoesEntradas() {
 
 function adicionarEntrada() {
   const inputs = Array.from(
-    document.querySelectorAll(".entrada-cmb-input")
+document.querySelectorAll("#listaEntradas .entrada-cmb-input")
   );
 
   if (!inputs.length) return;
@@ -996,9 +1027,9 @@ function adicionarEntrada() {
 
   renderEntradas();
 
-  const novosInputs = document.querySelectorAll(
-    ".entrada-cmb-input"
-  );
+const novosInputs = document.querySelectorAll(
+  "#listaEntradas .entrada-cmb-input"
+);
 
   novosInputs[novosInputs.length - 1]?.focus();
 }
@@ -1033,9 +1064,9 @@ async function salvarEntradas() {
     return;
   }
 
-  const inputs = Array.from(
-    document.querySelectorAll(".entrada-cmb-input")
-  );
+const inputs = Array.from(
+  document.querySelectorAll("#listaEntradas .entrada-cmb-input")
+);
 
   /*
     Segurança extra:
@@ -1114,6 +1145,86 @@ async function salvarEntradas() {
 }
 
 /* ===== FIM MÓDULO CÓDIGOS DE ENTRADA ===== */
+
+/* ===== CÓDIGOS DE ENTRADA - ALTERAR ===== */
+
+function renderEntradasAlterar(valores = [""]) {
+  const lista = document.getElementById("listaEntradasAlterar");
+  if (!lista) return;
+
+  lista.innerHTML = "";
+
+  if (!valores.length) valores = [""];
+
+  valores.slice(0, 10).forEach((valor, i) => {
+    const input = document.createElement("input");
+
+    input.type = "text";
+    input.className = "entrada-cmb-input";
+    input.placeholder = `Código de entrada ${i + 1}`;
+    input.value = valor || "";
+
+    lista.appendChild(input);
+  });
+
+  atualizarBotoesEntradasAlterar();
+}
+
+
+function atualizarBotoesEntradasAlterar() {
+  const inputs = Array.from(
+    document.querySelectorAll("#listaEntradasAlterar .entrada-cmb-input")
+  );
+
+  const btnMais = document.getElementById("btnAdicionarEntradaAlterar");
+  const btnMenos = document.getElementById("btnRemoverEntradaAlterar");
+
+  if (!inputs.length) return;
+
+  btnMais.disabled =
+    !inputs[inputs.length - 1].value.trim() ||
+    inputs.length >= 10;
+
+  btnMenos.disabled = inputs.length <= 1;
+}
+
+
+function adicionarEntradaAlterar() {
+  const inputs = Array.from(
+    document.querySelectorAll("#listaEntradasAlterar .entrada-cmb-input")
+  );
+
+  if (!inputs.length || inputs.length >= 10) return;
+
+  if (!inputs[inputs.length - 1].value.trim()) return;
+
+  const valores = inputs.map(input => input.value);
+
+  valores.push("");
+
+  renderEntradasAlterar(valores);
+
+  document
+    .querySelector("#listaEntradasAlterar .entrada-cmb-input:last-child")
+    ?.focus();
+}
+
+
+function removerEntradaAlterar() {
+  const inputs = Array.from(
+    document.querySelectorAll("#listaEntradasAlterar .entrada-cmb-input")
+  );
+
+  if (inputs.length <= 1) return;
+
+  const valores = inputs
+    .slice(0, -1)
+    .map(input => input.value);
+
+  renderEntradasAlterar(valores);
+}
+
+/* ===== FIM CÓDIGOS DE ENTRADA - ALTERAR ===== */
   
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -1134,6 +1245,25 @@ document.getElementById("btnSalvarEntradas")?.addEventListener(
   salvarEntradas
 );
 
+/* ===== CÓDIGOS DE ENTRADA - ALTERAR ===== */
+
+document.getElementById("btnAdicionarEntradaAlterar")?.addEventListener(
+  "click",
+  adicionarEntradaAlterar
+);
+
+document.getElementById("btnRemoverEntradaAlterar")?.addEventListener(
+  "click",
+  removerEntradaAlterar
+);
+
+document.getElementById("listaEntradasAlterar")?.addEventListener(
+  "input",
+  atualizarBotoesEntradasAlterar
+);
+
+/* ===== FIM CÓDIGOS DE ENTRADA - ALTERAR ===== */
+  
 /* ===== FIM MÓDULO CÓDIGOS DE ENTRADA ===== */
   setOverlay(true, "Verificando acesso...");
 
