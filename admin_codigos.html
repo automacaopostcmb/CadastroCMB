@@ -243,45 +243,38 @@
   <label class="title-label">Para quem você vai enviar esse código de acesso?</label>
   <input type="text" id="nomeDestinatario" placeholder="Nome da pessoa ou empresa" />
 
-  <label class="title-label" style="margin-top:20px;">Quais páginas esse código terá acesso?</label>
-  <div id="listaPermissoes" class="admin-list"></div>
+<label class="title-label" style="margin-top:20px;">
+  Quais páginas esse código terá acesso?
+</label>
 
-  <div class="button-row" style="margin-top:22px;">
-    <button id="btnGerarCodigo" class="btn-nav btn-proximo">Gerar código</button>
-  </div>
+<div id="listaPermissoes" class="admin-list"></div>
+
+<!-- ===== CÓDIGOS DE ENTRADA ===== -->
+
+<label class="title-label" style="margin-top:26px;">
+  Códigos de liberação de entrada
+</label>
+
+<div id="listaEntradas"></div>
+
+<div class="entradas-controles">
+  <button id="btnRemoverEntrada" type="button">−</button>
+  <button id="btnAdicionarEntrada" type="button">+</button>
+</div>
+
+<div id="entradasFeedback" class="admin-feedback"></div>
+
+<!-- ===== FIM CÓDIGOS DE ENTRADA ===== -->
+
+<div class="button-row" style="margin-top:26px;">
+  <button id="btnGerarCodigo" class="btn-nav btn-proximo">
+    Gerar código
+  </button>
+</div>
 
   <div id="adminFeedback" class="admin-feedback"></div>
 </div>
-<!-- ===== INÍCIO MÓDULO CÓDIGOS DE ENTRADA ===== -->
 
-<div id="blocoEntradas" class="step-box admin-result entradas-cmb-block">
-
-  <label class="title-label">
-    Códigos de liberação de entrada
-  </label>
-
-  <div id="listaEntradas"></div>
-
-  <div class="entradas-controles">
-    <button id="btnRemoverEntrada" type="button">−</button>
-    <button id="btnAdicionarEntrada" type="button">+</button>
-  </div>
-
-  <div class="button-row" style="margin-top:20px;">
-    <button
-      id="btnSalvarEntradas"
-      class="btn-nav btn-proximo"
-      type="button"
-    >
-      Salvar entradas
-    </button>
-  </div>
-
-  <div id="entradasFeedback" class="admin-feedback"></div>
-
-</div>
-
-<!-- ===== FIM MÓDULO CÓDIGOS DE ENTRADA ===== -->
 <div id="adminResult" class="step-box admin-result">
   <div class="admin-code-box">
     <div class="admin-code-label">Novo código:</div>
@@ -587,6 +580,26 @@ async function gerarCodigo() {
   const nome = (document.getElementById("nomeDestinatario").value || "").trim();
   const paginas = getPermissoesMarcadas("listaPermissoes");
   const chaveAdmin = getChave();
+  const inputsEntradas = Array.from(
+  document.querySelectorAll("#listaEntradas .entrada-cmb-input")
+);
+
+const entradaVazia = inputsEntradas.find(
+  input => !input.value.trim()
+);
+
+if (entradaVazia) {
+  showEntradasFeedback(
+    "Preencha todos os códigos de entrada."
+  );
+
+  entradaVazia.focus();
+  return;
+}
+
+const entradas = inputsEntradas.map(
+  input => input.value.trim()
+);
 
   if (!nome) {
     showFeedback("Preencha o nome.");
@@ -608,12 +621,13 @@ overlayTimeout();
       headers: {
         "Content-Type": "text/plain;charset=utf-8"
       },
-      body: JSON.stringify({
-        action: "criarCodigo",
-        chaveAdmin,
-        nome,
-        paginas
-      })
+   body: JSON.stringify({
+  action: "criarCodigo",
+  chaveAdmin,
+  nome,
+  paginas,
+  entradas
+})
     });
 
     const raw = await resp.text();
@@ -634,24 +648,7 @@ const mensagem = montarMensagem(codigo);
 
 closeOverlayNow();
 
-/* ===== MÓDULO CÓDIGOS DE ENTRADA ===== */
 
-codigoRecemCriado = codigo;
-quantidadeEntradas = 1;
-
-const listaEntradas = document.getElementById("listaEntradas");
-
-if (listaEntradas) {
-  listaEntradas.innerHTML = "";
-}
-
-renderEntradas();
-
-document.getElementById("blocoEntradas").style.display = "block";
-
-showEntradasFeedback("");
-
-/* ===== FIM MÓDULO ===== */
 
 document.getElementById("novoCodigo").textContent = codigo;
 document.getElementById("mensagemPronta").value = mensagem;
@@ -668,13 +665,14 @@ document.getElementById("adminResult").style.display = "block";
 document.getElementById("nomeDestinatario").value = "";
 document.getElementById("nomeDestinatario").focus();
 
+quantidadeEntradas = 1;
+
+document.getElementById("listaEntradas").innerHTML = "";
+renderEntradas();
+
+showEntradasFeedback("");
+    
 adicionarCodigoAoDropdown(data.codigo, data.nome);
-    setTimeout(() => {
-document.getElementById("blocoEntradas")?.scrollIntoView({
-  behavior: "smooth",
-  block: "start"
-});
-    }, 50);
 
   } catch (e) {
     console.error(e);
@@ -1254,11 +1252,8 @@ document.getElementById("btnRemoverEntrada")?.addEventListener(
   "click",
   removerEntrada
 );
+renderEntradas();
 
-document.getElementById("btnSalvarEntradas")?.addEventListener(
-  "click",
-  salvarEntradas
-);
 
 /* ===== CÓDIGOS DE ENTRADA - ALTERAR ===== */
 
