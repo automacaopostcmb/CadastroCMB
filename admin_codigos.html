@@ -541,9 +541,10 @@ overlayTimeout();
       showFeedback("Código criado com sucesso.", true);
     }
 
-    document.getElementById("nomeDestinatario").value = "";
-    document.getElementById("nomeDestinatario").focus();
-await carregarCodigosAlteraveis();
+document.getElementById("nomeDestinatario").value = "";
+document.getElementById("nomeDestinatario").focus();
+
+adicionarCodigoAoDropdown(data.codigo, data.nome);
     setTimeout(() => {
       document.getElementById("adminResult")?.scrollIntoView({
         behavior: "smooth",
@@ -758,7 +759,36 @@ showAlterarFeedback("Código apagado com sucesso.", true);
     showAlterarFeedback(e.message || "Erro ao apagar código.");
   }
 }
+function adicionarCodigoAoDropdown(codigo, nome) {
+  const select = document.getElementById("codigoAlterar");
+  if (!select || !codigo) return;
 
+  // Evita duplicar caso já exista
+  const jaExiste = Array.from(select.options).some(
+    option => option.value === codigo
+  );
+
+  if (jaExiste) return;
+
+  const option = document.createElement("option");
+  option.value = codigo;
+  option.textContent = nome || "Sem nome";
+
+  select.appendChild(option);
+
+  // Mantém em ordem alfabética
+  const opcoes = Array.from(select.options)
+    .filter(option => option.value !== "")
+    .sort((a, b) =>
+      a.textContent.localeCompare(b.textContent, "pt-BR")
+    );
+
+  select.innerHTML = '<option value="">Selecione um nome</option>';
+
+  opcoes.forEach(option => {
+    select.appendChild(option);
+  });
+}
 document.addEventListener("DOMContentLoaded", async () => {
   setOverlay(true, "Verificando acesso...");
 
