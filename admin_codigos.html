@@ -811,11 +811,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const ok = await checkAuth();
   if (!ok) return;
 
-  setOverlay(true, "Carregando permissões...");
-  await carregarPermissoes();
+setOverlay(true, "Carregando dados...");
 
-  setOverlay(true, "Carregando códigos...");
-  await carregarCodigosAlteraveis();
+await Promise.all([
+  carregarPermissoes(),
+  carregarCodigosAlteraveis()
+]);
 
   document.body.classList.remove("auth-pending");
   closeOverlayNow();
