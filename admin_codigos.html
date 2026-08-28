@@ -364,13 +364,29 @@ function setOverlay(show, text) {
   if (overlay) overlay.style.display = show ? "grid" : "none";
 }
 
+let overlayTimeoutId = null;
+
 function closeOverlayNow() {
+
+  if (overlayTimeoutId) {
+    clearTimeout(overlayTimeoutId);
+    overlayTimeoutId = null;
+  }
+
   const overlay = document.getElementById("overlay");
-  if (overlay) overlay.style.display = "none";
+
+  if (overlay) {
+    overlay.style.display = "none";
+  }
 }
 
-  function overlayTimeout(ms = 8000) {
-  setTimeout(() => {
+function overlayTimeout(ms = 8000) {
+
+  if (overlayTimeoutId) {
+    clearTimeout(overlayTimeoutId);
+  }
+
+  overlayTimeoutId = setTimeout(() => {
     closeOverlayNow();
   }, ms);
 }
@@ -404,11 +420,22 @@ function esconderConfirmacaoExclusao() {
 let chaveAdminSessao = "";
 
 function getChave() {
-  const chaveLocal = (localStorage.getItem("chave") || "").trim();
 
-  if (chaveLocal) {
-    chaveAdminSessao = chaveLocal;
+  // Primeiro tenta usar a chave exclusiva desta aba
+  let chave = (sessionStorage.getItem("chave") || "").trim();
+
+  // Se esta aba ainda não possui chave,
+  // pega a chave atual do login e salva nesta aba.
+  if (!chave) {
+
+    chave = (localStorage.getItem("chave") || "").trim();
+
+    if (chave) {
+      sessionStorage.setItem("chave", chave);
+    }
   }
+
+  chaveAdminSessao = chave;
 
   return chaveAdminSessao;
 }
@@ -684,8 +711,8 @@ document.getElementById("listaEntradas").innerHTML = "";
 renderEntradas();
 
 showEntradasFeedback("");
-    
-adicionarCodigoAoDropdown(data.codigo, data.nome);
+
+await carregarCodigosAlteraveis();
 
   } catch (e) {
     console.error(e);
